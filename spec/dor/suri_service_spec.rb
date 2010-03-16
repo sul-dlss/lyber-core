@@ -25,8 +25,8 @@ describe Dor::SuriService do
   # end
   describe "an enabled SuriService" do
         
-    it "should mint a druid using Dor::Connection" do
-      Dor::Connection.should_receive(:post).with("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil,
+    it "should mint a druid using LyberCore::Connection" do
+      LyberCore::Connection.should_receive(:post).with("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil,
                                                 {:auth_user => SURI_USER, :auth_password => SURI_PASSWORD}).and_return('somestring')
                                                 
       Dor::SuriService.mint_id.should == "#{ID_NAMESPACE}:somestring"                                         
@@ -35,7 +35,7 @@ describe Dor::SuriService do
     it "should throw log an error and rethrow the exception if Connect fails." do
       e = "thrown exception"
       ex = Exception.new(e)
-      Dor::Connection.should_receive(:post).with("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil,
+      LyberCore::Connection.should_receive(:post).with("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil,
                                                 {:auth_user => SURI_USER, :auth_password => SURI_PASSWORD}).and_raise(e)
                                                 
       Rails.stub_chain(:logger, :error).with("Unable to mint id from suri: #{e}")

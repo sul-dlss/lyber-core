@@ -12,9 +12,9 @@ Dor::WorkflowService::DOR_URI = 'https://dortest.stanford.edu/dor'
 Dor::WorkflowService::::DOR_CREATE_WORKFLOW = true
 Dor::WorkflowService::XML
 
-Dor::Connection::CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
-Dor::Connection::KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
-Dor::Connection::KEY_PASS = 'dummy'
+LyberCore::Connection::CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
+LyberCore::Connection::KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
+LyberCore::Connection::KEY_PASS = 'dummy'
 
 Require the following
 require 'dor/connection'

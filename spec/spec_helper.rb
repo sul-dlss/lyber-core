@@ -6,6 +6,10 @@ Dir[File.join(File.dirname(__FILE__), '..', 'lib', 'dor', '*.rb')].each do |file
   require File.basename(file, File.extname(file))
 end
 
+Dir[File.join(File.dirname(__FILE__), '..', 'lib', '*.rb')].each do |file| 
+  require File.basename(file, File.extname(file))
+end
+
 require 'spec'
 require 'spec/autorun'
 

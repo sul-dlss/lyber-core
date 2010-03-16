@@ -1,15 +1,15 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'net/https'
 
 require 'action_controller'
 require 'action_controller/test_process'
 
 
-describe Dor::Connection do
+describe LyberCore::Connection do
   before(:all) do
     with_warnings_suppressed do 
-      CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
-      KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
+      CERT_FILE = File.dirname(__FILE__) + '/certs/dummy.crt'
+      KEY_FILE = File.dirname(__FILE__) + '/certs/dummy.key'
       KEY_PASS = 'dummy'
     end
   end
@@ -33,7 +33,7 @@ describe Dor::Connection do
       Net::HTTP.should_receive(:new).and_return(@http)
       @http.should_receive(:start).and_return(@response)
       
-      b = Dor::Connection.post('https://some.edu/some/path', @xml)
+      b = LyberCore::Connection.post('https://some.edu/some/path', @xml)
       b.should == 'returned text'
     end
     
@@ -42,7 +42,7 @@ describe Dor::Connection do
       Net::HTTP.should_receive(:new).and_return(@http)
       @http.should_receive(:start).and_return(@response)
       
-      b = Dor::Connection.put('http://some.edu/some/path', @xml) {|res| res.body}
+      b = LyberCore::Connection.put('http://some.edu/some/path', @xml) {|res| res.body}
       b.should == 'returned text'
     end
     
@@ -52,7 +52,7 @@ describe Dor::Connection do
       @http.should_receive(:start).and_return(@response)
       @mock_request.should_receive(:basic_auth).with('user', 'password')
       
-      b = Dor::Connection.post('https://some.edu/some/path', @xml, :auth_user => 'user', :auth_password => 'password')
+      b = LyberCore::Connection.post('https://some.edu/some/path', @xml, :auth_user => 'user', :auth_password => 'password')
       b.should == 'returned text'
     end
     
@@ -64,7 +64,7 @@ describe Dor::Connection do
       Net::HTTP.should_receive(:new).and_return(@http)
       @http.should_receive(:start).and_return(res)
     
-      lambda{ Dor::Connection.post('https://some.edu/some/path', @xml) }.should raise_error(Exception, e)
+      lambda{ LyberCore::Connection.post('https://some.edu/some/path', @xml) }.should raise_error(Exception, e)
     end
     
   end
@@ -76,7 +76,7 @@ describe Dor::Connection do
     Net::HTTP.should_receive(:new).and_return(@http)
     @http.should_receive(:start).and_return(@response)
 
-    b = Dor::Connection.post('http://some.edu/some/path', nil) {|res| res.body}
+    b = LyberCore::Connection.post('http://some.edu/some/path', nil) {|res| res.body}
     b.should == 'returned text'
   end
   
@@ -88,7 +88,7 @@ describe Dor::Connection do
       @http.should_receive(:key=)
       @http.should_receive(:verify_mode=)
       url = URI.parse('https://some.host.edu/some/path')
-      Dor::Connection.get_https_connection(url).should == @http
+      LyberCore::Connection.get_https_connection(url).should == @http
     end
   end
   

@@ -17,7 +17,7 @@ module Dor
     full_uri << DOR_URI << '/objects/' << druid << '/workflows/etdSubmitWF'
     
     # On success, an empty body is sent   
-    Dor::Connection.put(full_uri, XML){|response| true}
+    LyberCore::Connection.put(full_uri, XML){|response| true}
   rescue Exception => e
     Rails.logger.error("Unable to create workflow\n" << e.to_s)
     return false
@@ -34,7 +34,7 @@ module Dor
     xml = '<process name="'<< process << '" status="' << status << '"/>' 
     
     # On success, an empty body is sent 
-    Dor::Connection.put(uri, xml) {|response| true}
+    LyberCore::Connection.put(uri, xml) {|response| true}
   rescue Exception => e
     Rails.logger.error("Unable to update workflow\n" << e.to_s)
     return false

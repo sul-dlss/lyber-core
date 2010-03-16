@@ -2,7 +2,7 @@ require 'net/https'
 require 'uri'
 require 'cgi'
 
-module Dor
+module LyberCore
   class Connection
     def Connection.get_https_connection(url)
       https = Net::HTTP.new(url.host, url.port)

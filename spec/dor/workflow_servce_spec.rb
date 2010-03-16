@@ -39,13 +39,13 @@ describe Dor::WorkflowService do
     it "should pass workflow xml to the DOR workflow service and return the URL to the workflow" do
       res = Net::HTTPSuccess.new("", "", "")
       
-      Dor::Connection.should_receive(:put).with(@wf_full_uri, @wf_xml).and_yield(res)
+      LyberCore::Connection.should_receive(:put).with(@wf_full_uri, @wf_xml).and_yield(res)
       Dor::WorkflowService.create_workflow(@druid).should be_true
     end
     
     it "should log an error and return false if the PUT to the DOR workflow service throws an exception" do
       ex = Exception.new("exception thrown")
-      Dor::Connection.should_receive(:put).and_raise(ex)
+      LyberCore::Connection.should_receive(:put).and_raise(ex)
       @mock_logger.should_receive(:error).with(/exception thrown/)
       Dor::WorkflowService.create_workflow(@druid).should be_false
     end
@@ -63,13 +63,13 @@ describe Dor::WorkflowService do
     it "should update workflow status and return true if successful" do
       res = Net::HTTPSuccess.new("", "", "")
       
-      Dor::Connection.should_receive(:put).with(@process_uri, @process_xml).and_yield(res)
+      LyberCore::Connection.should_receive(:put).with(@process_uri, @process_xml).and_yield(res)
       Dor::WorkflowService.update_workflow_status(@druid, "etdSubmitWF", "reader-approval", "completed").should be_true
     end
         
     it "should return false if the PUT to the DOR workflow service throws an exception" do
       ex = Exception.new("exception thrown")
-      Dor::Connection.should_receive(:put).and_raise(ex)
+      LyberCore::Connection.should_receive(:put).and_raise(ex)
       @mock_logger.should_receive(:error).with(/exception thrown/)
       Dor::WorkflowService.update_workflow_status(@druid, "etdSubmitWF", "reader-approval", "completed").should be_false
     end

@@ -12,7 +12,7 @@ module Dor
       end
       
       #Post with no body
-      id = Dor::Connection.post("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil, 
+      id = LyberCore::Connection.post("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil, 
                                 :auth_user => SURI_USER, :auth_password => SURI_PASSWORD)
 
       return "#{ID_NAMESPACE}:#{id.strip}"
