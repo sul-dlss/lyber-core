@@ -1,15 +1,14 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'net/https'
 
 require 'action_controller'
 require 'action_controller/test_process'
 
-
 describe LyberCore::Connection do
   before(:all) do
     with_warnings_suppressed do 
-      CERT_FILE = File.dirname(__FILE__) + '/certs/dummy.crt'
-      KEY_FILE = File.dirname(__FILE__) + '/certs/dummy.key'
+      CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
+      KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
       KEY_PASS = 'dummy'
     end
   end

@@ -4,6 +4,7 @@ require 'net/https'
 require 'action_controller'
 require 'action_controller/test_process'
 
+
 describe Dor::SuriService do
   
   before(:all) do
