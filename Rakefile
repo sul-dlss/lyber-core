@@ -5,11 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "lyber-core"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = "Core services used by the SULAIR Digital Library"
+    gem.description = "Contains classes to make http connections with a client-cert, use Jhove, and call Suri\n" +
+                      "Also contains core classes to build robots"
     gem.email = "wmene@stanford.edu"
     gem.homepage = "http://github.com/wmene/lyber-core"
     gem.authors = ["Willy Mene"]
+    
+    gem.add_dependency 'active-fedora', '>= 1.0.7'
     gem.add_development_dependency "rspec", ">= 1.2.9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
