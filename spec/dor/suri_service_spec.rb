@@ -9,11 +9,11 @@ describe Dor::SuriService do
   
   before(:all) do
     with_warnings_suppressed do
-      MINT_SURI_IDS = true
-      SURI_URL = 'http://some.suri.host:8080'
-      ID_NAMESPACE = 'druid'
-      SURI_USER = 'suriuser'
-      SURI_PASSWORD = 'suripword'
+      Dor::MINT_SURI_IDS = true
+      Dor::SURI_URL = 'http://some.suri.host:8080'
+      Dor::ID_NAMESPACE = 'druid'
+      Dor::SURI_USER = 'suriuser'
+      Dor::SURI_PASSWORD = 'suripword'
     end
   end
   
@@ -27,17 +27,17 @@ describe Dor::SuriService do
   describe "an enabled SuriService" do
         
     it "should mint a druid using LyberCore::Connection" do
-      LyberCore::Connection.should_receive(:post).with("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil,
-                                                {:auth_user => SURI_USER, :auth_password => SURI_PASSWORD}).and_return('somestring')
+      LyberCore::Connection.should_receive(:post).with("#{Dor::SURI_URL}/suri2/namespaces/#{Dor::ID_NAMESPACE}/identifiers", nil,
+                                                {:auth_user => Dor::SURI_USER, :auth_password => Dor::SURI_PASSWORD}).and_return('somestring')
                                                 
-      Dor::SuriService.mint_id.should == "#{ID_NAMESPACE}:somestring"                                         
+      Dor::SuriService.mint_id.should == "#{Dor::ID_NAMESPACE}:somestring"                                         
     end
   
     it "should throw log an error and rethrow the exception if Connect fails." do
       e = "thrown exception"
       ex = Exception.new(e)
-      LyberCore::Connection.should_receive(:post).with("#{SURI_URL}/suri2/namespaces/#{ID_NAMESPACE}/identifiers", nil,
-                                                {:auth_user => SURI_USER, :auth_password => SURI_PASSWORD}).and_raise(e)
+      LyberCore::Connection.should_receive(:post).with("#{Dor::SURI_URL}/suri2/namespaces/#{Dor::ID_NAMESPACE}/identifiers", nil,
+                                                {:auth_user => Dor::SURI_USER, :auth_password => Dor::SURI_PASSWORD}).and_raise(e)
                                                 
       Rails.stub_chain(:logger, :error).with("Unable to mint id from suri: #{e}")
       lambda{ Dor::SuriService.mint_id }.should raise_error(Exception, "thrown exception")
@@ -46,7 +46,7 @@ describe Dor::SuriService do
   end
   
   it "should use the Fedora->nextpid service if calls to SURI are disabled" do
-    with_warnings_suppressed{MINT_SURI_IDS = false}
+    with_warnings_suppressed{Dor::MINT_SURI_IDS = false}
     Fedora::Repository.stub_chain(:instance, :nextid).and_return('pid:123')
     
     Dor::SuriService.mint_id.should == 'pid:123'

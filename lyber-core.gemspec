@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{lyber-core}
-  s.version = "0.6.4"
+  s.version = "0.6.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-03-29}
+  s.date = %q{2010-03-31}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -24,6 +24,7 @@ Also contains core classes to build robots}
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "lib/dor/base.rb",
      "lib/dor/suri_service.rb",
      "lib/dor/workflow_service.rb",
      "lib/lyber_core.rb",
@@ -31,6 +32,7 @@ Also contains core classes to build robots}
      "lyber-core.gemspec",
      "spec/certs/dummy.crt",
      "spec/certs/dummy.key",
+     "spec/dor/base_spec.rb",
      "spec/dor/suri_service_spec.rb",
      "spec/dor/workflow_servce_spec.rb",
      "spec/lyber_core/connection_spec.rb",

@@ -11,10 +11,10 @@ module Dor
         
   # returns true on success, false otherwise
   def WorkflowService.create_workflow(druid)
-    return true unless(DOR_CREATE_WORKFLOW)
+    return true unless(Dor::DOR_CREATE_WORKFLOW)
     
     full_uri = ''
-    full_uri << DOR_URI << '/objects/' << druid << '/workflows/etdSubmitWF'
+    full_uri << Dor::DOR_URI << '/objects/' << druid << '/workflows/etdSubmitWF'
     
     # On success, an empty body is sent   
     LyberCore::Connection.put(full_uri, XML){|response| true}
@@ -27,10 +27,10 @@ module Dor
   # PUT "objects/pid:123/workflows/GoogleScannedWF/convert"
   # <process name=\"convert\" status=\"waiting\" datetime=\"2008.11.15 13:30:00 PST\"/>"
   def WorkflowService.update_workflow_status(druid, workflow, process, status)
-    return true unless(DOR_CREATE_WORKFLOW)
+    return true unless(Dor::DOR_CREATE_WORKFLOW)
     
     uri = ''
-    uri << DOR_URI << '/objects/' << druid << '/workflows/' << workflow << '/' << process
+    uri << Dor::DOR_URI << '/objects/' << druid << '/workflows/' << workflow << '/' << process
     xml = '<process name="'<< process << '" status="' << status << '"/>' 
     
     # On success, an empty body is sent 

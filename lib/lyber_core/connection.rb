@@ -8,8 +8,8 @@ module LyberCore
       https = Net::HTTP.new(url.host, url.port)
       if(url.scheme == 'https')
         https.use_ssl = true
-        https.cert = OpenSSL::X509::Certificate.new( File.read(CERT_FILE) )
-        https.key = OpenSSL::PKey::RSA.new( File.read(KEY_FILE), KEY_PASS )
+        https.cert = OpenSSL::X509::Certificate.new( File.read(LyberCore::CERT_FILE) )
+        https.key = OpenSSL::PKey::RSA.new( File.read(LyberCore::KEY_FILE), LyberCore::KEY_PASS )
         https.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
       https

@@ -5,8 +5,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Dor::WorkflowService do
   before(:all) do
     with_warnings_suppressed do
-      DOR_URI = 'https://dortest.stanford.edu/dor'
-      DOR_CREATE_WORKFLOW = true
+      Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
+      Dor::DOR_CREATE_WORKFLOW = true
       XML = <<-EOXML
       <workflow id="etdSubmitWF">
            <process name="register-object" status="completed" attempts="1" />
@@ -22,13 +22,13 @@ describe Dor::WorkflowService do
   
   after(:all) do
     with_warnings_suppressed do
-      DOR_CREATE_WORKFLOW = false
+      Dor::DOR_CREATE_WORKFLOW = false
     end
   end
   
   before(:each) do
     @druid = 'druid:123'
-    @wf_full_uri = DOR_URI + '/objects/' + @druid + '/workflows/etdSubmitWF'
+    @wf_full_uri = Dor::DOR_URI + '/objects/' + @druid + '/workflows/etdSubmitWF'
     @wf_xml = XML
     
     @mock_logger = mock('logger').as_null_object

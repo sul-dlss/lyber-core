@@ -5,19 +5,19 @@ require 'lyber_core'
 
 Constants that need to be defined with sample values:
 
-Dor::SuriService::MINT_SURI_IDS = true
-Dor::SuriService::SURI_URL = 'http://some.suri.host:8080'
-Dor::SuriService::ID_NAMESPACE = 'druid'
-Dor::SuriService::SURI_USER = 'suriuser'
-Dor::SuriService::SURI_PASSWORD = 'suripword'
+Dor::MINT_SURI_IDS = true
+Dor::SURI_URL = 'http://some.suri.host:8080'
+Dor::ID_NAMESPACE = 'druid'
+Dor::SURI_USER = 'suriuser'
+Dor::SURI_PASSWORD = 'suripword'
 
-Dor::WorkflowService::DOR_URI = 'https://dortest.stanford.edu/dor'
-Dor::WorkflowService::::DOR_CREATE_WORKFLOW = true
+Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
+Dor::DOR_CREATE_WORKFLOW = true
 Dor::WorkflowService::XML
 
-LyberCore::Connection::CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
-LyberCore::Connection::KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
-LyberCore::Connection::KEY_PASS = 'dummy'
+LyberCore::CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
+LyberCore::KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
+LyberCore::KEY_PASS = 'dummy'
 
 == Copyright
 
