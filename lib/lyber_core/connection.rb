@@ -61,7 +61,7 @@ module LyberCore
   
   # Convenience method for performing an HTTP GET using Connection.connect
   def Connection.get(full_url, options, &b)
-    Connection.connect(full_url, :get, options, &b)
+    Connection.connect(full_url, :get, nil, options, &b)
   end
 
   # Convenience method for performing an HTTP POST using Connection.connect

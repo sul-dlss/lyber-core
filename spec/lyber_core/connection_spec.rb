@@ -79,6 +79,19 @@ describe LyberCore::Connection do
     b.should == 'returned text'
   end
   
+  it "should create an HTTP get with user auth and no body" do
+    empty_request = ActionController::TestRequest.new
+    empty_request.should_receive(:content_type=).with("application/xml")
+    empty_request.should_not_receive(:body=)
+    empty_request.should_receive(:basic_auth).with('user', 'password')
+    Net::HTTP::Get.should_receive(:new).and_return(empty_request)
+    Net::HTTP.should_receive(:new).and_return(@http)
+    @http.should_receive(:start).and_return(@response)
+
+    b = LyberCore::Connection.get('http://some.edu/some/path', :auth_user => 'user', :auth_password => 'password') {|res| res.body}
+    b.should == 'returned text'
+  end
+  
   describe "#get_https_connection" do
     it "should setup an SSL connection if the URL uses https" do
       Net::HTTP.should_receive(:new).and_return(@http)
