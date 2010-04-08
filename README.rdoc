@@ -1,4 +1,4 @@
-= lyber-core
+= lyber_core
 
 Require the following
 require 'lyber_core'

@@ -10,13 +10,13 @@ describe Dor::Base do
   
   it "should be of Type ActiveFedora::Base" do
     with_warnings_suppressed do
-      MINT_SURI_IDS = false
-      SOLR_URL = "http://solr.edu"
-      FEDORA_URL = "http://fedora.edu"
+      Dor::MINT_SURI_IDS = false
+      Dor::SOLR_URL = "http://solr.edu"
+      Dor::FEDORA_URL = "http://fedora.edu"
     end
     Rails.stub_chain(:logger, :error)
-    ActiveFedora::SolrService.register(SOLR_URL)
-    Fedora::Repository.register(FEDORA_URL)
+    ActiveFedora::SolrService.register(Dor::SOLR_URL)
+    Fedora::Repository.register(Dor::FEDORA_URL)
     Fedora::Repository.stub!(:instance).and_return(stub('frepo').as_null_object)
     
     b = Dor::Base.new
