@@ -1,9 +1,10 @@
 module LyberCore
   
   class Robot
-    attr_accessor :opts
+    attr_accessor :workflow
     attr_accessor :workspace
-    
+    attr_accessor :opts
+
     # available options
     # :collection_name
     # :workspace
@@ -17,11 +18,11 @@ module LyberCore
     end
     
     def start()
-      workflow = LyberCore::Workflow.new(@workflow_name, @collection_name)
+      @workflow = LyberCore::Workflow.new(@workflow_name, @collection_name)
       if(@opts[:workspace] == true)
         @workspace = LyberCore::Workspace.new(@workflow_name, @collection_name)
       end
-      queue = workflow.queue(@workflow_step)
+      queue = @workflow.queue(@workflow_step)
       if(@opts.has_key?(:druid_ref))
         queue.enqueue_druids(get_druid_list(@opts[:druid_ref]))
       else
@@ -32,6 +33,7 @@ module LyberCore
 
     def get_druid_list(druid_ref)
       druid_list = Array.new
+      # identifier list is in a file
        if (File.exist?(druid_ref))
         File.open(druid_ref) do |file|
           file.each_line do |line|
@@ -41,11 +43,13 @@ module LyberCore
             end
           end
         end
+      # identifier was specified on the command line
       else
           druid_list << druid_ref
       end
       return druid_list
     end
+
     def process_queue(queue)
       while work_item = queue.next_item do
         begin

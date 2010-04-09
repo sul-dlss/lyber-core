@@ -4,11 +4,7 @@ module LyberCore
 
     attr_reader :workflow_name
     attr_reader :collection_name
-
     attr_reader :workspace_base
-    attr_reader :workspace_original
-    attr_reader :workspace_content
-    attr_reader :workspace_metadata
 
     def initialize(workflow_name, collection_name=nil)
       @workflow_name = workflow_name
@@ -26,14 +22,28 @@ module LyberCore
         @workspace_base = File.join(workspace_home, @workflow_name)
       end
       FileUtils.mkdir_p(@workspace_base) unless File.directory?(@workspace_base)
-
-      @workspace_original = File.join(@workspace_base, 'original')
-      @workspace_content = File.join(@workspace_base, 'content')
-      @workspace_metadata = File.join(@workspace_base, 'metadata')
-      Dir.mkdir(@workspace_original) unless File.directory?(@workspace_original)
-      Dir.mkdir(@workspace_content) unless File.directory?(@workspace_content)
-      Dir.mkdir(@workspace_metadata) unless File.directory?(@workspace_metadata)
     end
+
+
+    def object_dir(dir_type, druid)
+      normalized_druid = druid.sub(/druid:/, '')
+      dir_name = File.join(@workspace_base, dir_type, normalized_druid)
+      FileUtils.mkdir_p(dir_name) unless File.directory?(dir_name)
+      return dir_name
+    end
+
+    def original_dir(druid)
+      return object_dir('original', druid)
+    end
+
+    def content_dir(druid)
+      return object_dir('content', druid)
+    end
+
+    def metadata_dir(druid)
+      return object_dir('metadata', druid)
+    end
+
   end
 
 end
