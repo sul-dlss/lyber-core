@@ -4,7 +4,6 @@ require 'net/https'
 require 'uri'
 require 'cgi'
 require 'rexml/document'
-require 'dor_env'
 
 include REXML
 
