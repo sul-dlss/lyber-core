@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'dor_env'
 
 module LyberCore
   class Workflow
