@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'dor_service'
 require 'yaml'
 

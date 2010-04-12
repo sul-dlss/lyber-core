@@ -1,4 +1,3 @@
-require 'rubygems'
 
 module LyberCore
   class Workflow
