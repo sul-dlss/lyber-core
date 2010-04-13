@@ -31,11 +31,23 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
   spec.libs << 'lib' << 'spec'
   spec.pattern = 'spec/**/*_spec.rb'
   spec.rcov = true
+  spec.rcov_opts = %w{--exclude spec\/*,gems\/*,ruby\/* --aggregate coverage.data}
+end
+
+task :clean do
+  puts 'Cleaning old coverage.data'
+  FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
+end
+
+require 'spec/rake/verify_rcov'
+RCov::VerifyTask.new(:verify_rcov => ['clean', 'rcov']) do |t|
+  t.threshold = 48.3
+  t.index_html = 'coverage/index.html'
 end
 
 task :spec => :check_dependencies
 
-task :default => :spec
+task :default => :verify_rcov
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
@@ -46,3 +58,5 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+
