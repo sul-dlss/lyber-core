@@ -10,14 +10,14 @@ module Dor
   module WorkflowService
         
   # returns true on success, false otherwise
-  def WorkflowService.create_workflow(druid)
+  def WorkflowService.create_workflow(druid, wf_xml = XML)
     return true unless(Dor::DOR_CREATE_WORKFLOW)
     
     full_uri = ''
     full_uri << Dor::DOR_URI << '/objects/' << druid << '/workflows/etdSubmitWF'
     
     # On success, an empty body is sent   
-    LyberCore::Connection.put(full_uri, XML){|response| true}
+    LyberCore::Connection.put(full_uri, wf_xml){|response| true}
   rescue Exception => e
     Rails.logger.error("Unable to create workflow\n" << e.to_s)
     return false
