@@ -7,7 +7,7 @@ describe Dor::WorkflowService do
     with_warnings_suppressed do
       Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
       Dor::DOR_CREATE_WORKFLOW = true
-      XML = <<-EOXML
+      WF_XML = <<-EOXML
       <workflow id="etdSubmitWF">
            <process name="register-object" status="completed" attempts="1" />
            <process name="submit" status="waiting" />
@@ -29,7 +29,7 @@ describe Dor::WorkflowService do
   before(:each) do
     @druid = 'druid:123'
     @wf_full_uri = Dor::DOR_URI + '/objects/' + @druid + '/workflows/etdSubmitWF'
-    @wf_xml = XML
+    @wf_xml = WF_XML
     
     @mock_logger = mock('logger').as_null_object
     Rails.stub!(:logger).and_return(@mock_logger)
@@ -40,14 +40,14 @@ describe Dor::WorkflowService do
       res = Net::HTTPSuccess.new("", "", "")
       
       LyberCore::Connection.should_receive(:put).with(@wf_full_uri, @wf_xml).and_yield(res)
-      Dor::WorkflowService.create_workflow(@druid).should be_true
+      Dor::WorkflowService.create_workflow(@druid, 'etdSubmitWF').should be_true
     end
     
     it "should log an error and return false if the PUT to the DOR workflow service throws an exception" do
       ex = Exception.new("exception thrown")
       LyberCore::Connection.should_receive(:put).and_raise(ex)
       @mock_logger.should_receive(:error).with(/exception thrown/)
-      Dor::WorkflowService.create_workflow(@druid).should be_false
+      Dor::WorkflowService.create_workflow(@druid, 'etdSubmitWF').should be_false
     end
     
     
@@ -56,7 +56,7 @@ describe Dor::WorkflowService do
   describe "#update_workflow_status" do
     before(:each) do
       @process_uri = '' << @wf_full_uri << '/reader-approval'
-      @process_xml = '<process name="reader-approval" status="completed"/>'
+      @process_xml = '<process name="reader-approval" status="completed" elapsed="0" />'
       
     end
     

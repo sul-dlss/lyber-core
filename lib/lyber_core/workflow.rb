@@ -20,7 +20,7 @@ module LyberCore
       end
 
       @workflow_config_dir = File.join(config_home, @workflow_name )
-      @collection_config_dir = File.join(@workflow_config_dir, @collection_name )
+      @collection_config_dir = File.join(@workflow_config_dir, @collection_name ) if(@collection_name)
       workflow_config_file = File.join(@workflow_config_dir, 'workflow-config.yaml')
       if (File.exist?(workflow_config_file))
         @workflow_config = YAML.load_file(workflow_config_file)

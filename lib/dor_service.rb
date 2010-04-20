@@ -234,7 +234,7 @@ class DorService
       res = DorService.get_https_connection(url).start {|http| http.request(req) }
       case res
         when Net::HTTPSuccess
-          puts "googleScannedBookWF process updated for " + druid
+          puts "#{workflow} process updated for " + druid
         else
           $stderr.print res.body
           raise res.error!
