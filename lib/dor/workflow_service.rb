@@ -3,7 +3,7 @@
 module Dor
   module WorkflowService
         
-  # returns true on success, false otherwise
+  # returns true on success.  Caller must handle any exceptions
   def WorkflowService.create_workflow(druid, workflow_name, wf_xml = WF_XML)
     return true unless(Dor::DOR_CREATE_WORKFLOW)
     
@@ -12,9 +12,6 @@ module Dor
     
     # On success, an empty body is sent   
     LyberCore::Connection.put(full_uri, wf_xml){|response| true}
-  rescue Exception => e
-    Rails.logger.error("Unable to create workflow\n" << e.to_s)
-    return false
   end
   
   # returns true on success, false otherwise
