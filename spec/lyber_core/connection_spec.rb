@@ -92,6 +92,12 @@ describe LyberCore::Connection do
     b.should == 'returned text'
   end
   
+  it "should handle an HTTP get without any options" do
+     LyberCore::Connection.should_receive(:connect).with('http://some.edu/some/path', :get, nil, {})
+
+     b = LyberCore::Connection.get('http://some.edu/some/path')
+   end
+  
   describe "#get_https_connection" do
     it "should setup an SSL connection if the URL uses https" do
       Net::HTTP.should_receive(:new).and_return(@http)
