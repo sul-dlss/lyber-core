@@ -29,9 +29,6 @@ module Dor
     
     # On success, an empty body is sent 
     LyberCore::Connection.put(uri, process_xml) {|response| true}
-  rescue Exception => e
-    Rails.logger.error("Unable to update workflow\n" << e.to_s)
-    return false
   end
   
     

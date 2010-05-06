@@ -46,8 +46,8 @@ describe Dor::WorkflowService do
     it "should log an error and return false if the PUT to the DOR workflow service throws an exception" do
       ex = Exception.new("exception thrown")
       LyberCore::Connection.should_receive(:put).and_raise(ex)
-      @mock_logger.should_receive(:error).with(/exception thrown/)
-      Dor::WorkflowService.create_workflow(@druid, 'etdSubmitWF').should be_false
+
+      lambda{ Dor::WorkflowService.create_workflow(@druid, 'etdSubmitWF') }.should raise_error(Exception, "exception thrown")
     end
     
     
@@ -70,8 +70,7 @@ describe Dor::WorkflowService do
     it "should return false if the PUT to the DOR workflow service throws an exception" do
       ex = Exception.new("exception thrown")
       LyberCore::Connection.should_receive(:put).and_raise(ex)
-      @mock_logger.should_receive(:error).with(/exception thrown/)
-      Dor::WorkflowService.update_workflow_status(@druid, "etdSubmitWF", "reader-approval", "completed").should be_false
+      lambda{ Dor::WorkflowService.update_workflow_status(@druid, "etdSubmitWF", "reader-approval", "completed")}.should raise_error(Exception, "exception thrown")
     end
   end
 end
