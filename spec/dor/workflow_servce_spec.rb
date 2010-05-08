@@ -5,8 +5,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Dor::WorkflowService do
   before(:all) do
     with_warnings_suppressed do
-      Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
-      Dor::DOR_CREATE_WORKFLOW = true
+      Dor::WF_URI = 'https://dortest.stanford.edu/workflow'
+      Dor::CREATE_WORKFLOW = true
       WF_XML = <<-EOXML
       <workflow id="etdSubmitWF">
            <process name="register-object" status="completed" attempts="1" />
@@ -22,13 +22,14 @@ describe Dor::WorkflowService do
   
   after(:all) do
     with_warnings_suppressed do
-      Dor::DOR_CREATE_WORKFLOW = false
+      Dor::CREATE_WORKFLOW = false
     end
   end
   
   before(:each) do
+    @repo = 'dor'
     @druid = 'druid:123'
-    @wf_full_uri = Dor::DOR_URI + '/objects/' + @druid + '/workflows/etdSubmitWF'
+    @wf_full_uri = Dor::WF_URI + '/' + @repo + '/objects/' + @druid + '/workflows/etdSubmitWF'
     @wf_xml = WF_XML
     
     @mock_logger = mock('logger').as_null_object
@@ -40,14 +41,14 @@ describe Dor::WorkflowService do
       res = Net::HTTPSuccess.new("", "", "")
       
       LyberCore::Connection.should_receive(:put).with(@wf_full_uri, @wf_xml).and_yield(res)
-      Dor::WorkflowService.create_workflow(@druid, 'etdSubmitWF').should be_true
+      Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF')
     end
     
     it "should log an error and return false if the PUT to the DOR workflow service throws an exception" do
       ex = Exception.new("exception thrown")
       LyberCore::Connection.should_receive(:put).and_raise(ex)
 
-      lambda{ Dor::WorkflowService.create_workflow(@druid, 'etdSubmitWF') }.should raise_error(Exception, "exception thrown")
+      lambda{ Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF') }.should raise_error(Exception, "exception thrown")
     end
     
     
@@ -64,13 +65,13 @@ describe Dor::WorkflowService do
       res = Net::HTTPSuccess.new("", "", "")
       
       LyberCore::Connection.should_receive(:put).with(@process_uri, @process_xml).and_yield(res)
-      Dor::WorkflowService.update_workflow_status(@druid, "etdSubmitWF", "reader-approval", "completed").should be_true
+      Dor::WorkflowService.update_workflow_status(@repo, @druid, "etdSubmitWF", "reader-approval", "completed")
     end
         
     it "should return false if the PUT to the DOR workflow service throws an exception" do
       ex = Exception.new("exception thrown")
       LyberCore::Connection.should_receive(:put).and_raise(ex)
-      lambda{ Dor::WorkflowService.update_workflow_status(@druid, "etdSubmitWF", "reader-approval", "completed")}.should raise_error(Exception, "exception thrown")
+      lambda{ Dor::WorkflowService.update_workflow_status(@repo, @druid, "etdSubmitWF", "reader-approval", "completed")}.should raise_error(Exception, "exception thrown")
     end
   end
 end

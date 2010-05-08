@@ -12,7 +12,8 @@ Dor::SURI_USER = 'suriuser'
 Dor::SURI_PASSWORD = 'suripword'
 
 Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
-Dor::DOR_CREATE_WORKFLOW = true
+Dor::WF_URI = 'https://dortest.stanford.edu/dor'
+Dor::CREATE_WORKFLOW = true
 Dor::WorkflowService::XML
 
 LyberCore::CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
