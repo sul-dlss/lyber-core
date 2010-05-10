@@ -223,7 +223,7 @@ class DorService
   #TODO increment attempts
   def DorService.updateWorkflowStatus(repository, druid, workflow, process, status, elapsed = 0, lifecycle = nil)
     begin
-      url = URI.parse(WORKFLOW_URI + '/repository/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
+      url = URI.parse(WORKFLOW_URI + '/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
       req = Net::HTTP::Put.new(url.path)
       process_xml = '<process name="'+ process + '" status="' + status + '" ' 
       process_xml << 'elapsed="' + elapsed.to_s + '" '
@@ -310,7 +310,7 @@ class DorService
   
   def DorService.update_workflow_error_status(repository, druid, workflow, process, error_msg, error_txt = nil)
     begin
-      url = URI.parse(WORKFLOW_URI + '/repository/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
+      url = URI.parse(WORKFLOW_URI + '/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
       req = Net::HTTP::Put.new(url.path)
       req.body = '<process name="'+ process + '" status="error" errorMessage="' + error_msg + '" ' 
       req.body += 'errorText="' + error_txt + '" ' if(error_txt)
