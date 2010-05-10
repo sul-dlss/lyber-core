@@ -221,9 +221,9 @@ class DorService
   #PUT "objects/pid:123/workflows/GoogleScannedWF/convert"
   #<process name=\"convert\" status=\"waiting\" elapsed="0.11" lifecycle="released" "/>"
   #TODO increment attempts
-  def DorService.updateWorkflowStatus(druid, workflow, process, status, elapsed = 0, lifecycle = nil)
+  def DorService.updateWorkflowStatus(repository, druid, workflow, process, status, elapsed = 0, lifecycle = nil)
     begin
-      url = URI.parse(DOR_URI + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
+      url = URI.parse(DOR_URI + '/repository/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
       req = Net::HTTP::Put.new(url.path)
       process_xml = '<process name="'+ process + '" status="' + status + '" ' 
       process_xml << 'elapsed="' + elapsed.to_s + '" '
@@ -253,9 +253,9 @@ class DorService
   #     <object druid="dr:abc" url="http://localhost:9999/jersey-spring/objects/dr:abc%5c" />
   #   </objects>
  
-  def DorService.get_objects_for_workstep(workflow, completed, waiting)
+  def DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
     begin
-      url = URI.parse(DOR_URI + '/workflow_queue?workflow=' + workflow + '&completed=' + completed + '&waiting=' + waiting)
+      url = URI.parse(DOR_URI + '/workflow_queue?repository=' + repository + '&workflow=' + workflow + '&completed=' + completed + '&waiting=' + waiting)
       req = Net::HTTP::Get.new(url.request_uri)
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res
@@ -308,9 +308,9 @@ class DorService
     return (badcount==0)
   end
   
-  def DorService.update_workflow_error_status(druid, workflow, process, error_msg, error_txt = nil)
+  def DorService.update_workflow_error_status(repository, druid, workflow, process, error_msg, error_txt = nil)
     begin
-      url = URI.parse(DOR_URI + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
+      url = URI.parse(DOR_URI + '/repository/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
       req = Net::HTTP::Put.new(url.path)
       req.body = '<process name="'+ process + '" status="error" errorMessage="' + error_msg + '" ' 
       req.body += 'errorText="' + error_txt + '" ' if(error_txt)

@@ -70,7 +70,7 @@ module LyberCore
       @elapsed_time = @end_time - @start_time
       puts "#{item_id} completed in #{@elapsed_time} seconds"
       if (@druid)
-        DorService.updateWorkflowStatus(@druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, 'completed', @elapsed_time )
+        DorService.updateWorkflowStatus(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, 'completed', @elapsed_time )
       end
     end
 
@@ -83,7 +83,7 @@ module LyberCore
       # By default puts will output an array with a newline between each item.
       puts e.backtrace
       if (@druid)
-        DorService.update_workflow_error_status(@druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, e.message)
+        DorService.update_workflow_error_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, e.message)
       end
     end
 

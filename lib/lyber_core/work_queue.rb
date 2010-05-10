@@ -71,7 +71,7 @@ module LyberCore
     # Obtain the set of druids to be processed using a database query
     # to obtain the repository objects that are awaiting this step
     def enqueue_workstep_waiting()
-      object_list_xml = DorService.get_objects_for_workstep(workflow.workflow_id, @prerequisite, @workflow_step)
+      object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
       @druids = DorService.get_druids_from_object_list(object_list_xml)
     end
 
