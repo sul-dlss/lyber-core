@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-04-26}
+  s.date = %q{2010-05-12}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -77,6 +77,7 @@ Also contains core classes to build robots}
   s.summary = %q{Core services used by the SULAIR Digital Library}
   s.test_files = [
     "spec/dor/base_spec.rb",
+     "spec/dor/real_workflow_spec.rb",
      "spec/dor/suri_service_spec.rb",
      "spec/dor/workflow_servce_spec.rb",
      "spec/lyber_core/connection_spec.rb",

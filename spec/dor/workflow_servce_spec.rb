@@ -51,6 +51,14 @@ describe Dor::WorkflowService do
       lambda{ Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF') }.should raise_error(Exception, "exception thrown")
     end
     
+    it "should pass workflow xml to the DOR workflow service and return the URL to the workflow" do
+      res = Net::HTTPSuccess.new("", "", "")
+      
+      LyberCore::Connection.should_receive(:put).with(@wf_full_uri, @wf_xml).and_yield(res)
+      xml = WF_XML
+      Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF', xml)
+    end
+    
     
   end
   

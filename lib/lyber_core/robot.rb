@@ -23,8 +23,8 @@ module LyberCore
         @workspace = LyberCore::Workspace.new(@workflow_name, @collection_name)
       end
       queue = @workflow.queue(@workflow_step)
-      if(@opts.has_key?(:druid_ref))
-        queue.enqueue_druids(get_druid_list(@opts[:druid_ref]))
+      if(ARGV.size > 0)
+        queue.enqueue_druids(get_druid_list(ARGV[0]))
       else
         queue.enqueue_workstep_waiting()
       end
