@@ -49,7 +49,7 @@ task :spec => :check_dependencies
 
 task :default => :verify_rcov
 
-require 'rake/rdoctask'
+require 'hanna/rdoctask'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
