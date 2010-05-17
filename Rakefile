@@ -15,6 +15,7 @@ begin
     gem.add_dependency 'active-fedora', '>= 1.0.7'
     gem.add_dependency 'systemu', '>= 1.2.0'
     gem.add_dependency "rspec", ">= 1.2.9"
+    gem.add_dependency "hanna", ">= 0.1.12"
     gem.add_dependency "roxml"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

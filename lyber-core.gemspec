@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-05-12}
+  s.date = %q{2010-05-17}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -46,6 +46,7 @@ Also contains core classes to build robots}
      "spec/dor/suri_service_spec.rb",
      "spec/dor/workflow_servce_spec.rb",
      "spec/lyber_core/connection_spec.rb",
+     "spec/lyber_core/file_transfer_spec.rb",
      "spec/lyber_core/robot_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
@@ -77,10 +78,10 @@ Also contains core classes to build robots}
   s.summary = %q{Core services used by the SULAIR Digital Library}
   s.test_files = [
     "spec/dor/base_spec.rb",
-     "spec/dor/real_workflow_spec.rb",
      "spec/dor/suri_service_spec.rb",
      "spec/dor/workflow_servce_spec.rb",
      "spec/lyber_core/connection_spec.rb",
+     "spec/lyber_core/file_transfer_spec.rb",
      "spec/lyber_core/robot_spec.rb",
      "spec/spec_helper.rb",
      "test/test_helper.rb",
@@ -93,14 +94,23 @@ Also contains core classes to build robots}
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<active-fedora>, [">= 1.0.7"])
-      s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_runtime_dependency(%q<systemu>, [">= 1.2.0"])
+      s.add_runtime_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_runtime_dependency(%q<hanna>, [">= 0.1.12"])
+      s.add_runtime_dependency(%q<roxml>, [">= 0"])
     else
       s.add_dependency(%q<active-fedora>, [">= 1.0.7"])
+      s.add_dependency(%q<systemu>, [">= 1.2.0"])
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_dependency(%q<hanna>, [">= 0.1.12"])
+      s.add_dependency(%q<roxml>, [">= 0"])
     end
   else
     s.add_dependency(%q<active-fedora>, [">= 1.0.7"])
+    s.add_dependency(%q<systemu>, [">= 1.2.0"])
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
+    s.add_dependency(%q<hanna>, [">= 0.1.12"])
+    s.add_dependency(%q<roxml>, [">= 0"])
   end
 end
 
