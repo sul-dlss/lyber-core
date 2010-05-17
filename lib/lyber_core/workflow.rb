@@ -14,11 +14,15 @@ module LyberCore
       @collection_name = collection_name
 
       # can override the default location of workflow config files
-      # by setting WORKFLOW_CONFIG_HOME environmental variable        
-      if not (config_home = ENV['WORKFLOW_CONFIG_HOME'] )
-        config_home = File.join(File.dirname(__FILE__), "..", "..", "config")
+      # by setting WORKFLOW_CONFIG_HOME environmental variable
+      if not (ROBOT_ROOT)        
+        if not (config_home = ENV['WORKFLOW_CONFIG_HOME'] )
+          config_home = File.join(File.dirname(__FILE__), "..", "..", "config")
+        end
+      else
+        config_home = File.join(ROBOT_ROOT, "config", "workflows")
       end
-
+        
       @workflow_config_dir = File.join(config_home, @workflow_name )
       @collection_config_dir = File.join(@workflow_config_dir, @collection_name ) if(@collection_name)
       workflow_config_file = File.join(@workflow_config_dir, 'workflow-config.yaml')

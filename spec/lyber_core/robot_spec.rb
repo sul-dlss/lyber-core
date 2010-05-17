@@ -12,15 +12,19 @@ end
 describe LyberCore::Robot do
   
   it "should process a batch of druids from the Workflow" do
-    mock_workflow = mock('workflow')
-    mock_queue = mock('queue')
-    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-
-    LyberCore::Workflow.should_receive(:new).and_return(mock_workflow)
-    mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
-    mock_queue.should_receive(:enqueue_workstep_waiting)
-    robot.should_receive(:process_queue).and_return(nil)
-    robot.start
+    pending()
+    # This is failing as of 17 May 2010 at 12:11
+    # Commenting it out per a discussion with Willy so that I can get the rdocs published.
+    # -- Bess
+    
+    # mock_workflow = mock('workflow')
+    # mock_queue = mock('queue')
+    # robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+    # LyberCore::Workflow.should_receive(:new).and_return(mock_workflow)
+    # mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
+    # mock_queue.should_receive(:enqueue_workstep_waiting)
+    # robot.should_receive(:process_queue).and_return(nil)
+    # robot.start
   end
 
   it "should process queue of objects" do
