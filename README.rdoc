@@ -5,16 +5,19 @@ require 'lyber_core'
 
 Constants that need to be defined with sample values:
 
+If using WorkflowService:
+Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
+Dor::WF_URI = 'https://dortest.stanford.edu/dor'
+Dor::CREATE_WORKFLOW = true
+
+If using SuriService:
 Dor::MINT_SURI_IDS = true
 Dor::SURI_URL = 'http://some.suri.host:8080'
 Dor::ID_NAMESPACE = 'druid'
 Dor::SURI_USER = 'suriuser'
 Dor::SURI_PASSWORD = 'suripword'
 
-Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
-Dor::WF_URI = 'https://dortest.stanford.edu/dor'
-Dor::CREATE_WORKFLOW = true
-
+If connecting to https servers:
 LyberCore::CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
 LyberCore::KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
 LyberCore::KEY_PASS = 'dummy'
