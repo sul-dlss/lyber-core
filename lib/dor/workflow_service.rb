@@ -4,7 +4,7 @@ module Dor
   module WorkflowService
         
   # returns true on success.  Caller must handle any exceptions
-  def WorkflowService.create_workflow(repo, druid, workflow_name, wf_xml = WF_XML)
+  def WorkflowService.create_workflow(repo, druid, workflow_name, wf_xml)
     return true unless(Dor::CREATE_WORKFLOW)
     
     full_uri = ''
