@@ -6,8 +6,7 @@ require 'lyber_core'
 Constants that need to be defined with sample values:
 
 If using WorkflowService:
-  Dor::DOR_URI = 'https://dortest.stanford.edu/dor'
-  Dor::WF_URI = 'https://dortest.stanford.edu/dor'
+  Dor::WF_URI = 'http://lyberservices-dev.stanford.edu/workflow'
   Dor::CREATE_WORKFLOW = true
 
 If using SuriService:

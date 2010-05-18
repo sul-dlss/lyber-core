@@ -4,6 +4,7 @@ require 'active_fedora'
 module Dor
   class SuriService
     
+    # If Dor::MINT_SURI_IDS is set to ture, then this method
     # Returns ID_NAMESPACE:id_from_suri
     # Throws an exception if there were any problems
     def self.mint_id
