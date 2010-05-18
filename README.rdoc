@@ -1,7 +1,7 @@
 = lyber_core
 
-Require the following
-require 'lyber_core'
+Require the following:
+  require 'lyber_core'
 
 Constants that need to be defined with sample values:
 

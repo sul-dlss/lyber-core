@@ -1,15 +1,17 @@
 module LyberCore
   
+  
+  # ===== Usage
+  # User defined robots should derive from this class and override the #process_item method
   class Robot
     attr_accessor :workflow
     attr_accessor :workspace
     attr_accessor :opts
 
-    # available options
-    # :collection_name
-    # :workspace
-    # :druid_ref
-    
+    # ==== Available options
+    # - :collection_name - The collection this workflow should work with.  
+    #   Defined as a subdirectory within ROBOT_ROOT/config/workflows/your_workflow/your_collection
+    # - :workspace - Full path of where to find content for a particular workflow
     def initialize(workflow_name, workflow_step, opts = {})
       @workflow_name = workflow_name
       @workflow_step = workflow_step
@@ -63,6 +65,7 @@ module LyberCore
       queue.print_stats()
     end
     
+    # Override this method in your robot instance.  The method in this base class will throw an exception if it is not overriden.
     def process_item(work_item)
       #to be overridden by child classes
       raise 'You must implement this method in your subclass'
