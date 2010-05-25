@@ -17,10 +17,24 @@ module LyberCore
 
     # Returns body of the HTTP response, or passes the response to the block if it's passed in
     #
-    # The following options can be set:
-    # :auth_user and :auth_password for basic HTTP authentication.  Both most be set if using this.
-    # :content_type if not passed in as an option, then it is set to 'application/xml'
+    # == Required Parameters
+    # - <b>full_url</b> - A string containing the full url to the resource you're trying to connect to
+    # - <b>method</b> - Recognizes the following symbols which correspond to an HTTP verb.  The convenience methods take care of this
+    #  :get for HTTP GET
+    #  :post for HTTP POST
+    #  :put for HTTP PUT
+    # - <b>body</b> The body of your request.  Can be nil if you don't have one.
     #
+    # == Options
+    # - <b>:auth_user</b> for basic HTTP authentication.  :auth_user and :auth_password must both be set if using authentication
+    # - <b>:auth_password</b> for basic HTTP authentication. :auth_user and :auth_password must both be set if using authentication
+    # - <b>:content_type</b> if not passed in as an option, then it is set to 'application/xml'
+    #
+    # == Block
+    # By default, this method returns the body of the response, Net::HTTPResponse.body .  If you want to work with the Net::HTTPResponse
+    # object, you can pass in a block, and the response will be passed to it.
+    # 
+    # == Exceptions
     # Any exceptions thrown while trying to connect should be handled by the caller
     def Connection.connect(full_url, method, body, options = {}, &block)
       url = URI.parse(full_url)

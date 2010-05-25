@@ -11,11 +11,11 @@ module Dor
   # Creates a workflow for a given object in the repository.      
   # Returns true on success.  Caller must handle any exceptions
   #
-  # ==== Parameters
-  # - repo: The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
-  # - druid: The id of the object
-  # - workflow_name: The name of the workflow you want to create
-  # - wf_xml: The xml that represents the workflow
+  # == Parameters
+  # - <b>repo</b> - The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
+  # - <b>druid</b> - The id of the object
+  # - <b>workflow_name</b> - The name of the workflow you want to create
+  # - <b>wf_xml</b> - The xml that represents the workflow
   # 
   def WorkflowService.create_workflow(repo, druid, workflow_name, wf_xml)
     return true unless(Dor::CREATE_WORKFLOW)
@@ -30,17 +30,17 @@ module Dor
   # Updates the status of one step in a workflow.      
   # Returns true on success.  Caller must handle any exceptions
   #
-  # ==== Required Parameters
-  # - repo: The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
-  # - druid: The id of the object
-  # - workflow_name: The name of the workflow 
-  # - status: The status that you want to set.  Typical statuses are 'waiting', 'completed', 'error', but could be any string
+  # == Required Parameters
+  # - <b>repo</b> - The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
+  # - <b>druid</b> - The id of the object
+  # - <b>workflow_name</b> - The name of the workflow 
+  # - <b>status</b> - The status that you want to set.  Typical statuses are 'waiting', 'completed', 'error', but could be any string
   # 
-  # ==== Optional Parameters
-  # - elapsed: The number of seconds it took to complete this step. Can have a decimal.  Is set to 0 if not passed in.
-  # - lifecycle: Bookeeping label for this particular workflow step.  Examples are: 'registered', 'shelved'
+  # == Optional Parameters
+  # - <b>elapsed</b> - The number of seconds it took to complete this step. Can have a decimal.  Is set to 0 if not passed in.
+  # - <b>lifecycle</b> - Bookeeping label for this particular workflow step.  Examples are: 'registered', 'shelved'
   #
-  # ==== Http Call
+  # == Http Call
   # The method does an HTTP PUT to the URL defined in Dor::WF_URI.  As an example:
   #   PUT "/dor/objects/pid:123/workflows/GoogleScannedWF/convert"
   #   <process name=\"convert\" status=\"completed\" />"
