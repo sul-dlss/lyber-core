@@ -11,7 +11,7 @@ module LyberCore
     # The primary id for the object being processed
     attr_accessor :druid
     # An object used to hold unmarshalled XML from the identityMetadata datastream
-    attr_accessor :identityMetadata
+    attr_accessor :identity_metadata
     # Timings for this workitem's processing
     attr_reader :start_time
     attr_reader :end_time
@@ -27,6 +27,15 @@ module LyberCore
     def identity_metadata=(identity_metadata)
       @identity_metadata = identity_metadata
     end
+    
+    #save the IdentityMetadata object to identityMetadata datastream
+    def identity_metadata_save
+      unless DorService.get_datastream(@druid, 'identityMetadata')
+        DorService.add_datastream(@druid, 'identityMetadata', 'identityMetadata', self.identity_metadata.to_xml.to_xml)
+      else
+        DorService.update_datastream(@druid, 'identityMetadata', self.identity_metadata.to_xml.to_xml, content_type='application/xml', versionable = false)
+      end #unless
+    end #identity_metadata_save
 
     # Return the IdentityMetadata object bound to identityMetadata datastream XML
     def identity_metadata

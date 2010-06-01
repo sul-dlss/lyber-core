@@ -43,15 +43,15 @@ class IdentityMetadata
   include ROXML
 
   xml_name :identityMetadata
-  xml_reader :objectId
-  xml_reader :objectType
-  xml_reader :objectLabel
-  xml_reader :objectCreator
+  xml_accessor :objectId
+  xml_accessor :objectType
+  xml_accessor :objectLabel
+  xml_accessor :objectCreator
   xml_accessor :citationTitle
   xml_accessor :citationCreator
   xml_accessor :sourceId, :as => SourceId
   xml_accessor :otherIds, :as => [OtherId]
-  xml_reader :agreementId
+  xml_accessor :agreementId
   xml_accessor :tags, :as => [Tag]
 
   # Add a new tag to the IdentityMetadata instance
