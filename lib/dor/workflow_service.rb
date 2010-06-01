@@ -8,7 +8,8 @@ module Dor
   # - Dor::WF_URI : The URI to the workflow service.  An example URI is 'http://lyberservices-dev.stanford.edu/workflow'
   module WorkflowService
   
-  # Creates a workflow for a given object in the repository.      
+  # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
+  # it will replace the old workflow with wf_xml passed to this method.     
   # Returns true on success.  Caller must handle any exceptions
   #
   # == Parameters
