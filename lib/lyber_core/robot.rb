@@ -22,23 +22,14 @@ module LyberCore
     def initialize(workflow_name, workflow_step, args = {})
       @workflow_name = workflow_name
       @workflow_step = workflow_step
-      @collection_name = args[:collection_name]
-      
-      puts ARGV.inspect
-      @argv = ARGV
-      
+      @collection_name = args[:collection_name]      
       @opts = args
       
-      
-      puts "args = #{args.inspect}"
-
       # Set defaults
       @options = OpenStruct.new
       @options.verbose = false
       @options.quiet = false
       self.parse_options
-      
-      puts "options = #{@options.inspect}"
     end
     
     def start()
@@ -71,18 +62,17 @@ module LyberCore
       end
       
       # identifier list is in a file
-      #  if (File.exist?(druid_ref))
-      #   File.open(druid_ref) do |file|
-      #     file.each_line do |line|
-      #       druid = line.strip
-      #       if (druid.length > 0)
-      #         druid_list << druid
-      #       end
-      #     end
-      #   end
-      # # identifier was specified on the command line
-      # else
-      # end
+       if (@options.file && File.exist?(@options.file))
+        File.open(@options.file) do |file|
+          file.each_line do |line|
+            druid = line.strip
+            if (druid.length > 0)
+              druid_list << druid
+            end
+          end
+        end
+      end
+      
       return druid_list
     end
 
@@ -111,52 +101,50 @@ module LyberCore
       def parse_options
         
         options = {}
-        OptionParser.new do |opts|
+
+        o = OptionParser.new do |opts|
           opts.banner = "Usage: example.rb [options]"
+          opts.separator ""
 
           opts.on("-d DRUID", "--druid DRUID", "Pass in a druid to process") do |d|
             @options.druid = d
           end
-        end.parse!
+          
+          opts.on("-f", "--file FILE", "Pass in a file of druids to process") do |f|
+            @options.file = f
+          end
+          
+        end
+        
+        # Parse the command line options and ignore anything not specified above
+        begin
+          o.parse!
+        rescue OptionParser::ParseError => e
+          puts e
+        end
         
       end
 
-      def output_options
-        puts "Options:\n"
-
-        @options.marshal_dump.each do |name, val|        
-          puts "  #{name} = #{val}"
-        end
-      end
-
-      def output_help
-        output_version
-        RDoc::usage() #exits app
-      end
-
-      def output_usage
-        RDoc::usage('usage') # gets usage from comments above
-      end
-
-      def output_version
-        puts "#{File.basename(__FILE__)} version #{VERSION}"
-      end
-
-      def process_command
-        # TO DO - do whatever this app does
-
-        #process_standard_input # [Optional]
-      end
-
-      def process_standard_input
-        input = @stdin.read      
-        # TO DO - process input
-
-        # [Optional]
-        # @stdin.each do |line| 
-        #  # TO DO - process each line
-        #end
-      end
+      # def output_options
+      #   puts "Options:\n"
+      # 
+      #   @options.marshal_dump.each do |name, val|        
+      #     puts "  #{name} = #{val}"
+      #   end
+      # end
+      # 
+      # def output_help
+      #   output_version
+      #   RDoc::usage() #exits app
+      # end
+      # 
+      # def output_usage
+      #   RDoc::usage('usage') # gets usage from comments above
+      # end
+      # 
+      # def output_version
+      #   puts "#{File.basename(__FILE__)} version #{VERSION}"
+      # end
   
   # ##################################
   # end of command line option parsing 

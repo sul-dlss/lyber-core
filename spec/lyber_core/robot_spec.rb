@@ -27,13 +27,22 @@ describe LyberCore::Robot do
     robot.get_druid_list[0].should eql("sdrtwo:blah")
   end
   
-  # it "can accept a file of druids for processing" do
-  #   mock_workflow = mock('workflow')
-  #   mock_queue = mock('queue')
-  #   ARGV << "--file=fakefile"
-  #   robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-  #   puts robot.get_druid_list
-  # end
+  it "can accept a file of druids for processing" do
+    mock_workflow = mock('workflow')
+    mock_queue = mock('queue')
+    ARGV << "--file=fakefile"
+    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+    robot.options.file.should eql("fakefile")
+  end
+  
+  # Cucumber passes "--format pretty" as an argument, which can make the robots fail unless
+  # we check for it. 
+  it "shouldn't fail when run by cucumber" do
+    mock_workflow = mock('workflow')
+    mock_queue = mock('queue')
+    ARGV << "--format pretty"
+    lambda { TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain') }.should_not raise_exception()
+  end
   
   it "should process a batch of druids from the Workflow" do    
     mock_workflow = mock('workflow')
