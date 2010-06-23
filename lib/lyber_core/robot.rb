@@ -6,6 +6,7 @@
 module LyberCore
   
   require 'optparse'
+  require 'ostruct'
 
   # ===== Usage
   # User defined robots should derive from this class and override the #process_item method
