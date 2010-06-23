@@ -52,9 +52,7 @@ module LyberCore
     def get_druid_list
       
       druid_list = Array.new
-      
-      # read in any druids in a file
-      
+        
       # append any druids passed explicitly
       if(@options.druid)
         druid_list << @options.druid
