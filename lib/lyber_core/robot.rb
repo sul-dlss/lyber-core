@@ -27,7 +27,7 @@ module LyberCore
       puts ARGV.inspect
       @argv = ARGV
       
-      @args = args
+      @opts = args
       
       
       puts "args = #{args.inspect}"
@@ -43,9 +43,9 @@ module LyberCore
     
     def start()
       @workflow = LyberCore::Workflow.new(@workflow_name, @collection_name)
-      # if(@opts[:workspace] == true)
-      #   @workspace = LyberCore::Workspace.new(@workflow_name, @collection_name)
-      # end
+      if(@opts[:workspace] == true)
+        @workspace = LyberCore::Workspace.new(@workflow_name, @collection_name)
+      end
       queue = @workflow.queue(@workflow_step)
       
       # If we have arguments, parse out the parts that indicate druids
@@ -59,22 +59,30 @@ module LyberCore
 
     # TODO: ignore flags that are passed in like "--format pretty or -f"
     # --pid PID:NUMBER or --file filename
-    def get_druid_list(druid_ref)
+    def get_druid_list
+      
       druid_list = Array.new
-      # identifier list is in a file
-       if (File.exist?(druid_ref))
-        File.open(druid_ref) do |file|
-          file.each_line do |line|
-            druid = line.strip
-            if (druid.length > 0)
-              druid_list << druid
-            end
-          end
-        end
-      # identifier was specified on the command line
-      else
-          druid_list << druid_ref
+      
+      # read in any druids in a file
+      
+      # append any druids passed explicitly
+      if(@options.druid)
+        druid_list << @options.druid
       end
+      
+      # identifier list is in a file
+      #  if (File.exist?(druid_ref))
+      #   File.open(druid_ref) do |file|
+      #     file.each_line do |line|
+      #       druid = line.strip
+      #       if (druid.length > 0)
+      #         druid_list << druid
+      #       end
+      #     end
+      #   end
+      # # identifier was specified on the command line
+      # else
+      # end
       return druid_list
     end
 
@@ -119,17 +127,6 @@ module LyberCore
         @options.marshal_dump.each do |name, val|        
           puts "  #{name} = #{val}"
         end
-      end
-
-      # True if required arguments were provided
-      def arguments_valid?
-        # TO DO - implement your real logic here
-        true if @arguments.length == 1 
-      end
-
-      # Setup the arguments
-      def process_arguments
-        
       end
 
       def output_help

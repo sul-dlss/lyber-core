@@ -19,12 +19,21 @@ describe LyberCore::Robot do
     robot.options.quiet.should eql(false)
   end
   
-  it "can print a help screen" do
+  it "can accept a single druid for processing" do
     mock_workflow = mock('workflow')
     mock_queue = mock('queue')
     ARGV << "--druid=sdrtwo:blah"
     robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+    robot.get_druid_list[0].should eql("sdrtwo:blah")
   end
+  
+  # it "can accept a file of druids for processing" do
+  #   mock_workflow = mock('workflow')
+  #   mock_queue = mock('queue')
+  #   ARGV << "--file=fakefile"
+  #   robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+  #   puts robot.get_druid_list
+  # end
   
   it "should process a batch of druids from the Workflow" do    
     mock_workflow = mock('workflow')
