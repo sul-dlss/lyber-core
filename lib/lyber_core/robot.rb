@@ -40,16 +40,15 @@ module LyberCore
       queue = @workflow.queue(@workflow_step)
       
       # If we have arguments, parse out the parts that indicate druids
-      if(ARGV.size > 0)
-        queue.enqueue_druids(get_druid_list(ARGV[0]))
+      if(@options.file or @options.druid)
+        queue.enqueue_druids(get_druid_list)
       else
         queue.enqueue_workstep_waiting()
       end
       process_queue(queue)
     end
 
-    # TODO: ignore flags that are passed in like "--format pretty or -f"
-    # --pid PID:NUMBER or --file filename
+    # Generate a list of druids to process
     def get_druid_list
       
       druid_list = Array.new
