@@ -11,6 +11,21 @@ end
 
 describe LyberCore::Robot do
   
+  it "has default values for its options" do
+    mock_workflow = mock('workflow')
+    mock_queue = mock('queue')
+    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+    robot.options.verbose.should eql(false)
+    robot.options.quiet.should eql(false)
+  end
+  
+  it "can print a help screen" do
+    mock_workflow = mock('workflow')
+    mock_queue = mock('queue')
+    ARGV << "--druid=sdrtwo:blah"
+    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+  end
+  
   it "should process a batch of druids from the Workflow" do    
     mock_workflow = mock('workflow')
     mock_queue = mock('queue')
