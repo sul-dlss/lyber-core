@@ -256,6 +256,7 @@ class DorService
   def DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
     begin
       url = URI.parse(WORKFLOW_URI + '/workflow_queue?repository=' + repository + '&workflow=' + workflow + '&completed=' + completed + '&waiting=' + waiting)
+puts url
       req = Net::HTTP::Get.new(url.request_uri)
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res

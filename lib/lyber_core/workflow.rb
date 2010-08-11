@@ -36,7 +36,7 @@ module LyberCore
     end
 
     def workflow_id
-      return @workflow_name + 'WF'
+      return @workflow_name
     end
     
     def repository
@@ -44,7 +44,7 @@ module LyberCore
     end
 
     def workflow_process_xml
-      workflow_process_xml_filename = File.join(@workflow_config_dir, @workflow_name + 'Workflow.xml')
+      workflow_process_xml_filename = File.join(@workflow_config_dir, @workflow_name + '.xml')
       return IO.read(workflow_process_xml_filename)
     end
 
