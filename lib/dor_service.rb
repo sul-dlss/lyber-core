@@ -21,21 +21,13 @@ class DorService
    
   def DorService.create_object(form_data)
     begin      
-      url = URI.parse(DOR_URI + '/objects')
-      req = Net::HTTP::Post.new(url.path)
+      url = DOR_URI + '/objects'
       body = DorService.encodeParams(form_data)
-      req.body = body
-      req.content_type = 'application/x-www-form-urlencoded'
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }
-      case res
-        when Net::HTTPSuccess
-        res.body =~ /\/objects\/(.*)/
-        druid = $1
-        return druid
-      else
-        $stderr.print res.body
-        raise res.error!
-      end
+      content_type = 'application/x-www-form-urlencoded'
+      res = LyberCore::Connection.post(url, body, :content_type => content_type)
+      res =~ /\/objects\/(.*)/
+      druid = $1
+      return druid
     rescue Exception => e
       $stderr.print "Unable to create object " + e
       raise
@@ -49,26 +41,17 @@ class DorService
     begin
       #See if page exists before creating new fedora object
       # raise "Object exists with id: " + child_id if(DorService.get_druid_by_id(child_id)) 
-
       form_data = {'model' => 'dor:googleScannedPage', 'id' => child_id}
-      url = URI.parse(DOR_URI + '/objects/' + parent_druid + '/resources')
-      req = Net::HTTP::Post.new(url.path)
+      url = DOR_URI + '/objects/' + parent_druid + '/resources'
       body = DorService.encodeParams(form_data)
-      req.body = body
-      req.content_type = 'application/x-www-form-urlencoded'
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }
-      case res
-        when Net::HTTPSuccess
-        res.body =~ /\/resources\/(.*)/
-        druid = $1
-        puts "Child googleScannedPage object created for parent " + parent_druid 
-        puts "child_id " + child_id
-        puts "new druid " + druid
-        return druid
-      else
-        $stderr.print res.body
-        raise res.error!
-      end
+      content_type = 'application/x-www-form-urlencoded'
+      res = LyberCore::Connection.post(url, body, :content_type => content_type)
+      res=~ /\/resources\/(.*)/
+      druid = $1
+      puts "Child googleScannedPage object created for parent " + parent_druid 
+      puts "child_id " + child_id
+      puts "new druid " + druid
+      return druid
     rescue Exception => e
       $stderr.print "Unable to create object " + e
       raise
@@ -76,7 +59,10 @@ class DorService
   end
   
   
-  
+  # Takes a hash of arrays and builds a x-www-form-urlencoded string for POSTing form parameters
+  #
+  # == Parameters
+  # - <b>form_data</b> - a hash of arrays that contains the form data, ie. {'param1' => ['val1', 'val2'], 'param2' => ['val3']}
   def DorService.encodeParams form_data
     body = ""
     form_data.each_pair do |param, array|
@@ -90,35 +76,38 @@ class DorService
   end
  
   
-  def DorService.create_workflow(workflow, druid)
-    begin
-      url = URI.parse(DOR_URI + '/objects/' + druid + '/workflows/' + workflow.workflow_id)
-      req = Net::HTTP::Put.new(url.path)
-      #req.basic_auth 'fedoraUser', 'pass'
-      req.body = workflow.workflow_process_xml
-      req.content_type = 'application/xml'
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }
-      case res
-        when Net::HTTPSuccess
-          puts workflow.workflow_id + " created for " + druid
-        else
-          $stderr.print res.body
-          raise res.error!
-      end
-    rescue Exception => e
-      $stderr.print "Unable to create workflow " + e
-      raise
-    end
-  end
+  # Depricated.  Use Dor::WorkflowService#create_workflow in lyber_core gem
+  # def DorService.create_workflow(workflow, druid)
+  #   begin
+  #     url = URI.parse(DOR_URI + '/objects/' + druid + '/workflows/' + workflow.workflow_id)
+  #     req = Net::HTTP::Put.new(url.path)
+  #     #req.basic_auth 'fedoraUser', 'pass'
+  #     req.body = workflow.workflow_process_xml
+  #     req.content_type = 'application/xml'
+  #     res = DorService.get_https_connection(url).start {|http| http.request(req) }
+  #     
+  #     WorkflowService.create_workflow()
+  #     
+  #     case res
+  #       when Net::HTTPSuccess
+  #         puts workflow.workflow_id + " created for " + druid
+  #       else
+  #         $stderr.print res.body
+  #         raise res.error!
+  #     end
+  #   rescue Exception => e
+  #     $stderr.print "Unable to create workflow " + e
+  #     raise
+  #   end
+  # end
   
  
-  #See if an object exists with this dor_id (not druid, but sub-identifier)
+  # See if an object exists with this dor_id (not druid, but sub-identifier)
+  # Caller will have to handle any exception thrown
   def DorService.get_druid_by_id (dor_id)
-
     url = URI.parse(DOR_URI + '/query_by_id?id=' + dor_id)
     req = Net::HTTP::Get.new(url.request_uri)
     res = DorService.get_https_connection(url).start {|http| http.request(req) }
-    
     case res
       when Net::HTTPSuccess
         res.body =~ /druid="([^"\r\n]*)"/
@@ -128,6 +117,9 @@ class DorService
         return nil
     end
   end
+  
+  #############################################  Start of Datastream methods
+  # Until ActiveFedora supports client-side certificate configuration, we are stuck with our own methods to access datastreams
   
   #/objects/{pid}/datastreams/{dsID} ? [controlGroup] [dsLocation] [altIDs] [dsLabel] [versionable] [dsState] [formatURI] [checksumType] [checksum] [logMessage]
   def DorService.add_datastream(druid, ds_id, ds_label, xml, content_type='application/xml', versionable = false )
@@ -216,35 +208,38 @@ class DorService
         DorService.add_datastream(druid, ds_id, ds_label, xml)
       end
   end
+  
+  #############################################  End of Datastream methods
 
   
+  # Deprecated.  Use Dor::WorkflowService#update_workflow_status
   #PUT "objects/pid:123/workflows/GoogleScannedWF/convert"
   #<process name=\"convert\" status=\"waiting\" elapsed="0.11" lifecycle="released" "/>"
   #TODO increment attempts
-  def DorService.updateWorkflowStatus(repository, druid, workflow, process, status, elapsed = 0, lifecycle = nil)
-    begin
-      url = URI.parse(WORKFLOW_URI + '/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
-      req = Net::HTTP::Put.new(url.path)
-      process_xml = '<process name="'+ process + '" status="' + status + '" ' 
-      process_xml << 'elapsed="' + elapsed.to_s + '" '
-      process_xml << 'lifecycle="' + lifecycle + '" ' if(lifecycle)
-      process_xml << '/>' 
-      req.body = process_xml
-      req.content_type = 'application/xml'
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }
-      case res
-        when Net::HTTPSuccess
-          puts "#{workflow} process updated for " + druid
-        else
-          $stderr.print res.body
-          raise res.error!
-      end
-    rescue Exception => e
-      $stderr.print "Unable to update workflow " + e
-      raise
-    end
-    
-  end
+  # def DorService.updateWorkflowStatus(repository, druid, workflow, process, status, elapsed = 0, lifecycle = nil)
+  #   begin
+  #     url = URI.parse(WORKFLOW_URI + '/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
+  #     req = Net::HTTP::Put.new(url.path)
+  #     process_xml = '<process name="'+ process + '" status="' + status + '" ' 
+  #     process_xml << 'elapsed="' + elapsed.to_s + '" '
+  #     process_xml << 'lifecycle="' + lifecycle + '" ' if(lifecycle)
+  #     process_xml << '/>' 
+  #     req.body = process_xml
+  #     req.content_type = 'application/xml'
+  #     res = DorService.get_https_connection(url).start {|http| http.request(req) }
+  #     case res
+  #       when Net::HTTPSuccess
+  #         puts "#{workflow} process updated for " + druid
+  #       else
+  #         $stderr.print res.body
+  #         raise res.error!
+  #     end
+  #   rescue Exception => e
+  #     $stderr.print "Unable to update workflow " + e
+  #     raise
+  #   end
+  #   
+  # end
   
   # Returns string containing object list XML from a DOR query
   # XML returned looks like:
@@ -320,7 +315,7 @@ puts url
       res = DorService.get_https_connection(url).start {|http| http.request(req) }
       case res
         when Net::HTTPSuccess
-          puts "googleScannedBookWF error status updated for " + druid
+          puts "#{workflow} - #{process} set to error for " + druid
         else
           $stderr.print res.body
           raise res.error!
