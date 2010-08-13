@@ -79,7 +79,7 @@ module LyberCore
       @elapsed_time = @end_time - @start_time
       puts "#{item_id} completed in #{@elapsed_time} seconds"
       if (@druid)
-        DorService.updateWorkflowStatus(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, 'completed', @elapsed_time )
+        Dor::WorkflowService.update_workflow_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, 'completed', @elapsed_time)
       end
     end
 

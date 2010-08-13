@@ -81,4 +81,25 @@ describe Dor::WorkflowService do
       lambda{ Dor::WorkflowService.update_workflow_status(@repo, @druid, "etdSubmitWF", "reader-approval", "completed")}.should raise_error(Exception, "exception thrown")
     end
   end
+  
+  describe "#update_workflow_error_status" do
+    before(:each) do
+      @process_uri = '' << @wf_full_uri << '/reader-approval'
+      @process_xml = '<process name="reader-approval" status="error" errorMessage="Some exception" errorText="The optional stacktrace" />'
+      
+    end
+    
+    it "should update workflow status to error and return true if successful" do
+      res = Net::HTTPSuccess.new("", "", "")
+      
+      LyberCore::Connection.should_receive(:put).with(@process_uri, @process_xml).and_yield(res)
+      Dor::WorkflowService.update_workflow_error_status(@repo, @druid, "etdSubmitWF", "reader-approval", "Some exception", "The optional stacktrace")
+    end
+        
+    it "should return false if the PUT to the DOR workflow service throws an exception" do
+      ex = Exception.new("exception thrown")
+      LyberCore::Connection.should_receive(:put).and_raise(ex)
+      lambda{ Dor::WorkflowService.update_workflow_status(@repo, @druid, "etdSubmitWF", "reader-approval", "completed")}.should raise_error(Exception, "exception thrown")
+    end
+  end
 end

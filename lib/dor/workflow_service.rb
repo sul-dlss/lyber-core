@@ -76,6 +76,33 @@ module Dor
       ''
     end
   end    
+
+  # Updates the status of one step in a workflow to error.      
+  # Returns true on success.  Caller must handle any exceptions
+  #
+  # == Required Parameters
+  # - <b>repo</b> - The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
+  # - <b>druid</b> - The id of the object
+  # - <b>workflow_name</b> - The name of the workflow 
+  # - <b>error_msg</b> - The error message.  Ideally, this is a brief message describing the error
+  # 
+  # == Optional Parameters
+  # - <b>error_txt</b> - A slot to hold more information about the error, like a full stacktrace
+  #
+  # == Http Call
+  # The method does an HTTP PUT to the URL defined in Dor::WF_URI.  As an example:
+  #   PUT "/dor/objects/pid:123/workflows/GoogleScannedWF/convert"
+  #   <process name=\"convert\" status=\"error\" />"
+  def WorkflowService.update_workflow_error_status(repo, druid, workflow, process, error_msg, error_txt = nil)
+    uri = ''
+    uri << Dor::WF_URI << '/' << repo << '/objects/' << druid << '/workflows/' << workflow << '/' << process
+    process_xml = '<process name="'+ process + '" status="error" errorMessage="' + error_msg + '" ' 
+    process_xml << 'errorText="' + error_txt + '" ' if(error_txt)
+    process_xml << '/>' 
     
+    # On success, an empty body is sent 
+    LyberCore::Connection.put(uri, process_xml) {|response| true}
+  end
+
   end
 end
