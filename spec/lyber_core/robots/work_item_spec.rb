@@ -1,8 +1,8 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 require 'lyber_core'
 
 
-describe LyberCore::WorkItem do
+describe LyberCore::Robots::WorkItem do
   
   
   before(:all) do 
@@ -10,7 +10,7 @@ describe LyberCore::WorkItem do
   end #before(:all)
   
   before(:each) do
-    @work_item = LyberCore::WorkItem.new(@work_queue)
+    @work_item = LyberCore::Robots::WorkItem.new(@work_queue)
   end
   
   

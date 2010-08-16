@@ -1,15 +1,15 @@
 
 
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 require 'lyber_core'
 
-class TestRobot < LyberCore::Robot
+class TestRobot < LyberCore::Robots::Robot
   def process_item(work_item)
     #nada for now
   end
 end
 
-describe LyberCore::Robot do
+describe LyberCore::Robots::Robot do
   
   it "has default values for its options" do
     mock_workflow = mock('workflow')
@@ -48,7 +48,7 @@ describe LyberCore::Robot do
     mock_workflow = mock('workflow')
     mock_queue = mock('queue')
     robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-    LyberCore::Workflow.should_receive(:new).and_return(mock_workflow)
+    LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
     mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
     ARGV.stub!(:size).and_return(0)
     mock_queue.should_receive(:enqueue_workstep_waiting)
