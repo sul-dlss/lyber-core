@@ -21,6 +21,22 @@ If connecting to https servers:
   LyberCore::KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
   LyberCore::KEY_PASS = 'dummy'
 
+== lyber_core/utils
+
+If using Utilities, require the following:
+  require 'lyber_core/utils'
+
+This will give you:
+  LyberCore::Utils::BagitBag
+  LyberCore::Utils::ChecksumValidate
+  LyberCore::Utils::FileUtilities
+
+If you do not want all 3, you can require the individual classes.  I.E. if you only want the bagit utils, then require:
+  require 'lyber_core/utils/bagit_bat'
+
+The BagitBag class requires the bagit gem
+  http://github.com/flazz/bagit
+
 == Copyright
 
 Copyright (c) 2010 Willy Mene. See LICENSE for details.
