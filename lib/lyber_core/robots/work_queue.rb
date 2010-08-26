@@ -93,7 +93,7 @@ module LyberCore
           puts "Error limit of #{@error_limit} items reached"
           return nil
         end
-        work_item =  LyberCore::WorkItem.new(self)
+        work_item =  LyberCore::Robots::WorkItem.new(self)
         if (@druids)
           return nil if (@item_count >= @druids.length)
           work_item.druid= @druids[@item_count]
