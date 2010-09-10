@@ -22,8 +22,18 @@ begin
     gem.email = "wmene@stanford.edu"
     gem.homepage = "http://github.com/wmene/lyber-core"
     gem.authors = ["Willy Mene"]
-    gem.add_bundler_dependencies # These are specified in Gemfile
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    
+    
+    # ####################################################
+    # NB: Once jeweler 1.5 is out of beta, we should stop maintaining requirements
+    # in two places. Ideally, these are maintained only in the Gemfile. Once we're 
+    # ready to upgrade to jeweler 1.5, remove the dependency requirements above and
+    # replace them with just the line below, "gem.add_bundler_dependencies"
+    # -- Bess
+    # gem.add_bundler_dependencies # These are specified in Gemfile
+    # ####################################################
+    
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
