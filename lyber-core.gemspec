@@ -5,121 +5,282 @@
 
 Gem::Specification.new do |s|
   s.name = %q{lyber-core}
-  s.version = "0.9.0"
+  s.version = "0.9.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-08-16}
+  s.date = %q{2010-09-09}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+    "README.rdoc"
   ]
   s.files = [
+    ".bundle/config",
     ".document",
-     ".gitignore",
-     "LICENSE",
-     "README.rdoc",
-     "Rakefile",
-     "VERSION",
-     "lib/dlss_service.rb",
-     "lib/dor/base.rb",
-     "lib/dor/suri_service.rb",
-     "lib/dor/workflow_service.rb",
-     "lib/dor_service.rb",
-     "lib/lyber_core.rb",
-     "lib/lyber_core/connection.rb",
-     "lib/lyber_core/robots/robot.rb",
-     "lib/lyber_core/robots/work_item.rb",
-     "lib/lyber_core/robots/work_queue.rb",
-     "lib/lyber_core/robots/workflow.rb",
-     "lib/lyber_core/robots/workspace.rb",
-     "lib/lyber_core/utils.rb",
-     "lib/lyber_core/utils/bagit_bag.rb",
-     "lib/lyber_core/utils/checksum_validate.rb",
-     "lib/lyber_core/utils/file_utilities.rb",
-     "lib/roxml_models/identity_metadata/dublin_core.rb",
-     "lib/roxml_models/identity_metadata/identity_metadata.rb",
-     "lyber-core.gemspec",
-     "spec/certs/dummy.crt",
-     "spec/certs/dummy.key",
-     "spec/dlss_service_spec.rb",
-     "spec/dor/base_spec.rb",
-     "spec/dor/suri_service_spec.rb",
-     "spec/dor/workflow_servce_spec.rb",
-     "spec/lyber_core/connection_spec.rb",
-     "spec/lyber_core/robots/robot_spec.rb",
-     "spec/lyber_core/robots/work_item_spec.rb",
-     "spec/lyber_core/utils/checksum_validate_spec.rb",
-     "spec/lyber_core/utils/file_transfer_spec.rb",
-     "spec/spec.opts",
-     "spec/spec_helper.rb",
-     "test/test_data/100.txt",
-     "test/test_data/2-3.txt",
-     "test/test_data/3-4.txt",
-     "test/test_data/4-5.txt",
-     "test/test_data/DS-DublinCore",
-     "test/test_data/DS-MODS-big.txt",
-     "test/test_data/DS-MODS-small.txt",
-     "test/test_data/DublinCoreChimera.xml",
-     "test/test_data/IdentityMetadata-after.xml",
-     "test/test_data/IdentityMetadata-before.xml",
-     "test/test_data/Register",
-     "test/test_data/Register.new",
-     "test/test_data/RegisterRest.new",
-     "test/test_data/add.txt",
-     "test/test_data/barcode_catkey_map.txt",
-     "test/test_data/bigadd.txt",
-     "test/test_data/dc-small.xml",
-     "test/test_data/error_catkeys.txt",
-     "test/test_helper.rb",
-     "test/unit/test_identity_metadata.rb"
+    ".gitignore",
+    "Gemfile",
+    "Gemfile.lock",
+    "LICENSE",
+    "README.rdoc",
+    "Rakefile",
+    "VERSION",
+    "lib/dlss_service.rb",
+    "lib/dor/base.rb",
+    "lib/dor/suri_service.rb",
+    "lib/dor/workflow_service.rb",
+    "lib/dor_service.rb",
+    "lib/lyber_core.rb",
+    "lib/lyber_core/connection.rb",
+    "lib/lyber_core/robots/robot.rb",
+    "lib/lyber_core/robots/work_item.rb",
+    "lib/lyber_core/robots/work_queue.rb",
+    "lib/lyber_core/robots/workflow.rb",
+    "lib/lyber_core/robots/workspace.rb",
+    "lib/lyber_core/utils.rb",
+    "lib/lyber_core/utils/bagit_bag.rb",
+    "lib/lyber_core/utils/checksum_validate.rb",
+    "lib/lyber_core/utils/file_utilities.rb",
+    "lib/roxml_models/identity_metadata/dublin_core.rb",
+    "lib/roxml_models/identity_metadata/identity_metadata.rb",
+    "lyber-core.gemspec",
+    "spec/certs/dummy.crt",
+    "spec/certs/dummy.key",
+    "spec/dlss_service_spec.rb",
+    "spec/dor/base_spec.rb",
+    "spec/dor/suri_service_spec.rb",
+    "spec/dor/workflow_servce_spec.rb",
+    "spec/lyber_core/connection_spec.rb",
+    "spec/lyber_core/robots/robot_spec.rb",
+    "spec/lyber_core/robots/work_item_spec.rb",
+    "spec/lyber_core/utils/checksum_validate_spec.rb",
+    "spec/lyber_core/utils/file_transfer_spec.rb",
+    "spec/spec.opts",
+    "spec/spec_helper.rb",
+    "test/test_data/100.txt",
+    "test/test_data/2-3.txt",
+    "test/test_data/3-4.txt",
+    "test/test_data/4-5.txt",
+    "test/test_data/DS-DublinCore",
+    "test/test_data/DS-MODS-big.txt",
+    "test/test_data/DS-MODS-small.txt",
+    "test/test_data/DublinCoreChimera.xml",
+    "test/test_data/IdentityMetadata-after.xml",
+    "test/test_data/IdentityMetadata-before.xml",
+    "test/test_data/Register",
+    "test/test_data/Register.new",
+    "test/test_data/RegisterRest.new",
+    "test/test_data/add.txt",
+    "test/test_data/barcode_catkey_map.txt",
+    "test/test_data/bigadd.txt",
+    "test/test_data/dc-small.xml",
+    "test/test_data/error_catkeys.txt",
+    "test/test_helper.rb",
+    "test/unit/test_identity_metadata.rb"
   ]
   s.homepage = %q{http://github.com/wmene/lyber-core}
-  s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Core services used by the SULAIR Digital Library}
   s.test_files = [
     "spec/dlss_service_spec.rb",
-     "spec/dor/base_spec.rb",
-     "spec/dor/suri_service_spec.rb",
-     "spec/dor/workflow_servce_spec.rb",
-     "spec/lyber_core/connection_spec.rb",
-     "spec/lyber_core/robots/robot_spec.rb",
-     "spec/lyber_core/robots/work_item_spec.rb",
-     "spec/lyber_core/utils/checksum_validate_spec.rb",
-     "spec/lyber_core/utils/file_transfer_spec.rb",
-     "spec/spec_helper.rb",
-     "test/test_helper.rb",
-     "test/unit/test_identity_metadata.rb"
+    "spec/dor/base_spec.rb",
+    "spec/dor/suri_service_spec.rb",
+    "spec/dor/workflow_servce_spec.rb",
+    "spec/lyber_core/connection_spec.rb",
+    "spec/lyber_core/robots/robot_spec.rb",
+    "spec/lyber_core/robots/work_item_spec.rb",
+    "spec/lyber_core/utils/checksum_validate_spec.rb",
+    "spec/lyber_core/utils/file_transfer_spec.rb",
+    "spec/spec_helper.rb",
+    "test/test_helper.rb",
+    "test/unit/test_identity_metadata.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<active-fedora>, [">= 1.0.7"])
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_runtime_dependency(%q<actionpack>, ["= 2.3.9"])
+      s.add_runtime_dependency(%q<activesupport>, ["= 2.3.9"])
+      s.add_runtime_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_runtime_dependency(%q<columnize>, ["= 0.3.1"])
+      s.add_runtime_dependency(%q<facets>, ["= 2.8.4"])
+      s.add_runtime_dependency(%q<gemcutter>, ["= 0.6.1"])
+      s.add_runtime_dependency(%q<git>, ["= 1.2.5"])
+      s.add_runtime_dependency(%q<haml>, ["= 2.2.24"])
+      s.add_runtime_dependency(%q<hanna>, ["= 0.1.12"])
+      s.add_runtime_dependency(%q<jeweler>, ["= 1.5.0.pre3"])
+      s.add_runtime_dependency(%q<json_pure>, ["= 1.4.6"])
+      s.add_runtime_dependency(%q<linecache>, ["= 0.43"])
+      s.add_runtime_dependency(%q<mime-types>, ["= 1.16"])
+      s.add_runtime_dependency(%q<multipart-post>, ["= 1.0.1"])
+      s.add_runtime_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+      s.add_runtime_dependency(%q<om>, ["= 0.1.10"])
+      s.add_runtime_dependency(%q<rake>, ["= 0.8.7"])
+      s.add_runtime_dependency(%q<rdoc>, ["= 2.3.0"])
+      s.add_runtime_dependency(%q<roxml>, ["= 3.1.5"])
+      s.add_runtime_dependency(%q<rspec>, ["= 1.3.0"])
+      s.add_runtime_dependency(%q<rubyforge>, ["= 2.0.4"])
+      s.add_runtime_dependency(%q<ruby-debug>, ["= 0.10.3"])
+      s.add_runtime_dependency(%q<semver>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<solr-ruby>, ["= 0.0.8"])
       s.add_runtime_dependency(%q<systemu>, [">= 1.2.0"])
-      s.add_runtime_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_runtime_dependency(%q<hanna>, [">= 0.1.12"])
-      s.add_runtime_dependency(%q<roxml>, [">= 0"])
+      s.add_runtime_dependency(%q<validatable>, ["= 1.6.7"])
+      s.add_runtime_dependency(%q<xml-simple>, ["= 1.0.12"])
+      s.add_runtime_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_runtime_dependency(%q<actionpack>, ["= 2.3.9"])
+      s.add_runtime_dependency(%q<activesupport>, ["= 2.3.9"])
+      s.add_runtime_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_runtime_dependency(%q<columnize>, ["= 0.3.1"])
+      s.add_runtime_dependency(%q<facets>, ["= 2.8.4"])
+      s.add_runtime_dependency(%q<gemcutter>, ["= 0.6.1"])
+      s.add_runtime_dependency(%q<git>, ["= 1.2.5"])
+      s.add_runtime_dependency(%q<haml>, ["= 2.2.24"])
+      s.add_runtime_dependency(%q<hanna>, ["= 0.1.12"])
+      s.add_runtime_dependency(%q<jeweler>, ["= 1.5.0.pre3"])
+      s.add_runtime_dependency(%q<json_pure>, ["= 1.4.6"])
+      s.add_runtime_dependency(%q<linecache>, ["= 0.43"])
+      s.add_runtime_dependency(%q<mime-types>, ["= 1.16"])
+      s.add_runtime_dependency(%q<multipart-post>, ["= 1.0.1"])
+      s.add_runtime_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+      s.add_runtime_dependency(%q<om>, ["= 0.1.10"])
+      s.add_runtime_dependency(%q<rake>, ["= 0.8.7"])
+      s.add_runtime_dependency(%q<rdoc>, ["= 2.3.0"])
+      s.add_runtime_dependency(%q<roxml>, ["= 3.1.5"])
+      s.add_runtime_dependency(%q<rspec>, ["= 1.3.0"])
+      s.add_runtime_dependency(%q<rubyforge>, ["= 2.0.4"])
+      s.add_runtime_dependency(%q<ruby-debug>, ["= 0.10.3"])
+      s.add_runtime_dependency(%q<semver>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<solr-ruby>, ["= 0.0.8"])
+      s.add_runtime_dependency(%q<systemu>, [">= 1.2.0"])
+      s.add_runtime_dependency(%q<validatable>, ["= 1.6.7"])
+      s.add_runtime_dependency(%q<xml-simple>, ["= 1.0.12"])
     else
-      s.add_dependency(%q<active-fedora>, [">= 1.0.7"])
+      s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_dependency(%q<actionpack>, ["= 2.3.9"])
+      s.add_dependency(%q<activesupport>, ["= 2.3.9"])
+      s.add_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_dependency(%q<columnize>, ["= 0.3.1"])
+      s.add_dependency(%q<facets>, ["= 2.8.4"])
+      s.add_dependency(%q<gemcutter>, ["= 0.6.1"])
+      s.add_dependency(%q<git>, ["= 1.2.5"])
+      s.add_dependency(%q<haml>, ["= 2.2.24"])
+      s.add_dependency(%q<hanna>, ["= 0.1.12"])
+      s.add_dependency(%q<jeweler>, ["= 1.5.0.pre3"])
+      s.add_dependency(%q<json_pure>, ["= 1.4.6"])
+      s.add_dependency(%q<linecache>, ["= 0.43"])
+      s.add_dependency(%q<mime-types>, ["= 1.16"])
+      s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
+      s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+      s.add_dependency(%q<om>, ["= 0.1.10"])
+      s.add_dependency(%q<rake>, ["= 0.8.7"])
+      s.add_dependency(%q<rdoc>, ["= 2.3.0"])
+      s.add_dependency(%q<roxml>, ["= 3.1.5"])
+      s.add_dependency(%q<rspec>, ["= 1.3.0"])
+      s.add_dependency(%q<rubyforge>, ["= 2.0.4"])
+      s.add_dependency(%q<ruby-debug>, ["= 0.10.3"])
+      s.add_dependency(%q<semver>, ["= 0.1.0"])
+      s.add_dependency(%q<solr-ruby>, ["= 0.0.8"])
       s.add_dependency(%q<systemu>, [">= 1.2.0"])
-      s.add_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_dependency(%q<hanna>, [">= 0.1.12"])
-      s.add_dependency(%q<roxml>, [">= 0"])
+      s.add_dependency(%q<validatable>, ["= 1.6.7"])
+      s.add_dependency(%q<xml-simple>, ["= 1.0.12"])
+      s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_dependency(%q<actionpack>, ["= 2.3.9"])
+      s.add_dependency(%q<activesupport>, ["= 2.3.9"])
+      s.add_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_dependency(%q<columnize>, ["= 0.3.1"])
+      s.add_dependency(%q<facets>, ["= 2.8.4"])
+      s.add_dependency(%q<gemcutter>, ["= 0.6.1"])
+      s.add_dependency(%q<git>, ["= 1.2.5"])
+      s.add_dependency(%q<haml>, ["= 2.2.24"])
+      s.add_dependency(%q<hanna>, ["= 0.1.12"])
+      s.add_dependency(%q<jeweler>, ["= 1.5.0.pre3"])
+      s.add_dependency(%q<json_pure>, ["= 1.4.6"])
+      s.add_dependency(%q<linecache>, ["= 0.43"])
+      s.add_dependency(%q<mime-types>, ["= 1.16"])
+      s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
+      s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+      s.add_dependency(%q<om>, ["= 0.1.10"])
+      s.add_dependency(%q<rake>, ["= 0.8.7"])
+      s.add_dependency(%q<rdoc>, ["= 2.3.0"])
+      s.add_dependency(%q<roxml>, ["= 3.1.5"])
+      s.add_dependency(%q<rspec>, ["= 1.3.0"])
+      s.add_dependency(%q<rubyforge>, ["= 2.0.4"])
+      s.add_dependency(%q<ruby-debug>, ["= 0.10.3"])
+      s.add_dependency(%q<semver>, ["= 0.1.0"])
+      s.add_dependency(%q<solr-ruby>, ["= 0.0.8"])
+      s.add_dependency(%q<systemu>, [">= 1.2.0"])
+      s.add_dependency(%q<validatable>, ["= 1.6.7"])
+      s.add_dependency(%q<xml-simple>, ["= 1.0.12"])
     end
   else
-    s.add_dependency(%q<active-fedora>, [">= 1.0.7"])
+    s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+    s.add_dependency(%q<actionpack>, ["= 2.3.9"])
+    s.add_dependency(%q<activesupport>, ["= 2.3.9"])
+    s.add_dependency(%q<bagit>, ["= 0.1.0"])
+    s.add_dependency(%q<bundler>, [">= 1.0.0"])
+    s.add_dependency(%q<columnize>, ["= 0.3.1"])
+    s.add_dependency(%q<facets>, ["= 2.8.4"])
+    s.add_dependency(%q<gemcutter>, ["= 0.6.1"])
+    s.add_dependency(%q<git>, ["= 1.2.5"])
+    s.add_dependency(%q<haml>, ["= 2.2.24"])
+    s.add_dependency(%q<hanna>, ["= 0.1.12"])
+    s.add_dependency(%q<jeweler>, ["= 1.5.0.pre3"])
+    s.add_dependency(%q<json_pure>, ["= 1.4.6"])
+    s.add_dependency(%q<linecache>, ["= 0.43"])
+    s.add_dependency(%q<mime-types>, ["= 1.16"])
+    s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
+    s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+    s.add_dependency(%q<om>, ["= 0.1.10"])
+    s.add_dependency(%q<rake>, ["= 0.8.7"])
+    s.add_dependency(%q<rdoc>, ["= 2.3.0"])
+    s.add_dependency(%q<roxml>, ["= 3.1.5"])
+    s.add_dependency(%q<rspec>, ["= 1.3.0"])
+    s.add_dependency(%q<rubyforge>, ["= 2.0.4"])
+    s.add_dependency(%q<ruby-debug>, ["= 0.10.3"])
+    s.add_dependency(%q<semver>, ["= 0.1.0"])
+    s.add_dependency(%q<solr-ruby>, ["= 0.0.8"])
     s.add_dependency(%q<systemu>, [">= 1.2.0"])
-    s.add_dependency(%q<rspec>, [">= 1.2.9"])
-    s.add_dependency(%q<hanna>, [">= 0.1.12"])
-    s.add_dependency(%q<roxml>, [">= 0"])
+    s.add_dependency(%q<validatable>, ["= 1.6.7"])
+    s.add_dependency(%q<xml-simple>, ["= 1.0.12"])
+    s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+    s.add_dependency(%q<actionpack>, ["= 2.3.9"])
+    s.add_dependency(%q<activesupport>, ["= 2.3.9"])
+    s.add_dependency(%q<bagit>, ["= 0.1.0"])
+    s.add_dependency(%q<bundler>, [">= 1.0.0"])
+    s.add_dependency(%q<columnize>, ["= 0.3.1"])
+    s.add_dependency(%q<facets>, ["= 2.8.4"])
+    s.add_dependency(%q<gemcutter>, ["= 0.6.1"])
+    s.add_dependency(%q<git>, ["= 1.2.5"])
+    s.add_dependency(%q<haml>, ["= 2.2.24"])
+    s.add_dependency(%q<hanna>, ["= 0.1.12"])
+    s.add_dependency(%q<jeweler>, ["= 1.5.0.pre3"])
+    s.add_dependency(%q<json_pure>, ["= 1.4.6"])
+    s.add_dependency(%q<linecache>, ["= 0.43"])
+    s.add_dependency(%q<mime-types>, ["= 1.16"])
+    s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
+    s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+    s.add_dependency(%q<om>, ["= 0.1.10"])
+    s.add_dependency(%q<rake>, ["= 0.8.7"])
+    s.add_dependency(%q<rdoc>, ["= 2.3.0"])
+    s.add_dependency(%q<roxml>, ["= 3.1.5"])
+    s.add_dependency(%q<rspec>, ["= 1.3.0"])
+    s.add_dependency(%q<rubyforge>, ["= 2.0.4"])
+    s.add_dependency(%q<ruby-debug>, ["= 0.10.3"])
+    s.add_dependency(%q<semver>, ["= 0.1.0"])
+    s.add_dependency(%q<solr-ruby>, ["= 0.0.8"])
+    s.add_dependency(%q<systemu>, [">= 1.2.0"])
+    s.add_dependency(%q<validatable>, ["= 1.6.7"])
+    s.add_dependency(%q<xml-simple>, ["= 1.0.12"])
   end
 end
 

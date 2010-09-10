@@ -1,5 +1,16 @@
 require 'rubygems'
 require 'rake'
+require 'bundler'
+
+
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+
 
 begin
   require 'jeweler'
@@ -11,12 +22,7 @@ begin
     gem.email = "wmene@stanford.edu"
     gem.homepage = "http://github.com/wmene/lyber-core"
     gem.authors = ["Willy Mene"]
-    
-    gem.add_dependency 'active-fedora', '>= 1.0.7'
-    gem.add_dependency 'systemu', '>= 1.2.0'
-    gem.add_dependency "rspec", ">= 1.2.9"
-    gem.add_dependency "hanna", ">= 0.1.12"
-    gem.add_dependency "roxml"
+    gem.add_bundler_dependencies # These are specified in Gemfile
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
