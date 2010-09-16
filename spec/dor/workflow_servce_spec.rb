@@ -102,4 +102,36 @@ describe Dor::WorkflowService do
       lambda{ Dor::WorkflowService.update_workflow_status(@repo, @druid, "etdSubmitWF", "reader-approval", "completed")}.should raise_error(Exception, "exception thrown")
     end
   end
+  
+  describe "#get_workflow_status" do
+    it "parses workflow xml and returns status as a string" do
+      LyberCore::Connection.should_receive(:get).with('https://dortest.stanford.edu/workflow/dor/objects/druid:123/workflows/etdSubmitWF').
+                    and_return('<process name="registrar-approval" status="completed" />')
+      
+      Dor::WorkflowService.get_workflow_status('dor', 'druid:123', 'etdSubmitWF', 'registrar-approval').should == 'completed'
+    end
+    
+    it "should throw an exception if it fails for any reason" do
+      ex = Exception.new("exception thrown")
+      LyberCore::Connection.should_receive(:get).and_raise(ex)
+      
+      lambda{ Dor::WorkflowService.get_workflow_status('dor', 'druid:123', 'etdSubmitWF', 'registrar-approval')}.should raise_error(Exception, "exception thrown")
+    end
+    
+    it "should throw an exception if it cannot parse the response" do
+      LyberCore::Connection.should_receive(:get).and_return('something not xml')
+      
+      lambda{ Dor::WorkflowService.get_workflow_status('dor', 'druid:123', 'etdSubmitWF', 'registrar-approval')}.should raise_error(Exception, "Unable to parse response:\nsomething not xml")
+    end
+  end
+  
+  describe "#get_workflow_xml" do
+    it "returns the xml for a given repository, druid, and workflow" do
+      xml = '<workflow id="etdSubmitWF"><process name="registrar-approval" status="completed" /></workflow>'
+      LyberCore::Connection.should_receive(:get).with('https://dortest.stanford.edu/workflow/dor/objects/druid:123/workflows/etdSubmitWF').
+                    and_return(xml)
+    
+      Dor::WorkflowService.get_workflow_xml('dor', 'druid:123', 'etdSubmitWF').should == xml
+    end
+  end
 end

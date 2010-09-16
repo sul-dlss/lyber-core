@@ -63,18 +63,21 @@ module Dor
   # Retrieves the process status of the given workflow for the given object identifier
   #
   def WorkflowService.get_workflow_status(repo, druid, workflow, process)
-    begin
       uri = ''
       uri << Dor::WF_URI << '/' << repo << '/objects/' << druid << '/workflows/' << workflow
-      workflow_md = Connection.get(uri)
-      if( workflow_md != '' )
-        doc = Nokogiri::XML(workflow_md)
-        status = doc.root.xpath("//process[@name='#{process}']/@status").collect(&:text)
-        return status
-      end
-    rescue
-      ''
-    end
+      workflow_md = LyberCore::Connection.get(uri)
+
+      doc = Nokogiri::XML(workflow_md)
+      raise Exception.new("Unable to parse response:\n#{workflow_md}") if(doc.root.nil?)
+      
+      status = doc.root.at_xpath("//process[@name='#{process}']/@status").content
+      return status
+  end
+  
+  def WorkflowService.get_workflow_xml(repo, druid, workflow)
+    uri = ''
+    uri << Dor::WF_URI << '/' << repo << '/objects/' << druid << '/workflows/' << workflow
+    workflow_md = LyberCore::Connection.get(uri)
   end    
 
   # Updates the status of one step in a workflow to error.      

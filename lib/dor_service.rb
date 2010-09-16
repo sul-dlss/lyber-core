@@ -164,19 +164,9 @@ class DorService
     end     
   end
 
+  # Depricated - use Dor::WorkflowService#get_workflow_xml
   def DorService.get_workflow_xml(druid, workflow)
-    begin
-      url = URI.parse(DOR_URI + '/objects/' + druid + '/workflows/etdAccessionWF')
-      req = Net::HTTP::Get.new(url.request_uri)
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }
-      case res
-        when Net::HTTPSuccess
-          return res.body
-        else
-          $stderr.puts "Workflow " + workflow + " not found for " + druid
-          return nil
-      end
-    end
+    raise Exception.new("This method is deprecated.  Please use Dor::WorkflowService#get_workflow_xml")
   end
   
   # Retrieve the metadata of a datastream of a DOR object
