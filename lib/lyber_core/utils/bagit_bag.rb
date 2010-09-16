@@ -52,8 +52,8 @@ module LyberCore
           'Bag-Size' =>  bag_size_human(payload[0]),
           'Payload-Oxum' =>  "#{payload[0]}.#{payload[1]}",
         }
-        @bag.write_package_info(md_hash.merge(bag_info_hash))
-        File.rename(@bag.package_info_txt_file, File.join(@bag.bag_dir,'bag-info.txt'))
+        @bag.write_bag_info(md_hash.merge(bag_info_hash))
+        File.rename(@bag.bag_info_txt_file, File.join(@bag.bag_dir,'bag-info.txt'))
       end
 
       def bag_payload()
