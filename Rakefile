@@ -1,5 +1,16 @@
 require 'rubygems'
 require 'rake'
+require 'bundler'
+
+
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+
 
 begin
   require 'jeweler'
@@ -12,12 +23,52 @@ begin
     gem.homepage = "http://github.com/wmene/lyber-core"
     gem.authors = ["Willy Mene"]
     
-    gem.add_dependency 'active-fedora', '>= 1.0.7'
-    gem.add_dependency 'systemu', '>= 1.2.0'
-    gem.add_dependency "rspec", ">= 1.2.9"
-    gem.add_dependency "hanna", ">= 0.1.12"
-    gem.add_dependency "roxml"
+    # These are a copy of the requirements in Gemfile
+    # Gemfile should be the canonical version, and listing
+    # requirements twice is a temporary measure that will be
+    # fixed once jeweler 1.5 is out of beta. See note below. 
+    
+    gem.add_dependency "active-fedora", "1.1.13"
+    gem.add_dependency "actionpack", "2.3.9"
+    gem.add_dependency "activesupport", "2.3.9"
+    gem.add_dependency "bagit", "0.1.0"
+    gem.add_dependency "bundler", ">= 1.0.0"
+    gem.add_dependency "columnize", "0.3.1"
+    gem.add_dependency "facets", "2.8.4"
+    gem.add_dependency "gemcutter", "0.6.1"
+    gem.add_dependency "git", "1.2.5"
+    gem.add_dependency "haml", "2.2.24"
+    gem.add_dependency "hanna", "0.1.12"
+    gem.add_dependency "jeweler", ">= 1.4"
+    gem.add_dependency "json_pure", "1.4.6"
+    gem.add_dependency "linecache", "0.43"
+    gem.add_dependency "mime-types", "1.16"
+    gem.add_dependency "multipart-post", "1.0.1"
+    gem.add_dependency "nokogiri", "1.4.3.1"
+    gem.add_dependency "om", "0.1.10"
+    gem.add_dependency "rake", "0.8.7"
+    gem.add_dependency "rdoc", "2.3.0"
+    gem.add_dependency "roxml", "3.1.5"
+    gem.add_dependency "rspec", "1.3.0"
+    gem.add_dependency "rubyforge", "2.0.4"
+    gem.add_dependency "ruby-debug", "0.10.3"
+    gem.add_dependency "semver", "0.1.0"
+    gem.add_dependency "solr-ruby", "0.0.8"
+    gem.add_dependency "systemu", ">= 1.2.0"
+    gem.add_dependency "validatable", "1.6.7"
+    gem.add_dependency "xml-simple", "1.0.12"
+    
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    
+    # ####################################################
+    # NB: Once jeweler 1.5 is out of beta, we should stop maintaining requirements
+    # in two places. Ideally, these are maintained only in the Gemfile. Once we're 
+    # ready to upgrade to jeweler 1.5, remove the dependency requirements above and
+    # replace them with just the line below, "gem.add_bundler_dependencies"
+    # -- Bess
+    # gem.add_bundler_dependencies # These are specified in Gemfile
+    # ####################################################
+    
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError

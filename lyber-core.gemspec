@@ -18,8 +18,11 @@ Also contains core classes to build robots}
      "README.rdoc"
   ]
   s.files = [
-    ".document",
+    ".bundle/config",
+     ".document",
      ".gitignore",
+     "Gemfile",
+     "Gemfile.lock",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
@@ -81,7 +84,7 @@ Also contains core classes to build robots}
   s.homepage = %q{http://github.com/wmene/lyber-core}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Core services used by the SULAIR Digital Library}
   s.test_files = [
     "spec/dlss_service_spec.rb",
@@ -103,25 +106,97 @@ Also contains core classes to build robots}
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<active-fedora>, [">= 1.0.7"])
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_runtime_dependency(%q<actionpack>, ["= 2.3.9"])
+      s.add_runtime_dependency(%q<activesupport>, ["= 2.3.9"])
+      s.add_runtime_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_runtime_dependency(%q<columnize>, ["= 0.3.1"])
+      s.add_runtime_dependency(%q<facets>, ["= 2.8.4"])
+      s.add_runtime_dependency(%q<gemcutter>, ["= 0.6.1"])
+      s.add_runtime_dependency(%q<git>, ["= 1.2.5"])
+      s.add_runtime_dependency(%q<haml>, ["= 2.2.24"])
+      s.add_runtime_dependency(%q<hanna>, ["= 0.1.12"])
+      s.add_runtime_dependency(%q<jeweler>, [">= 1.4"])
+      s.add_runtime_dependency(%q<json_pure>, ["= 1.4.6"])
+      s.add_runtime_dependency(%q<linecache>, ["= 0.43"])
+      s.add_runtime_dependency(%q<mime-types>, ["= 1.16"])
+      s.add_runtime_dependency(%q<multipart-post>, ["= 1.0.1"])
+      s.add_runtime_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+      s.add_runtime_dependency(%q<om>, ["= 0.1.10"])
+      s.add_runtime_dependency(%q<rake>, ["= 0.8.7"])
+      s.add_runtime_dependency(%q<rdoc>, ["= 2.3.0"])
+      s.add_runtime_dependency(%q<roxml>, ["= 3.1.5"])
+      s.add_runtime_dependency(%q<rspec>, ["= 1.3.0"])
+      s.add_runtime_dependency(%q<rubyforge>, ["= 2.0.4"])
+      s.add_runtime_dependency(%q<ruby-debug>, ["= 0.10.3"])
+      s.add_runtime_dependency(%q<semver>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<solr-ruby>, ["= 0.0.8"])
       s.add_runtime_dependency(%q<systemu>, [">= 1.2.0"])
-      s.add_runtime_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_runtime_dependency(%q<hanna>, [">= 0.1.12"])
-      s.add_runtime_dependency(%q<roxml>, [">= 0"])
+      s.add_runtime_dependency(%q<validatable>, ["= 1.6.7"])
+      s.add_runtime_dependency(%q<xml-simple>, ["= 1.0.12"])
     else
-      s.add_dependency(%q<active-fedora>, [">= 1.0.7"])
+      s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_dependency(%q<actionpack>, ["= 2.3.9"])
+      s.add_dependency(%q<activesupport>, ["= 2.3.9"])
+      s.add_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_dependency(%q<columnize>, ["= 0.3.1"])
+      s.add_dependency(%q<facets>, ["= 2.8.4"])
+      s.add_dependency(%q<gemcutter>, ["= 0.6.1"])
+      s.add_dependency(%q<git>, ["= 1.2.5"])
+      s.add_dependency(%q<haml>, ["= 2.2.24"])
+      s.add_dependency(%q<hanna>, ["= 0.1.12"])
+      s.add_dependency(%q<jeweler>, [">= 1.4"])
+      s.add_dependency(%q<json_pure>, ["= 1.4.6"])
+      s.add_dependency(%q<linecache>, ["= 0.43"])
+      s.add_dependency(%q<mime-types>, ["= 1.16"])
+      s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
+      s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+      s.add_dependency(%q<om>, ["= 0.1.10"])
+      s.add_dependency(%q<rake>, ["= 0.8.7"])
+      s.add_dependency(%q<rdoc>, ["= 2.3.0"])
+      s.add_dependency(%q<roxml>, ["= 3.1.5"])
+      s.add_dependency(%q<rspec>, ["= 1.3.0"])
+      s.add_dependency(%q<rubyforge>, ["= 2.0.4"])
+      s.add_dependency(%q<ruby-debug>, ["= 0.10.3"])
+      s.add_dependency(%q<semver>, ["= 0.1.0"])
+      s.add_dependency(%q<solr-ruby>, ["= 0.0.8"])
       s.add_dependency(%q<systemu>, [">= 1.2.0"])
-      s.add_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_dependency(%q<hanna>, [">= 0.1.12"])
-      s.add_dependency(%q<roxml>, [">= 0"])
+      s.add_dependency(%q<validatable>, ["= 1.6.7"])
+      s.add_dependency(%q<xml-simple>, ["= 1.0.12"])
     end
   else
-    s.add_dependency(%q<active-fedora>, [">= 1.0.7"])
+    s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+    s.add_dependency(%q<actionpack>, ["= 2.3.9"])
+    s.add_dependency(%q<activesupport>, ["= 2.3.9"])
+    s.add_dependency(%q<bagit>, ["= 0.1.0"])
+    s.add_dependency(%q<bundler>, [">= 1.0.0"])
+    s.add_dependency(%q<columnize>, ["= 0.3.1"])
+    s.add_dependency(%q<facets>, ["= 2.8.4"])
+    s.add_dependency(%q<gemcutter>, ["= 0.6.1"])
+    s.add_dependency(%q<git>, ["= 1.2.5"])
+    s.add_dependency(%q<haml>, ["= 2.2.24"])
+    s.add_dependency(%q<hanna>, ["= 0.1.12"])
+    s.add_dependency(%q<jeweler>, [">= 1.4"])
+    s.add_dependency(%q<json_pure>, ["= 1.4.6"])
+    s.add_dependency(%q<linecache>, ["= 0.43"])
+    s.add_dependency(%q<mime-types>, ["= 1.16"])
+    s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
+    s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
+    s.add_dependency(%q<om>, ["= 0.1.10"])
+    s.add_dependency(%q<rake>, ["= 0.8.7"])
+    s.add_dependency(%q<rdoc>, ["= 2.3.0"])
+    s.add_dependency(%q<roxml>, ["= 3.1.5"])
+    s.add_dependency(%q<rspec>, ["= 1.3.0"])
+    s.add_dependency(%q<rubyforge>, ["= 2.0.4"])
+    s.add_dependency(%q<ruby-debug>, ["= 0.10.3"])
+    s.add_dependency(%q<semver>, ["= 0.1.0"])
+    s.add_dependency(%q<solr-ruby>, ["= 0.0.8"])
     s.add_dependency(%q<systemu>, [">= 1.2.0"])
-    s.add_dependency(%q<rspec>, [">= 1.2.9"])
-    s.add_dependency(%q<hanna>, [">= 0.1.12"])
-    s.add_dependency(%q<roxml>, [">= 0"])
+    s.add_dependency(%q<validatable>, ["= 1.6.7"])
+    s.add_dependency(%q<xml-simple>, ["= 1.0.12"])
   end
 end
 
