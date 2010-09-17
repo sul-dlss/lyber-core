@@ -34,9 +34,9 @@ GEM
     mime-types (1.16)
     multipart-post (1.0.1)
     nokogiri (1.4.3.1)
-    om (0.1.10)
+    om (1.0.0)
       facets
-      nokogiri
+      nokogiri (>= 1.4.2)
     rack (1.1.0)
     rake (0.8.7)
     rcov (0.9.8)
@@ -78,7 +78,7 @@ DEPENDENCIES
   mime-types (= 1.16)
   multipart-post (= 1.0.1)
   nokogiri (= 1.4.3.1)
-  om (= 0.1.10)
+  om (= 1.0.0)
   rake (= 0.8.7)
   rcov (= 0.9.8)
   rdoc (= 2.3.0)
