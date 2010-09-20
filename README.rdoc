@@ -37,6 +37,13 @@ If you do not want all 3, you can require the individual classes.  I.E. if you o
 The BagitBag class requires the bagit gem
   http://github.com/flazz/bagit
 
+== Releases
+- <b>0.9.4</b> First version that requires Ruby 1.8.7.  Built with bundler and rvm
+- <b>0.9.3.9</b> Last version compatible with Ruby 1.8.6.  Stored in source control as the 'facets-282' branch.  
+- <b>0.9.3</b> Compatibility with bagit 1.0.0.  Bump to active-fedora 1.1.13
+- <b>0.9.2</b> Workflow bug fixes.  Last version that supports active-fedora 1.0.7
+- We recommend that you <b>DO NOT USE</b> any version older than these
+
 == Copyright
 
 Copyright (c) 2010 Willy Mene. See LICENSE for details.
