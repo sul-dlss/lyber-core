@@ -34,7 +34,7 @@ begin
     gem.add_dependency "bagit", "0.1.0"
     gem.add_dependency "bundler", ">= 1.0.0"
     gem.add_dependency "columnize", "0.3.1"
-    gem.add_dependency "facets", "2.8.4"
+    gem.add_dependency "facets", "2.8.2"
     gem.add_dependency "gemcutter", "0.6.1"
     gem.add_dependency "git", "1.2.5"
     gem.add_dependency "haml", "2.2.24"
