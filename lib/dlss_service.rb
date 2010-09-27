@@ -49,14 +49,31 @@ class DlssService
     end     
   end
   
-  # Transforms the XML from getObjectsForWorkStep into a list of druids
-  # TODO figure out how to return a partial list
+  # This is maintained for backward compatibility, but 
+  # get_all_druids_from_object_list or get_some_druids_from_object_list
+  # are preferred. 
   def DlssService.get_druids_from_object_list(objectListXml)
+    DlssService.get_all_druids_from_object_list(objectListXml)
+  end
+  
+  # Transforms the XML from getObjectsForWorkStep into a list of druids
+  def DlssService.get_all_druids_from_object_list(objectListXml)
+    DlssService.get_some_druids_from_object_list(objectListXml, nil)
+  end
+  
+  # Takes XML of the form 
+  # <objects><object id='druid:hx066mp6063' url='https://lyberservices-test.stanford.edu/workflow/objects/druid:hx066mp6063'/></objects>
+  # if count is an integer, return at most that number of druids
+  # otherwise, return all druids in the queue
+  def DlssService.get_some_druids_from_object_list(objectListXml, count)
     druids = []
+    
     # parse the xml into a document object
     xmldoc = Nokogiri::XML::Reader(objectListXml)
+    
     xmldoc.each do |node|
-        druids << node.attribute("id") unless node.attribute("id").nil?        
+        druids << node.attribute("id") unless node.attribute("id").nil?
+        break if druids.length == count      
     end
     return druids
   end

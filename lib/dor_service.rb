@@ -259,7 +259,7 @@ puts url
   # This method is here for backward compatibility, but it has
   # been superceded by DlssService.get_druids_from_object_list(objectListXml)
   def DorService.get_druids_from_object_list(objectListXml)
-    DlssService.get_druids_from_object_list(objectListXml)
+    DlssService.get_all_druids_from_object_list(objectListXml)
   end
   
   # Retrieves a string containing Identifiers for a DOR object 
