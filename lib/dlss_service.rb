@@ -5,6 +5,7 @@ require 'uri'
 require 'cgi'
 require 'active_fedora'
 require 'lyber_core'
+require 'nokogiri'
 
 class DlssService
   
@@ -46,6 +47,18 @@ class DlssService
           return nil
        end
     end     
+  end
+  
+  # Transforms the XML from getObjectsForWorkStep into a list of druids
+  # TODO figure out how to return a partial list
+  def DlssService.get_druids_from_object_list(objectListXml)
+    druids = []
+    # parse the xml into a document object
+    xmldoc = Nokogiri::XML::Reader(objectListXml)
+    xmldoc.each do |node|
+        druids << node.attribute("id") unless node.attribute("id").nil?        
+    end
+    return druids
   end
   
 
