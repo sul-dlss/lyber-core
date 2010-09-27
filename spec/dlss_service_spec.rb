@@ -7,13 +7,13 @@ describe DlssService do
   
   context "context" do
     it "transforms xml from the workflow service into a list of druids" do
-      puts Benchmark.measure {      
+      require 'open-uri'
         queue = open(File.expand_path(File.dirname(__FILE__) + "/fixtures/queue.xml"))
-        array = DlssService.get_druids_from_object_list(queue)
+        array = DorService.get_druids_from_object_list(queue)
         array.should be_kind_of(Array)
         array[0].should eql("druid:hx066mp6063")
-        # array.length.should eql(9)
-      }
+        array.length.should eql(9)
+        puts array.length
     end
   end
   

@@ -256,12 +256,10 @@ puts url
   
   # Transforms the XML from getObjectsForWorkStep into a list of druids
   # TODO figure out how to return a partial list
+  # This method is here for backward compatibility, but it has
+  # been superceded by DlssService.get_druids_from_object_list(objectListXml)
   def DorService.get_druids_from_object_list(objectListXml)
-    # parse the xml into a document object
-    xmldoc = Document.new(objectListXml)
-    # Get an array of all of the druids for the objects
-    druids = XPath.match(xmldoc, "//object/@id").map {|a| a.value }
-    return druids
+    DlssService.get_druids_from_object_list(objectListXml)
   end
   
   # Retrieves a string containing Identifiers for a DOR object 

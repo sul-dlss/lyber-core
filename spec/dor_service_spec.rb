@@ -15,7 +15,7 @@ describe DorService do
       array = DorService.get_druids_from_object_list(queue)
       array.should be_kind_of(Array)
       array[0].should eql("druid:hx066mp6063")
-      # array.length.should eql(9)
+      array.length.should eql(9)
       }
     end
   
