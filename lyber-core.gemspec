@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{lyber-core}
-  s.version = "0.9.4"
+  s.version = "0.9.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-09-17}
+  s.date = %q{2010-09-27}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -54,6 +54,7 @@ Also contains core classes to build robots}
      "spec/dor/suri_service_spec.rb",
      "spec/dor/workflow_servce_spec.rb",
      "spec/dor_service_spec.rb",
+     "spec/fixtures/queue.xml",
      "spec/lyber_core/connection_spec.rb",
      "spec/lyber_core/robots/robot_spec.rb",
      "spec/lyber_core/robots/work_item_spec.rb",
@@ -108,7 +109,7 @@ Also contains core classes to build robots}
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_runtime_dependency(%q<active-fedora>, [">= 1.1.13"])
       s.add_runtime_dependency(%q<actionpack>, ["= 2.3.9"])
       s.add_runtime_dependency(%q<activesupport>, ["= 2.3.9"])
       s.add_runtime_dependency(%q<bagit>, ["= 0.1.0"])
@@ -125,7 +126,7 @@ Also contains core classes to build robots}
       s.add_runtime_dependency(%q<mime-types>, ["= 1.16"])
       s.add_runtime_dependency(%q<multipart-post>, ["= 1.0.1"])
       s.add_runtime_dependency(%q<nokogiri>, ["= 1.4.3.1"])
-      s.add_runtime_dependency(%q<om>, ["= 1.0.0"])
+      s.add_runtime_dependency(%q<om>, [">= 0"])
       s.add_runtime_dependency(%q<rake>, ["= 0.8.7"])
       s.add_runtime_dependency(%q<rdoc>, ["= 2.3.0"])
       s.add_runtime_dependency(%q<roxml>, ["= 3.1.5"])
@@ -138,7 +139,7 @@ Also contains core classes to build robots}
       s.add_runtime_dependency(%q<validatable>, ["= 1.6.7"])
       s.add_runtime_dependency(%q<xml-simple>, ["= 1.0.12"])
     else
-      s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+      s.add_dependency(%q<active-fedora>, [">= 1.1.13"])
       s.add_dependency(%q<actionpack>, ["= 2.3.9"])
       s.add_dependency(%q<activesupport>, ["= 2.3.9"])
       s.add_dependency(%q<bagit>, ["= 0.1.0"])
@@ -155,7 +156,7 @@ Also contains core classes to build robots}
       s.add_dependency(%q<mime-types>, ["= 1.16"])
       s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
       s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
-      s.add_dependency(%q<om>, ["= 1.0.0"])
+      s.add_dependency(%q<om>, [">= 0"])
       s.add_dependency(%q<rake>, ["= 0.8.7"])
       s.add_dependency(%q<rdoc>, ["= 2.3.0"])
       s.add_dependency(%q<roxml>, ["= 3.1.5"])
@@ -169,7 +170,7 @@ Also contains core classes to build robots}
       s.add_dependency(%q<xml-simple>, ["= 1.0.12"])
     end
   else
-    s.add_dependency(%q<active-fedora>, ["= 1.1.13"])
+    s.add_dependency(%q<active-fedora>, [">= 1.1.13"])
     s.add_dependency(%q<actionpack>, ["= 2.3.9"])
     s.add_dependency(%q<activesupport>, ["= 2.3.9"])
     s.add_dependency(%q<bagit>, ["= 0.1.0"])
@@ -186,7 +187,7 @@ Also contains core classes to build robots}
     s.add_dependency(%q<mime-types>, ["= 1.16"])
     s.add_dependency(%q<multipart-post>, ["= 1.0.1"])
     s.add_dependency(%q<nokogiri>, ["= 1.4.3.1"])
-    s.add_dependency(%q<om>, ["= 1.0.0"])
+    s.add_dependency(%q<om>, [">= 0"])
     s.add_dependency(%q<rake>, ["= 0.8.7"])
     s.add_dependency(%q<rdoc>, ["= 2.3.0"])
     s.add_dependency(%q<roxml>, ["= 3.1.5"])

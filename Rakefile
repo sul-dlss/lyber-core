@@ -28,7 +28,7 @@ begin
     # requirements twice is a temporary measure that will be
     # fixed once jeweler 1.5 is out of beta. See note below. 
     
-    gem.add_dependency "active-fedora", "1.1.13"
+    gem.add_dependency "active-fedora", ">=1.1.13"
     gem.add_dependency "actionpack", "2.3.9"
     gem.add_dependency "activesupport", "2.3.9"
     gem.add_dependency "bagit", "0.1.0"
@@ -45,7 +45,7 @@ begin
     gem.add_dependency "mime-types", "1.16"
     gem.add_dependency "multipart-post", "1.0.1"
     gem.add_dependency "nokogiri", "1.4.3.1"
-    gem.add_dependency "om", "1.0.0"
+    gem.add_dependency "om"
     gem.add_dependency "rake", "0.8.7"
     gem.add_dependency "rdoc", "2.3.0"
     gem.add_dependency "roxml", "3.1.5"
