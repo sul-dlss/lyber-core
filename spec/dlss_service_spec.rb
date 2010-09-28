@@ -7,7 +7,7 @@ describe DlssService do
   
   context "workflow service" do
     it "transforms xml from the workflow service into a list of druids" do
-     puts Benchmark.measure {
+     # puts Benchmark.measure {
       # require 'open-uri'
       # queue = open('https://lyberservices-test.stanford.edu/workflow/workflow_queue?repository=dor&workflow=googleScannedBookWF&error=google-download')
         queue = open(File.expand_path(File.dirname(__FILE__) + "/fixtures/queue.xml"))
@@ -15,7 +15,7 @@ describe DlssService do
         array.should be_kind_of(Array)
         array[0].should eql("druid:hx066mp6063")
         array.length.should eql(9)
-      }
+      # }
     end
     
     it "returns only as many druids as are requested" do
