@@ -11,7 +11,12 @@ module LyberCore
     # ===== Usage
     # User defined robots should derive from this class and override the #process_item method
     class Robot
-      attr_accessor :workflow
+      attr_accessor :workflow_name
+      attr_accessor :workflow_step
+      
+      # A LyberCore::Robots::Workflow object
+      attr_accessor :workflow 
+      attr_accessor :collection_name
       attr_accessor :workspace
       attr_accessor :args
       attr_accessor :options
@@ -33,6 +38,7 @@ module LyberCore
         self.parse_options
       end
     
+      # Create a new workflow 
       def start()
         @workflow = LyberCore::Robots::Workflow.new(@workflow_name, @collection_name)
         if(@opts[:workspace] == true)

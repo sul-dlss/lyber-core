@@ -11,13 +11,34 @@ end
 
 describe LyberCore::Robots::Robot do
   
-  it "has default values for its options" do
-    mock_workflow = mock('workflow')
-    mock_queue = mock('queue')
-    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-    robot.options.verbose.should eql(false)
-    robot.options.quiet.should eql(false)
+  context "initial state" do
+    
+    wf_name = "foo"
+    wf_step = "bar"
+    collection = "baz"
+  
+    it "has accessor methods" do
+      robot = TestRobot.new(wf_name, wf_step, :collection_name => collection)
+      robot.workflow_name.should eql(wf_name)
+      robot.workflow_step.should eql(wf_step)
+      robot.collection_name.should eql(collection)
+    end
+  
+    it "has default values for its options" do
+      robot = TestRobot.new(wf_name, wf_step, :collection_name => collection)
+      robot.options.verbose.should eql(false)
+      robot.options.quiet.should eql(false)
+    end
+  
+    # it "has a workflow after it has started" do
+    #   ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/..")      
+    #   robot = TestRobot.new("googleScannedBookWF","register-object", :collection_name => collection)
+    #   robot.start
+    #   puts robot.workflow
+    # end
+  
   end
+  
   
   it "can accept a single druid for processing" do
     mock_workflow = mock('workflow')
