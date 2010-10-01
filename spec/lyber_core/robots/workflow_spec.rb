@@ -5,8 +5,8 @@ describe LyberCore::Robots::Workflow do
   
   context "initial state" do
     
-    wf_name = "foo"
-    wf_step = "bar"
+    wf_name = "sdrIngestWF"
+    wf_step = "complete-deposit"
     collection = "baz"
     
     it "throws an error if you instantiate it without ROBOT_ROOT" do
@@ -14,9 +14,27 @@ describe LyberCore::Robots::Workflow do
     end
     
     it "can be initialized as long as you set ROBOT_ROOT first" do
-      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/..")      
+      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
       wf = LyberCore::Robots::Workflow.new(wf_name, collection)
       wf.should be_instance_of(LyberCore::Robots::Workflow)
+    end
+    
+    it "raises an error if it can't find a workflow config" do
+      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../fake/")      
+      lambda {LyberCore::Robots::Workflow.new(wf_name, collection)}.should raise_error(/Workflow config not found/)      
+    end
+    
+    it "knows which repository to use" do
+      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
+      wf = LyberCore::Robots::Workflow.new(wf_name, collection)
+      wf.repository.should eql("sdr")
+    end
+    
+    it "creates a WorkQueue object" do
+      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
+      wf = LyberCore::Robots::Workflow.new(wf_name, collection)
+      wq = wf.queue(wf_step)
+      wq.should be_instance_of(LyberCore::Robots::WorkQueue)
     end
     
   end

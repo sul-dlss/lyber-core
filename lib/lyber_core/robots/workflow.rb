@@ -33,6 +33,11 @@ module LyberCore
         workflow_config_file = File.join(@workflow_config_dir, 'workflow-config.yaml')
         if (File.exist?(workflow_config_file))
           @workflow_config = YAML.load_file(workflow_config_file)
+        else
+          raise "Workflow config not found!
+          ROBOT_ROOT = #{ROBOT_ROOT}
+          expecting to find workflow_config_file in #{workflow_config_file}
+          "
         end
       end
 
@@ -66,7 +71,8 @@ module LyberCore
         end
         raise "Object Template not found"
       end
-
+      
+      # receives a workflow step and returns 
       def queue(workflow_step)
         return WorkQueue.new(self, workflow_step)
       end
