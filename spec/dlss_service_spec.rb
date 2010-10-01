@@ -1,21 +1,29 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'dlss_service'
-require 'benchmark'
 
 describe DlssService do
   
   
   context "workflow service" do
+
+    # Uncomment this if you want to do some benchmark testing
+    # it "measures performance" do
+    #   require 'benchmark'
+    # 
+    #   puts Benchmark.measure {
+    #    require 'open-uri'
+    #      queue = open('https://lyberservices-test.stanford.edu/workflow/workflow_queue?repository=dor&workflow=googleScannedBookWF&error=google-download')
+    #      array = DlssService.get_all_druids_from_object_list(queue)
+    #      array.length.should eql(21508)
+    #    }
+    # end
+    
     it "transforms xml from the workflow service into a list of druids" do
-     # puts Benchmark.measure {
-      # require 'open-uri'
-      # queue = open('https://lyberservices-test.stanford.edu/workflow/workflow_queue?repository=dor&workflow=googleScannedBookWF&error=google-download')
-        queue = open(File.expand_path(File.dirname(__FILE__) + "/fixtures/queue.xml"))
+       queue = open(File.expand_path(File.dirname(__FILE__) + "/fixtures/queue.xml"))
         array = DlssService.get_all_druids_from_object_list(queue)
         array.should be_kind_of(Array)
         array[0].should eql("druid:hx066mp6063")
         array.length.should eql(9)
-      # }
     end
     
     it "returns only as many druids as are requested" do
