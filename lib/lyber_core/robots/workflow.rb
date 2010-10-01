@@ -49,12 +49,26 @@ module LyberCore
         return @workflow_name
       end
     
+      # Which repository are we operating against? 
+      # Should return either "dor" or "sdr"
       def repository
         return @workflow_config['repository']
       end
+      
+      # Construct the fully qualified filename and see if
+      # a file exists there. If it doesn't exist or isn't
+      # a file, raise an error. 
+      def workflow_process_xml_filename
+        file = File.join(@workflow_config_dir, @workflow_name + '.xml')
+        if File.file? file
+          return file
+        else
+          raise "#{file} is not a file"
+        end
+      end
 
+      # Return the contents of the file at workflow_process_xml_filename
       def workflow_process_xml
-        workflow_process_xml_filename = File.join(@workflow_config_dir, @workflow_name + '.xml')
         return IO.read(workflow_process_xml_filename)
       end
 

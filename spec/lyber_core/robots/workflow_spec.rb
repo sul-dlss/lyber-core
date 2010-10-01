@@ -37,6 +37,20 @@ describe LyberCore::Robots::Workflow do
       wq.should be_instance_of(LyberCore::Robots::WorkQueue)
     end
     
+    it "has a workflow process file" do
+      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
+      wf = LyberCore::Robots::Workflow.new(wf_name, collection)
+      expected = File.expand_path(ROBOT_ROOT + "/config/workflows/" + wf_name + "/" + wf_name + ".xml")
+      wf.workflow_process_xml_filename.should eql(expected)
+    end
+    
+    it "has an alias method of workflow_id that returns workflow_name" do
+      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
+      wf = LyberCore::Robots::Workflow.new(wf_name, collection)
+      wf.workflow_id.should eql(wf_name)
+      wf.workflow_name.should eql(wf_name)
+    end
+    
   end
   
 end
