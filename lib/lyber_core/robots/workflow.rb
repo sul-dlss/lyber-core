@@ -11,6 +11,10 @@ module LyberCore
       attr_reader :workflow_config
 
       def initialize(workflow_name, collection_name=nil)
+        
+        # ROBOT_ROOT must be set before invoking a robot
+        raise "ROBOT_ROOT isn't set" unless ROBOT_ROOT
+        
         @workflow_name = workflow_name
         @collection_name = collection_name
 
