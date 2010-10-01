@@ -13,14 +13,14 @@ module LyberCore
       def initialize(workflow_name, collection_name=nil)
         
         # ROBOT_ROOT must be set before invoking a robot
-        raise "ROBOT_ROOT isn't set" unless ROBOT_ROOT
+        raise "ROBOT_ROOT isn't set. Please set it to point to where your config files live." unless ROBOT_ROOT
         
         @workflow_name = workflow_name
         @collection_name = collection_name
 
         # can override the default location of workflow config files
         # by setting WORKFLOW_CONFIG_HOME environmental variable
-        if not (ROBOT_ROOT)        
+        unless ROBOT_ROOT        
           if not (config_home = ENV['WORKFLOW_CONFIG_HOME'] )
             config_home = File.join(File.dirname(__FILE__), "..", "..", "config")
           end
