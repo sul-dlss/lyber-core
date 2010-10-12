@@ -39,6 +39,41 @@ describe LyberCore::Robots::Robot do
   
   end
   
+  context "logging" do
+    
+    wf_name = "foo"
+    wf_step = "bar"
+    collection = "baz"
+    valid_logfile = "/tmp/fakelog.log"
+    invalid_logfile = "/zzxx/fakelog.log"
+    
+      it "has a logfile" do
+        robot = TestRobot.new(wf_name, wf_step, :collection_name => collection)
+        robot.logfile.should eql("logfile.log")
+      end
+      
+      it "can set the location of the logfile" do
+        robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile)
+        robot.logfile.should eql(valid_logfile)
+      end
+      
+      it "throws an error if passed an invalid location for a logfile" do
+        lambda { robot = TestRobot.new(wf_name, wf_step, :logfile => invalid_logfile) }.should raise_exception(/Couldn't initialize logfile/)        
+      end
+
+      it "starts in error reporting mode (log level 3)" do
+        robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile)
+        robot.log_level.should eql(Logger::ERROR) 
+      end
+      
+      it "can be put into debug mode (log level 0)" do
+        robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile)
+        robot.set_log_level(Logger::DEBUG)
+        robot.log_level.should eql(Logger::DEBUG) 
+      end
+    
+  end
+  
   
   it "can accept a single druid for processing" do
     mock_workflow = mock('workflow')

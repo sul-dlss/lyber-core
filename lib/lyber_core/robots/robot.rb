@@ -7,6 +7,7 @@ module LyberCore
   module Robots
     require 'optparse'
     require 'ostruct'
+    require 'logger'
 
     # ===== Usage
     # User defined robots should derive from this class and override the #process_item method
@@ -20,6 +21,10 @@ module LyberCore
       attr_accessor :workspace
       attr_accessor :args
       attr_accessor :options
+      
+      # Logging accessor methods
+      attr_accessor :logfile
+      attr_accessor :logger
 
       # ==== Available options
       # - :collection_name - The collection this workflow should work with.  
@@ -36,6 +41,52 @@ module LyberCore
         @options.verbose = false
         @options.quiet = false
         self.parse_options
+        self.start_logging(args)
+      end
+
+      # Setup the logging system
+      # Pass in the location of the desired logfile as an argument, like this:
+      # robot = TestRobot.new(wf_name, wf_step, :logfile => fake_logfile)
+      # If the logfile is not passed in during instantiation, give it a default value
+      def start_logging(args)
+        begin
+          @logfile = "logfile.log"   
+          
+          # Check for the presence of args[:logfile] and attempt to open the indicated file
+          begin
+            return unless args[:logfile]
+            filename = args[:logfile]
+            File.open(filename, 'w') {}
+            raise "Couldn't open file #{filename} for writing" unless File.writable?(filename) 
+            @logfile = filename
+          rescue Exception => e
+            raise e, "Couldn't initialize logfile: #{e}"
+          end
+
+         
+          @logger = Logger.new(@logfile)
+          @logger.level = Logger::ERROR
+          @logger.formatter = proc{|s,t,p,m|"%5s [%s] (%s) %s :: %s\n" % [s, 
+                             t.strftime("%Y-%m-%d %H:%M:%S"), $$, p, m]}
+       rescue Exception => e
+         raise e
+       end
+    
+      end
+      
+      # Set the log level. See http://ruby-doc.org/core/classes/Logger.html for more info
+      # Possible values are: 
+      # Logger::FATAL (4):  an unhandleable error that results in a program crash
+      # Logger::ERROR (3):  a handleable error condition
+      # Logger::WARN (2): a warning
+      # Logger::INFO (1): generic (useful) information about system operation
+      # Logger::DEBUG (0):  low-level information for developers
+      def set_log_level(log_level)
+        @logger.level = log_level
+      end
+      
+      def log_level
+        @logger.level
       end
     
       # Create a new workflow 
