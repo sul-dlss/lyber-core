@@ -1,5 +1,3 @@
-
-
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 require 'lyber_core'
 
@@ -11,11 +9,31 @@ end
 
 describe LyberCore::Robots::Robot do
   
+  
+  context "environment loading" do
+  
+    wf_name = "sdrIngestWF"
+    wf_step = "populate-metadata"
+    collection = "baz"
+    valid_logfile = "/tmp/fakelog.log"
+  
+    it "raises an exception if WORKFLOW_URI is not defined" do
+      # remove_const WORKFLOW_URI
+      lambda { robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile) }.should raise_exception(/WORKFLOW_URI is not set/)        
+    end
+      
+  end
+  
+  
   context "initial state" do
     
-    wf_name = "foo"
-    wf_step = "bar"
+    wf_name = "sdrIngestWF"
+    wf_step = "populate-metadata"
     collection = "baz"
+    
+    before :each do
+      require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
+    end
   
     it "has accessor methods" do
       robot = TestRobot.new(wf_name, wf_step, :collection_name => collection)
@@ -38,18 +56,25 @@ describe LyberCore::Robots::Robot do
     # end
   
   end
-  
+
   context "logging" do
+    
+    require 'dor_service'
+    
+    before :each do
+      require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
+    end
     
     wf_name = "sdrIngestWF"
     wf_step = "populate-metadata"
     collection = "baz"
     valid_logfile = "/tmp/fakelog.log"
     invalid_logfile = "/zzxx/fakelog.log"
+    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
     
       it "has a logfile" do
         robot = TestRobot.new(wf_name, wf_step, :collection_name => collection)
-        robot.logfile.should eql("logfile.log")
+        robot.logfile.should eql("/tmp/logfile.log")
       end
       
       it "can set the location of the logfile" do
@@ -82,21 +107,19 @@ describe LyberCore::Robots::Robot do
         robot.log_level.should eql(Logger::DEBUG) 
       end
       
-      it "checks for a workflow_uri" do
-        DorService::WORKFLOW_URI
-      end
-      
-      it "prints debugging statements when in debugging mode" do
-        require 'dor_service'
-        ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")      
+      it "prints debugging statements when in debugging mode" do  
         robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile)
-        puts robot.inspect
+        # puts robot.inspect
         # robot.start
       end
     
   end
     
   context "workflow" do
+    
+    before :each do
+      require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
+    end
     
     require 'dor_service'      
     ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
@@ -106,67 +129,71 @@ describe LyberCore::Robots::Robot do
     it "can inspect its workflow object" do
       robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => workflow_logfile)
       
-      puts robot.workflow.inspect
+      # puts robot.workflow.inspect
     end
   
   end
   
-  it "can accept a single druid for processing" do
-    mock_workflow = mock('workflow')
-    mock_queue = mock('queue')
-    ARGV << "--druid=sdrtwo:blah"
-    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-    robot.get_druid_list[0].should eql("sdrtwo:blah")
+  context "other" do
+  
+    it "can accept a single druid for processing" do
+      mock_workflow = mock('workflow')
+      mock_queue = mock('queue')
+      ARGV << "--druid=sdrtwo:blah"
+      robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+      robot.get_druid_list[0].should eql("sdrtwo:blah")
+    end
+  
+    it "can accept a file of druids for processing" do
+      mock_workflow = mock('workflow')
+      mock_queue = mock('queue')
+      ARGV << "--file=fakefile"
+      robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+      robot.options.file.should eql("fakefile")
+    end
+    
+    # Cucumber passes "--format pretty" as an argument, which can make the robots fail unless
+    # we check for it. 
+    it "shouldn't fail when run by cucumber" do
+      mock_workflow = mock('workflow')
+      mock_queue = mock('queue')
+      ARGV << "--format pretty"
+      lambda { TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain') }.should_not raise_exception()
+    end  
+  
+    it "should process a batch of druids from the Workflow" do    
+      mock_workflow = mock('workflow')
+      mock_queue = mock('queue')
+      robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+      LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
+      mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
+      ARGV.stub!(:size).and_return(0)
+      mock_queue.should_receive(:enqueue_workstep_waiting)
+      robot.should_receive(:process_queue).and_return(nil)
+      robot.start
+    end
+
+    it "should process queue of objects" do
+
+      mock_queue = mock('queue')
+      mock_item = mock('item')
+      mock_mdutils = mock('mdutils')
+      mock_dorservice = mock('dorservice')
+      robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+
+      #Return the mock item the first time, return nil the second time to stop the while loop
+      mock_queue.should_receive(:next_item).and_return(mock_item, nil)
+      mock_queue.should_receive(:print_stats)
+
+      #inside the while loop
+      mock_item.should_receive(:set_success)
+
+      robot.should_receive(:process_item)
+
+      robot.process_queue(mock_queue)
+
+    end
   end
   
-  it "can accept a file of druids for processing" do
-    mock_workflow = mock('workflow')
-    mock_queue = mock('queue')
-    ARGV << "--file=fakefile"
-    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-    robot.options.file.should eql("fakefile")
-  end
-  
-  # Cucumber passes "--format pretty" as an argument, which can make the robots fail unless
-  # we check for it. 
-  it "shouldn't fail when run by cucumber" do
-    mock_workflow = mock('workflow')
-    mock_queue = mock('queue')
-    ARGV << "--format pretty"
-    lambda { TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain') }.should_not raise_exception()
-  end
-  
-  it "should process a batch of druids from the Workflow" do    
-    mock_workflow = mock('workflow')
-    mock_queue = mock('queue')
-    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-    LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
-    mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
-    ARGV.stub!(:size).and_return(0)
-    mock_queue.should_receive(:enqueue_workstep_waiting)
-    robot.should_receive(:process_queue).and_return(nil)
-    robot.start
-  end
-
-  it "should process queue of objects" do
-
-    mock_queue = mock('queue')
-    mock_item = mock('item')
-    mock_mdutils = mock('mdutils')
-    mock_dorservice = mock('dorservice')
-    robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-
-    #Return the mock item the first time, return nil the second time to stop the while loop
-    mock_queue.should_receive(:next_item).and_return(mock_item, nil)
-    mock_queue.should_receive(:print_stats)
-
-    #inside the while loop
-    mock_item.should_receive(:set_success)
-
-    robot.should_receive(:process_item)
-
-    robot.process_queue(mock_queue)
-
-  end
   
 end
