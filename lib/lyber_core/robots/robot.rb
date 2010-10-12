@@ -42,35 +42,60 @@ module LyberCore
         @options.quiet = false
         self.parse_options
         self.start_logging(args)
+        self.create_workflow
       end
 
-      # Setup the logging system
+      # Set up the logging system
       # Pass in the location of the desired logfile as an argument, like this:
       # robot = TestRobot.new(wf_name, wf_step, :logfile => fake_logfile)
-      # If the logfile is not passed in during instantiation, give it a default value
-      def start_logging(args)
-        begin
-          @logfile = "logfile.log"   
+      # If the logfile is not passed in during instantiation, give it a default value of "/tmp/logfile.log"
+      # Pass in the log level of a robot like this:
+      # robot = TestRobot.new(wf_name, wf_step, :loglevel => 0)
+      # where loglevel is one of these:
+      # Logger::FATAL (4):  an unhandleable error that results in a program crash
+      # Logger::ERROR (3):  a handleable error condition
+      # Logger::WARN (2): a warning
+      # Logger::INFO (1): generic (useful) information about system operation
+      # Logger::DEBUG (0):  low-level information for developers
+      def start_logging(args)          
+          @logfile = "/tmp/logfile.log"             
           
           # Check for the presence of args[:logfile] and attempt to open the indicated file
           begin
-            return unless args[:logfile]
-            filename = args[:logfile]
-            File.open(filename, 'w') {}
-            raise "Couldn't open file #{filename} for writing" unless File.writable?(filename) 
-            @logfile = filename
+            if args[:logfile]
+              filename = args[:logfile]
+              File.open(filename, 'w') {}
+              raise "Couldn't open file #{filename} for writing" unless File.writable?(filename) 
+              @logfile = filename
+            end
           rescue Exception => e
-            raise e, "Couldn't initialize logfile: #{e}"
+            raise e, "Couldn't initialize logfile: #{e.backtrace}"
+          end
+          
+          # Instantiate the Logger object with the current logfile value
+          @logger = Logger.new(@logfile)
+
+          # Check for the presence of args[:loglevel] and set the log level appropriately
+          begin
+            if args[:loglevel]
+              loglevel = args[:loglevel]
+              if [0,1,2,3,4].contains? loglevel
+                @logger.level = loglevel
+                @logger.debug "Setting @logger.loglevel to #{loglevel}"
+              else
+                @logger.warn "I received an invalid option for log level. I expected a number between 0 and 4 but I got #{loglevel}"
+                @logger.warn "I'm setting the loglevel to 0 (debug) because you seem to be having trouble."
+                @logger.level = 0
+              end
+            else
+              @logger.level = Logger::ERROR
+            end
+          rescue Exception => e
+            raise e, "Couldn't set log level: #{e.backtrace}"
           end
 
-         
-          @logger = Logger.new(@logfile)
-          @logger.level = Logger::ERROR
           @logger.formatter = proc{|s,t,p,m|"%5s [%s] (%s) %s :: %s\n" % [s, 
                              t.strftime("%Y-%m-%d %H:%M:%S"), $$, p, m]}
-       rescue Exception => e
-         raise e
-       end
     
       end
       
@@ -88,10 +113,22 @@ module LyberCore
       def log_level
         @logger.level
       end
+      
+      # Create the workflow at instantiation, not when we start running the robot
+      # That way we can do better error checking and ensure that everything is going
+      # to run okay before we actually start things
+      def create_workflow
+        puts "Creating workflow!"
+        puts self.logger.level
+        @logger.debug("About to instatiate a Workflow object: LyberCore::Robots::Workflow.new(#{@workflow_name},#{collection_name}")
+        @workflow = LyberCore::Robots::Workflow.new(@workflow_name, @collection_name)
+        
+      end
     
       # Create a new workflow 
       def start()
-        @workflow = LyberCore::Robots::Workflow.new(@workflow_name, @collection_name)
+        
+        
         if(@opts[:workspace] == true)
           @workspace = LyberCore::Robots::Workspace.new(@workflow_name, @collection_name)
         end

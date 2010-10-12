@@ -41,8 +41,8 @@ describe LyberCore::Robots::Robot do
   
   context "logging" do
     
-    wf_name = "foo"
-    wf_step = "bar"
+    wf_name = "sdrIngestWF"
+    wf_step = "populate-metadata"
     collection = "baz"
     valid_logfile = "/tmp/fakelog.log"
     invalid_logfile = "/zzxx/fakelog.log"
@@ -71,9 +71,45 @@ describe LyberCore::Robots::Robot do
         robot.set_log_level(Logger::DEBUG)
         robot.log_level.should eql(Logger::DEBUG) 
       end
+      
+      it "can be instantiated in debug mode (log level 0)" do
+        robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile, :loglevel => 0)
+        robot.log_level.should eql(Logger::DEBUG) 
+      end
+      
+      it "goes into debug mode if it receives an invalid option for loglevel" do
+        robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile, :loglevel => "foo")
+        robot.log_level.should eql(Logger::DEBUG) 
+      end
+      
+      it "checks for a workflow_uri" do
+        DorService::WORKFLOW_URI
+      end
+      
+      it "prints debugging statements when in debugging mode" do
+        require 'dor_service'
+        ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")      
+        robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile)
+        puts robot.inspect
+        # robot.start
+      end
     
   end
+    
+  context "workflow" do
+    
+    require 'dor_service'      
+    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
+    workflow_logfile = "/tmp/workflow_testing.log"
+    
+    
+    it "can inspect its workflow object" do
+      robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => workflow_logfile)
+      
+      puts robot.workflow.inspect
+    end
   
+  end
   
   it "can accept a single druid for processing" do
     mock_workflow = mock('workflow')
