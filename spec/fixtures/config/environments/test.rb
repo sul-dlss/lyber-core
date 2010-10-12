@@ -25,8 +25,7 @@ KEY_PASS = 'lstest'
 #SDR_DEPOSIT_HOME='/convert/dor/dev'
 #SDR_TRIGGER_HOME='/convert/outbound/status-dev'
 
-ENABLE_SOLR_UPDATES = false
-
+ENABLE_SOLR_UPDATES = false unless defined? ENABLE_SOLR_UPDATES
 
 DOR_WORKSPACE_DIR="/tmp/dorWorkspaceDir"
 SDR_DEPOSIT_DIR=File.expand_path(File.dirname(__FILE__)) << '/../../sdr2_example_objects'
