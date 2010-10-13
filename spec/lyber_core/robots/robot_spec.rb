@@ -157,6 +157,11 @@ describe LyberCore::Robots::Robot do
       robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => workflow_logfile)
       robot.workflow.repository.should eql("sdr")
     end
+    
+    it "shares a logger object with its workflow object" do
+      robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => workflow_logfile)
+      robot.workflow.logger.should eql(robot.logger)
+    end
   
   end
   
