@@ -13,7 +13,7 @@ module LyberCore
       def initialize(workflow_name, collection_name=nil)
         
         # ROBOT_ROOT must be set before invoking a robot
-        raise "ROBOT_ROOT isn't set. Please set it to point to where your config files live." unless ROBOT_ROOT
+        raise "ROBOT_ROOT isn't set. Please set it to point to where your config files live." unless defined? ROBOT_ROOT
         
         @workflow_name = workflow_name
         @collection_name = collection_name
