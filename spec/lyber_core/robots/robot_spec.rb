@@ -3,23 +3,23 @@ require 'lyber_core'
 require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")  
 
 describe LyberCore::Robots::Robot do
-  
-  
-  context "environment loading" do
-  
+    
+  describe "environment loading" do
+      
     wf_name = "sdrIngestWF"
     wf_step = "populate-metadata"
     collection = "baz"
     valid_logfile = "/tmp/fakelog.log"
   
     it "raises an exception if WORKFLOW_URI is not defined" do
+      pending "This test passes when run on its own, but undefining WORKFLOW_URI seems to break the other tests"
       Object.send(:remove_const, :WORKFLOW_URI) if defined? WORKFLOW_URI
       lambda { robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile) }.should raise_exception(/WORKFLOW_URI is not set/)        
     end
       
   end
   
-  context "initial state" do
+  describe "initial state" do
     
     wf_name = "sdrIngestWF"
     wf_step = "populate-metadata"
@@ -54,10 +54,10 @@ describe LyberCore::Robots::Robot do
   context "logging" do
     
     require 'dor_service'
-    
-    before :each do
-      require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
-    end
+    # path = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb") 
+    # puts path
+    require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
+    puts WORKFLOW_URI
     
     wf_name = "sdrIngestWF"
     wf_step = "populate-metadata"
@@ -65,6 +65,7 @@ describe LyberCore::Robots::Robot do
     valid_logfile = "/tmp/fakelog.log"
     invalid_logfile = "/zzxx/fakelog.log"
     ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
+    WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
     
       it "has a logfile" do
         robot = TestRobot.new(wf_name, wf_step, :collection_name => collection)
