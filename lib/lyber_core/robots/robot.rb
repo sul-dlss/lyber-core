@@ -45,18 +45,20 @@ module LyberCore
         self.create_workflow
       end
 
-      # Set up the logging system
-      # Pass in the location of the desired logfile as an argument, like this:
-      # robot = TestRobot.new(wf_name, wf_step, :logfile => fake_logfile)
-      # If the logfile is not passed in during instantiation, give it a default value of "/tmp/logfile.log"
-      # Pass in the log level of a robot like this:
-      # robot = TestRobot.new(wf_name, wf_step, :loglevel => 0)
-      # where loglevel is one of these:
-      # Logger::FATAL (4):  an unhandleable error that results in a program crash
-      # Logger::ERROR (3):  a handleable error condition
-      # Logger::WARN (2): a warning
-      # Logger::INFO (1): generic (useful) information about system operation
-      # Logger::DEBUG (0):  low-level information for developers
+      # ===== Set up the logging system
+      # ===== Pass in the location of the desired logfile as an argument, like this:
+      #   robot = TestRobot.new(wf_name, wf_step, :logfile => "/path/to/logfile.log")
+      # ===== If the logfile is not passed in during instantiation, it gets a default value of 
+      #   /tmp/logfile.log
+      # ===== Pass in the log level of a robot like this:
+      #   robot = TestRobot.new(wf_name, wf_step, :loglevel => 0)
+      # ===== where loglevel is one of these:
+      #   Logger::FATAL (4):  an unhandleable error that results in a program crash
+      #   Logger::ERROR (3):  a handleable error condition
+      #   Logger::WARN (2): a warning
+      #   Logger::INFO (1): generic (useful) information about system operation
+      #   Logger::DEBUG (0):  low-level information for developers
+      # ===== An invalid option passed to :loglevel will put the robot in debug mode
       def start_logging(args)          
           @logfile = "/tmp/logfile.log"             
           
@@ -99,24 +101,26 @@ module LyberCore
     
       end
       
-      # Set the log level. See http://ruby-doc.org/core/classes/Logger.html for more info
+      # === Set the log level. 
+      # See http://ruby-doc.org/core/classes/Logger.html for more info. 
       # Possible values are: 
-      # Logger::FATAL (4):  an unhandleable error that results in a program crash
-      # Logger::ERROR (3):  a handleable error condition
-      # Logger::WARN (2): a warning
-      # Logger::INFO (1): generic (useful) information about system operation
-      # Logger::DEBUG (0):  low-level information for developers
+      #   Logger::FATAL (4):  an unhandleable error that results in a program crash
+      #   Logger::ERROR (3):  a handleable error condition
+      #   Logger::WARN (2): a warning
+      #   Logger::INFO (1): generic (useful) information about system operation
+      #   Logger::DEBUG (0):  low-level information for developers
       def set_log_level(log_level)
         @logger.level = log_level
       end
       
+      # === Returns the current log level of the robot
       def log_level
         @logger.level
       end
       
-      # Create the workflow at instantiation, not when we start running the robot
+      # Create the workflow at instantiation, not when we start running the robot.
       # That way we can do better error checking and ensure that everything is going
-      # to run okay before we actually start things
+      # to run okay before we actually start things.
       def create_workflow
         unless defined?(WORKFLOW_URI)
           @logger.fatal "FATAL: WORKFLOW_URI is not defined"
@@ -129,7 +133,7 @@ module LyberCore
         
       end
     
-      # Create a new workflow 
+      # == Create a new workflow 
       def start()
         
         
