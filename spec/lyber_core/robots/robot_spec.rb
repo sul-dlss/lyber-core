@@ -1,11 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 require 'lyber_core'
-
-class TestRobot < LyberCore::Robots::Robot
-  def process_item(work_item)
-    #nada for now
-  end
-end
+require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")  
 
 describe LyberCore::Robots::Robot do
   
@@ -18,12 +13,11 @@ describe LyberCore::Robots::Robot do
     valid_logfile = "/tmp/fakelog.log"
   
     it "raises an exception if WORKFLOW_URI is not defined" do
-      # remove_const WORKFLOW_URI
+      Object.send(:remove_const, :WORKFLOW_URI) if defined? WORKFLOW_URI
       lambda { robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile) }.should raise_exception(/WORKFLOW_URI is not set/)        
     end
       
   end
-  
   
   context "initial state" do
     
@@ -122,14 +116,12 @@ describe LyberCore::Robots::Robot do
     end
     
     require 'dor_service'      
-    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
+    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures") unless defined? ROBOT_ROOT
     workflow_logfile = "/tmp/workflow_testing.log"
-    
     
     it "can inspect its workflow object" do
       robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => workflow_logfile)
-      
-      # puts robot.workflow.inspect
+      robot.workflow.repository.should eql("sdr")
     end
   
   end
@@ -161,16 +153,23 @@ describe LyberCore::Robots::Robot do
       lambda { TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain') }.should_not raise_exception()
     end  
   
-    it "should process a batch of druids from the Workflow" do    
-      mock_workflow = mock('workflow')
-      mock_queue = mock('queue')
-      robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-      LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
-      mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
-      ARGV.stub!(:size).and_return(0)
-      mock_queue.should_receive(:enqueue_workstep_waiting)
-      robot.should_receive(:process_queue).and_return(nil)
-      robot.start
+    it "should process a batch of druids from the Workflow" do   
+      
+      require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
+
+      robot = TestRobot.new("googleScannedBook", "descriptive-metadata", :collection_name => 'publicDomain')
+      puts robot.workflow.inspect
+      puts robot.workflow.queue('descriptive-metadata')
+
+      # mock_workflow = mock('workflow')
+      # mock_queue = mock('queue')
+      # robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
+      # LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
+      # mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
+      # ARGV.stub!(:size).and_return(0)
+      # mock_queue.should_receive(:enqueue_workstep_waiting)
+      # robot.should_receive(:process_queue).and_return(nil)
+      # robot.start
     end
 
     it "should process queue of objects" do
