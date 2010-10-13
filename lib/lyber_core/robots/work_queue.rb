@@ -29,6 +29,8 @@ module LyberCore
       attr_reader :start_time
       attr_reader :end_time
       attr :elapsed_time
+      
+      attr_reader :config_file
 
 
       # Create a new WorkQueue object for the specified step,
@@ -49,19 +51,25 @@ module LyberCore
           @error_limit = 1
           return
         end
-        begin
-          config_file = File.join(@workflow.workflow_config_dir, 'process-config.yaml')
+        
+        self.process_config_file
+
+      end
+      
+      def process_config_file
+          
+          puts "@workflow.workflow_config_dir = #{@workflow.workflow_config_dir}"
+          
+          @config_file = File.join(@workflow.workflow_config_dir, 'process-config.yaml')
+          
+          # Does the file exist?
+          raise "Can't open process-config file #{@config_file}" unless File.file? @config_file
+          
           process_config = YAML.load_file(config_file)
-          @prerequisite = process_config[@workflow_step]['prerequisite']
-          @batch_limit = process_config[@workflow_step]['batch_limit']  
-          @error_limit = process_config[@workflow_step]['error_limit']
-        rescue Exception => e
-          puts "error processing config_file #{config_file}"
-          puts "error details - #{e.inspect}"
-          puts e.backtrace
-          puts  process_config.inspect
-          raise "could not initialize queue for #{@workflow_step}"
-        end
+          # @prerequisite = process_config[@workflow_step]['prerequisite']
+          # @batch_limit = process_config[@workflow_step]['batch_limit']  
+          # @error_limit = process_config[@workflow_step]['error_limit']
+
       end
 
       # Explicitly specify a set of druids to be processed by the workflow step
