@@ -54,10 +54,8 @@ describe LyberCore::Robots::Robot do
   context "logging" do
     
     require 'dor_service'
-    # path = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb") 
-    # puts path
+    require 'dlss_service'
     require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
-    puts WORKFLOW_URI
     
     wf_name = "sdrIngestWF"
     wf_step = "populate-metadata"
@@ -102,11 +100,46 @@ describe LyberCore::Robots::Robot do
         robot.log_level.should eql(Logger::DEBUG) 
       end
       
-      it "prints debugging statements when in debugging mode" do  
-        robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile)
-        # puts robot.inspect
-        # robot.start
+      it "can write to the log file" do
+        onetimefile = "/tmp/onetimefile"
+        (File.exists? onetimefile).should eql(false)
+        robot = TestRobot.new(wf_name, wf_step, :logfile => onetimefile)
+        (File.file? onetimefile).should eql(true)
+        robot.logger.error("This is an error")
+        robot.logger.debug("Debug info 1")
+        robot.logger.info("This is some info")
+        robot.logger.error("This is another error")
+        contents = open(onetimefile) { |f| f.read }
+        contents.should match(/This is an error/)
+        contents.should match(/This is another error/)
+        contents.should_not match(/This is some info/)
+        contents.should_not match(/Debug info 1/)
+        File.delete onetimefile
+        (File.exists? onetimefile).should eql(false)
+        
       end
+      
+      it "prints debugging statements when in debugging mode" do
+        onetimefile = "/tmp/debugfile"
+        (File.exists? onetimefile).should eql(false)
+        robot = TestRobot.new(wf_name, wf_step, :logfile => onetimefile, :loglevel => 0)
+        (File.file? onetimefile).should eql(true)
+        robot.logger.debug("Debug info 1")
+        robot.logger.fatal("Oh nooooo!")
+        robot.logger.debug("More debug stuff")
+        robot.logger.info("And here is some info")
+        contents = open(onetimefile) { |f| f.read }
+        contents.should match(/Debug info 1/)
+        contents.should match(/Oh nooooo!/)
+        File.delete onetimefile
+        (File.exists? onetimefile).should eql(false)
+      end
+      
+      # it "prints debugging statements when in debugging mode" do  
+      #   robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile)
+      #   # puts robot.inspect
+      #   # robot.start
+      # end
     
   end
     
