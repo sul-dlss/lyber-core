@@ -1,3 +1,4 @@
+require 'logger'
 
 module LyberCore
   module Robots
@@ -9,14 +10,27 @@ module LyberCore
       attr_reader :workflow_config_dir
       attr_reader :collection_config_dir
       attr_reader :workflow_config
+      # This logger object is created by a robot and passed to the workflow object
+      attr_reader :logger 
 
-      def initialize(workflow_name, collection_name=nil)
-        
+      # The +new+ class method initializes the class.
+      # === Parameters
+      # * _workflow_name_ = hopefully self-explanatory
+      # === Options
+      # * _:collection_name_ = the name of a collection to process
+      # === Example
+      #   @wf = LyberCore::Robots::Workflow.new(wf_name, {:logger => logger, :collection_name => collection})
+      def initialize(workflow_name, options = {})
         # ROBOT_ROOT must be set before invoking a robot
         raise "ROBOT_ROOT isn't set. Please set it to point to where your config files live." unless defined? ROBOT_ROOT
         
         @workflow_name = workflow_name
-        @collection_name = collection_name
+        
+        # Most of the time we should receive an existing Logger object from 
+        # the robot, but if we don't receive one, make a new one.
+        @logger = options[:logger] ? options[:logger] : Logger.new("/tmp/workflow.log")
+                
+        @collection_name = options[:collection_name]
 
         # can override the default location of workflow config files
         # by setting WORKFLOW_CONFIG_HOME environmental variable
@@ -29,6 +43,7 @@ module LyberCore
         end
         
         @workflow_config_dir = File.join(config_home, @workflow_name )
+        @logger.debug("@workflow_config_dir = #{@workflow_config_dir}")
         @collection_config_dir = File.join(@workflow_config_dir, @collection_name ) if(@collection_name)
         workflow_config_file = File.join(@workflow_config_dir, 'workflow-config.yaml')
         if (File.exist?(workflow_config_file))
