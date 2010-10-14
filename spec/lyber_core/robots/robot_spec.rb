@@ -11,11 +11,11 @@ describe LyberCore::Robots::Robot do
     collection = "baz"
     valid_logfile = "/tmp/fakelog.log"
   
-    it "raises an exception if WORKFLOW_URI is not defined" do
-      pending "This test passes when run on its own, but undefining WORKFLOW_URI seems to break the other tests"
-      Object.send(:remove_const, :WORKFLOW_URI) if defined? WORKFLOW_URI
-      lambda { robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile) }.should raise_exception(/WORKFLOW_URI is not set/)        
-    end
+    # it "raises an exception if WORKFLOW_URI is not defined" do
+    #   pending "This test passes when run on its own, but undefining WORKFLOW_URI seems to break the other tests"
+    #   Object.send(:remove_const, :WORKFLOW_URI) if defined? WORKFLOW_URI
+    #   lambda { robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => valid_logfile) }.should raise_exception(/WORKFLOW_URI is not set/)        
+    # end
       
   end
   
@@ -102,7 +102,7 @@ describe LyberCore::Robots::Robot do
       
       it "can write to the log file" do
         onetimefile = "/tmp/onetimefile"
-        (File.exists? onetimefile).should eql(false)
+        File.delete onetimefile if File.exists? onetimefile
         robot = TestRobot.new(wf_name, wf_step, :logfile => onetimefile)
         (File.file? onetimefile).should eql(true)
         robot.logger.error("This is an error")
@@ -121,7 +121,7 @@ describe LyberCore::Robots::Robot do
       
       it "prints debugging statements when in debugging mode" do
         onetimefile = "/tmp/debugfile"
-        (File.exists? onetimefile).should eql(false)
+        File.delete onetimefile if File.exists? onetimefile
         robot = TestRobot.new(wf_name, wf_step, :logfile => onetimefile, :loglevel => 0)
         (File.file? onetimefile).should eql(true)
         robot.logger.debug("Debug info 1")
