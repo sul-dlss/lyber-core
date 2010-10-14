@@ -129,7 +129,7 @@ module LyberCore
           raise "WORKFLOW_URI is not set! Do you need to set your ROBOT_ENVIRONMENT value?"
         end
         @logger.debug("About to instatiate a Workflow object: LyberCore::Robots::Workflow.new(#{@workflow_name},#{collection_name}")
-        @workflow = LyberCore::Robots::Workflow.new(@workflow_name, @logger, @collection_name)
+        @workflow = LyberCore::Robots::Workflow.new(@workflow_name, {:logger => @logger, :collection_name => @collection_name})
         
       end
     
