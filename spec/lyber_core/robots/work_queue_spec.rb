@@ -13,12 +13,12 @@ describe LyberCore::Robots::WorkQueue do
     workflow_step = "descriptive-metadata"
   
     it "instantiates a WorkQueue" do
-      robot = TestRobot.new(workflow_name, workflow_step, :collection_name => 'publicDomain')
+      robot = TestRobot.new(workflow_name, workflow_step, {:collection_name => 'publicDomain'})
       wq = LyberCore::Robots::WorkQueue.new(robot.workflow, workflow_step) 
     end
    
    it "can tell you where its config file is" do
-     robot = TestRobot.new(workflow_name, workflow_step, :collection_name => 'publicDomain')
+     robot = TestRobot.new(workflow_name, workflow_step, {:collection_name => 'publicDomain'})
      wq = LyberCore::Robots::WorkQueue.new(robot.workflow, workflow_step)
      puts wq.config_file
    end
