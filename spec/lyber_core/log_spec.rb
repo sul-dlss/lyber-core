@@ -10,26 +10,25 @@ describe LyberCore::Log do
     wf_name = "sdrIngestWF"
      wf_step = "populate-metadata"
      collection = "baz"
+     default_logfile = "/tmp/lybercore_log.log"
      valid_logfile = "/tmp/fakelog.log"
      invalid_logfile = "/zzxx/fakelog.log"
      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
      WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
      
     it "has a default value for logfile" do
-      LyberCore::Log.logfile.should eql("/tmp/lybercore_log.log")
+      LyberCore::Log.logfile.should eql(default_logfile)
     end
     
-    
-          # 
-          # it "can set the location of the logfile" do
-          #   robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile)
-          #   robot.logfile.should eql(valid_logfile)
-          # end
-          # 
-          # it "throws an error if passed an invalid location for a logfile" do
-          #   lambda { robot = TestRobot.new(wf_name, wf_step, :logfile => invalid_logfile) }.should raise_exception(/Couldn't initialize logfile/)        
-          # end
-          # 
+    it "can set the location of the logfile" do
+      LyberCore::Log.set_logfile(valid_logfile)
+      LyberCore::Log.logfile.should eql(valid_logfile)
+    end
+
+    it "throws an error if passed an invalid location for a logfile" do
+      lambda { LyberCore::Log.set_logfile(invalid_logfile)}.should raise_exception(/Couldn't initialize logfile/)         
+    end
+
           # it "starts in error reporting mode (log level 3)" do
           #   robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile)
           #   robot.log_level.should eql(Logger::ERROR) 
