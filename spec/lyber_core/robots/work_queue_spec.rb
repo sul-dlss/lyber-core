@@ -5,7 +5,7 @@ require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")
 
 describe LyberCore::Robots::WorkQueue do
   
-  workflow_name = "googleScannedBook"
+  workflow_name = "googleScannedBookWF"
     
   context "initial state" do
     ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
