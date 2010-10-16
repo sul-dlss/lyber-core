@@ -5,12 +5,17 @@ require 'cgi'
 module LyberCore
   class Connection
     def Connection.get_https_connection(url)
+      LyberCore::Log.debug("Establishing connection to #{url.host} on port #{url.port}")
       https = Net::HTTP.new(url.host, url.port)
       if(url.scheme == 'https')
         https.use_ssl = true
+        LyberCore::Log.debug("Using SSL")
         https.cert = OpenSSL::X509::Certificate.new( File.read(LyberCore::CERT_FILE) )
+        LyberCore::Log.debug("Using cert file #{LyberCore::CERT_FILE}")
         https.key = OpenSSL::PKey::RSA.new( File.read(LyberCore::KEY_FILE), LyberCore::KEY_PASS )
+        LyberCore::Log.debug("Using key file #{LyberCore::KEY_FILE} with pass #{LyberCore::KEY_PASS}")
         https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        LyberCore::Log.debug("https.verify_mode = #{https.verify_mode} (should eql #{OpenSSL::SSL::VERIFY_NONE})")
       end
       https
     end
