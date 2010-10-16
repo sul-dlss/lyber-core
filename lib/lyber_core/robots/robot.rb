@@ -26,6 +26,8 @@ module LyberCore
       # - :collection_name - The collection this workflow should work with.  
       #   Defined as a subdirectory within ROBOT_ROOT/config/workflows/your_workflow/your_collection
       # - :workspace - Full path of where to find content for a particular workflow
+      # - :logfile - Where to write log messages
+      # - :loglevel - Level of logging from 0 - 4 where 0 = DEBUG and 4 = FATAL
       def initialize(workflow_name, workflow_step, args = {})
         @workflow_name = workflow_name
         @workflow_step = workflow_step
@@ -33,6 +35,7 @@ module LyberCore
         @opts = args
         
         LyberCore::Log.set_logfile(args[:logfile]) if args[:logfile] 
+        LyberCore::Log.set_level(args[:loglevel]) if args[:loglevel] 
       
         # Set defaults
         @options = OpenStruct.new

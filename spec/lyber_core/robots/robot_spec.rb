@@ -59,19 +59,26 @@ describe LyberCore::Robots::Robot do
     
     wf_name = "sdrIngestWF"
     wf_step = "populate-metadata"
-    collection = "baz"
     valid_logfile = "/tmp/fakelog.log"
     invalid_logfile = "/zzxx/fakelog.log"
-    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
-    WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
-    
-      it "can set the location of the log file when it is created" do
-        workflow_logfile = "/tmp/workflow_testing.log"
-        robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => workflow_logfile)
-        LyberCore::Log.logfile.should eql(workflow_logfile)
-      end
-      
+ 
+    before :each do
+      LyberCore::Log.restore_defaults
     end
+  
+    it "can set the location of the log file when it is created" do
+      robot = TestRobot.new(wf_name, wf_step, :logfile => valid_logfile)
+      LyberCore::Log.logfile.should eql(valid_logfile)
+    end
+  
+    it "can set the log level when it is created" do
+      robot = TestRobot.new(wf_name, wf_step, 
+        :loglevel => Logger::DEBUG, 
+        :logfile => valid_logfile)
+      LyberCore::Log.level.should eql(Logger::DEBUG)       
+    end
+      
+  end
       
     context "workflow" do
       
@@ -122,8 +129,8 @@ describe LyberCore::Robots::Robot do
                 require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
             
                 robot = TestRobot.new("googleScannedBook", "descriptive-metadata", :collection_name => 'publicDomain')
-                puts robot.workflow.inspect
-                puts robot.workflow.queue('descriptive-metadata')
+                # puts robot.workflow.inspect
+                # puts robot.workflow.queue('descriptive-metadata')
             
                 # mock_workflow = mock('workflow')
                 # mock_queue = mock('queue')
