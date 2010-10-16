@@ -5,23 +5,30 @@ module LyberCore
     require 'logger'
         
     # Default values
-    default_log_level = 3
+    DEFAULT_LOGFILE = "/tmp/lybercore_log.log"
+    DEFAULT_LOG_LEVEL = 3
+    DEFAULT_FORMATTER = proc{|s,t,p,m|"%5s [%s] (%s) %s :: %s\n" % [s, 
+                       t.strftime("%Y-%m-%d %H:%M:%S"), $$, p, m]}
         
-    @@logfile = "/tmp/lybercore_log.log"
+    # Initial state
+    @@logfile = DEFAULT_LOGFILE
     @@log ||= Logger.new(@@logfile)
-    @@log.level = default_log_level
-    # @@log = Logger.new()
+    @@log.level = DEFAULT_LOG_LEVEL
+    @@log.formatter = DEFAULT_FORMATTER
     
-      # @logfile = logfile ? logfile : "/tmp/lybercore_logger.log"
-  
+    # Restore LyberCore::Log to its default state
+    def Log.restore_defaults
+      @@log.level = DEFAULT_LOG_LEVEL
+      Log.set_logfile(DEFAULT_LOGFILE)
+      @@log.formatter = DEFAULT_FORMATTER
+    end
+      
     # The current location of the logfile
     def Log.logfile
       return @@logfile
     end
-  
-    # def Log.log
-    #   return @@log
-    # end
+    
+
     
     # Accepts a filename as an argument, and checks to see whether that file can be 
     # opened for writing. If it can be opened, it closes the existing Logger object
@@ -32,8 +39,13 @@ module LyberCore
       begin
         File.open(new_logfile, 'w') {}
         raise "Couldn't open file #{new_logfile} for writing" unless File.writable?(new_logfile) 
+        
+        current_log_level = @@log.level
+        current_formatter = @@log.formatter
         @@logfile = new_logfile
-        @@log ||= Logger.new(@@logfile)      
+        @@log = Logger.new(@@logfile)    
+        @@log.level = current_log_level
+        @@log.formatter = current_formatter
       rescue Exception => e
         raise e, "Couldn't initialize logfile #{new_logfile}: #{e.backtrace}"
       end
@@ -66,6 +78,26 @@ module LyberCore
     # Return the current log level
     def Log.level
       @@log.level
+    end
+    
+    def Log.fatal(msg)
+      @@log.fatal(msg)
+    end
+    
+    def Log.error(msg)
+      @@log.error(msg)
+    end
+    
+    def Log.warn(msg)
+      @@log.warn(msg)
+    end
+    
+    def Log.info(msg)
+      @@log.info(msg)
+    end
+    
+    def Log.debug(msg)
+      @@log.debug(msg)
     end
     
     
