@@ -13,7 +13,7 @@ describe LyberCore::Robots::WorkQueue do
     workflow_step = "descriptive-metadata"
   
     it "instantiates a WorkQueue" do
-      robot = TestRobot.new(workflow_name, workflow_step, {:collection_name => 'publicDomain', :loglevel => 0, :logfile => "/tmp/workqueue.log"})
+      robot = TestRobot.new(workflow_name, workflow_step, {:collection_name => 'publicDomain', :loglevel => 0})
       puts robot.workflow.inspect
       wq = LyberCore::Robots::WorkQueue.new(robot.workflow, workflow_step) 
     end
