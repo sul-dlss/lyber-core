@@ -49,13 +49,15 @@ module LyberCore
       # That way we can do better error checking and ensure that everything is going
       # to run okay before we actually start things.
       def create_workflow
+        
         unless defined?(WORKFLOW_URI)
           LyberCore::Log.fatal "FATAL: WORKFLOW_URI is not defined"
           LyberCore::Log.fatal "Usually this is a value like 'http://lyberservices-dev.stanford.edu/workflow'"
           LyberCore::Log.fatal "Usually you load it by setting ROBOT_ENVIRONMENT when you invoke your robot"
           raise "WORKFLOW_URI is not set! Do you need to set your ROBOT_ENVIRONMENT value?"
         end
-        LyberCore::Log.debug("About to instatiate a Workflow object: LyberCore::Robots::Workflow.new(#{@workflow_name},#{collection_name}")
+        LyberCore::Log.debug("About to instatiate a Workflow object
+            -- LyberCore::Robots::Workflow.new(#{@workflow_name},#{collection_name}")
         @workflow = LyberCore::Robots::Workflow.new(@workflow_name, {:logger => @logger, :collection_name => @collection_name})
         
       end
@@ -63,9 +65,10 @@ module LyberCore
       # == Create a new workflow 
       def start()
         
-        
+        LyberCore::Log.debug("Starting robot...")
         if(@opts[:workspace] == true)
           @workspace = LyberCore::Robots::Workspace.new(@workflow_name, @collection_name)
+          LyberCore::Log.debug("workspace = #{workspace.inspect}")
         end
         queue = @workflow.queue(@workflow_step)
       
