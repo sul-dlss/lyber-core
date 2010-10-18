@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'bundler'
 
+Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
 begin
   Bundler.setup(:default, :development)
@@ -101,16 +102,5 @@ end
 
 task :spec => :check_dependencies
 
-task :default => :verify_rcov
-
-require 'hanna/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "lyber-core #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
-
+task :default => [:clean, :verify_rcov]
 

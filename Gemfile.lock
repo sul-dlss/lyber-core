@@ -6,7 +6,7 @@ GEM
     actionpack (2.3.9)
       activesupport (= 2.3.9)
       rack (~> 1.1.0)
-    active-fedora (1.2.2)
+    active-fedora (1.2.3)
       mime-types (>= 1.16)
       multipart-post
       nokogiri
@@ -20,11 +20,7 @@ GEM
     facets (2.8.4)
     gemcutter (0.6.1)
     git (1.2.5)
-    haml (2.2.24)
-    hanna (0.1.12)
-      haml (~> 2.2.8)
-      rake (~> 0.8.2)
-      rdoc (~> 2.3.0)
+    haml (3.0.21)
     jeweler (1.4.0)
       gemcutter (>= 0.1.0)
       git (>= 1.2.5)
@@ -60,6 +56,7 @@ GEM
     systemu (1.2.0)
     validatable (1.6.7)
     xml-simple (1.0.12)
+    yard (0.6.1)
 
 PLATFORMS
   ruby
@@ -74,7 +71,6 @@ DEPENDENCIES
   gemcutter (>= 0.6.1)
   git (>= 1.2.5)
   haml (>= 2.2.24)
-  hanna (>= 0.1.12)
   jeweler (>= 1.4)
   json_pure (>= 1.4.6)
   linecache (>= 0.43)
@@ -95,3 +91,4 @@ DEPENDENCIES
   systemu (>= 1.2.0)
   validatable
   xml-simple (= 1.0.12)
+  yard
