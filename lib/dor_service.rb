@@ -237,19 +237,35 @@ class DorService
   #     <object druid="dr:123" url="http://localhost:9999/jersey-spring/objects/dr:123%5c" />
   #     <object druid="dr:abc" url="http://localhost:9999/jersey-spring/objects/dr:abc%5c" />
   #   </objects>
- 
   def DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
-    begin
-      url = URI.parse(WORKFLOW_URI + '/workflow_queue?repository=' + repository + '&workflow=' + workflow + '&completed=' + completed + '&waiting=' + waiting)
-puts url
+    LyberCore::Log.debug("DorService.get_objects_for_workstep(#{repository}, #{workflow}, #{completed}, #{waiting})")
+    begin  
+      if repository.nil? or workflow.nil? or completed.nil? or waiting.nil?
+        LyberCore::Log.fatal("Can't execute DorService.get_objects_for_workstep: missing info")
+      end
+      
+      unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
+        LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
+        raise "WORKFLOW_URI is not set"   
+      end
+      
+      uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&completed=#{completed}&waiting=#{waiting}"
+      LyberCore::Log.info("Attempting to connect to #{uri_string}")
+      url = URI.parse(uri_string)
       req = Net::HTTP::Get.new(url.request_uri)
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res
         when Net::HTTPSuccess
           return res.body
         else
-          $stderr.print "Workflow queue not found for " + workflow + ":" + waiting
-          return nil
+          LyberCore::Log.fatal("Workflow queue not found for #{workflow} : #{waiting}")
+          LyberCore::Log.debug("I am attempting to connect to WORKFLOW_URI #{WORKFLOW_URI}")
+          LyberCore::Log.debug("repository: #{repository}")
+          LyberCore::Log.debug("workflow: #{workflow}")
+          LyberCore::Log.debug("completed: #{completed}")
+          LyberCore::Log.debug("waiting: #{waiting}")
+          LyberCore::Log.debug(res.inspect)
+          raise "Could not connect to url"
        end
     end 
   end
