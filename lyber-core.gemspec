@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{lyber-core}
-  s.version = "0.9.4.3"
+  s.version = "0.9.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-10-01}
+  s.date = %q{2010-10-18}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -35,6 +35,7 @@ Also contains core classes to build robots}
      "lib/dor_service.rb",
      "lib/lyber_core.rb",
      "lib/lyber_core/connection.rb",
+     "lib/lyber_core/log.rb",
      "lib/lyber_core/robots/robot.rb",
      "lib/lyber_core/robots/work_item.rb",
      "lib/lyber_core/robots/work_queue.rb",
@@ -54,10 +55,20 @@ Also contains core classes to build robots}
      "spec/dor/suri_service_spec.rb",
      "spec/dor/workflow_servce_spec.rb",
      "spec/dor_service_spec.rb",
+     "spec/fixtures/config/environments/test.rb",
+     "spec/fixtures/config/workflows/googleScannedBookWF/process-config.yaml",
+     "spec/fixtures/config/workflows/googleScannedBookWF/workflow-config.yaml",
+     "spec/fixtures/config/workflows/sdrIngestWF/process-config.yaml",
+     "spec/fixtures/config/workflows/sdrIngestWF/sdrIngestWF.xml",
+     "spec/fixtures/config/workflows/sdrIngestWF/workflow-config.yaml",
      "spec/fixtures/queue.xml",
      "spec/lyber_core/connection_spec.rb",
+     "spec/lyber_core/log_spec.rb",
      "spec/lyber_core/robots/robot_spec.rb",
+     "spec/lyber_core/robots/test_robot.rb",
      "spec/lyber_core/robots/work_item_spec.rb",
+     "spec/lyber_core/robots/work_queue_spec.rb",
+     "spec/lyber_core/robots/workflow_spec.rb",
      "spec/lyber_core/utils/checksum_validate_spec.rb",
      "spec/lyber_core/utils/file_transfer_spec.rb",
      "spec/spec.opts",
@@ -94,9 +105,13 @@ Also contains core classes to build robots}
      "spec/dor/suri_service_spec.rb",
      "spec/dor/workflow_servce_spec.rb",
      "spec/dor_service_spec.rb",
+     "spec/fixtures/config/environments/test.rb",
      "spec/lyber_core/connection_spec.rb",
+     "spec/lyber_core/log_spec.rb",
      "spec/lyber_core/robots/robot_spec.rb",
+     "spec/lyber_core/robots/test_robot.rb",
      "spec/lyber_core/robots/work_item_spec.rb",
+     "spec/lyber_core/robots/work_queue_spec.rb",
      "spec/lyber_core/robots/workflow_spec.rb",
      "spec/lyber_core/utils/checksum_validate_spec.rb",
      "spec/lyber_core/utils/file_transfer_spec.rb",
