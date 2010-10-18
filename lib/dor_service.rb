@@ -151,17 +151,23 @@ class DorService
   # e.g. FEDORA_URI + /objects/ + druid + /datastreams/dor/content gets "dor" datastream content
   def DorService.get_datastream(druid, ds_id)
     begin
+      LyberCore::Log.debug("Connecting to #{FEDORA_URI}...")
       url = URI.parse(FEDORA_URI + '/objects/' + druid + '/datastreams/' + ds_id + '/content')
+      LyberCore::Log.debug("Connecting to #{url}...")
       req = Net::HTTP::Get.new(url.request_uri)
+      LyberCore::Log.debug("request object: #{req.inspect}")
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res
         when Net::HTTPSuccess
           return res.body
         else
-          $stderr.puts "Datastream " + ds_id + " not found for " + druid
-          return nil
+          LyberCore::Log.error("Attempted to reach #{url} but failed")
+          LyberCore::Log.error("Datastream #{dsid} not found for #{druid}")           
+        return nil
        end
-    end     
+     rescue Exception => e
+       raise e, "Couldn't get datastream from #{url}"
+     end     
   end
 
   # Depricated - use Dor::WorkflowService#get_workflow_xml
@@ -173,17 +179,22 @@ class DorService
   # e.g. FEDORA_URI + /objects/ + druid + /datastreams/dor gets "dor" datastream metadata
   def DorService.get_datastream_md(druid, ds_id)
     begin
+      LyberCore::Log.debug("Connecting to #{FEDORA_URI}...")
       url = URI.parse(FEDORA_URI + '/objects/' + druid + '/datastreams/' + ds_id)
+      LyberCore::Log.debug("Connecting to #{url}...")
       req = Net::HTTP::Get.new(url.request_uri)
       req.basic_auth FEDORA_USER, FEDORA_PASS
+      LyberCore::Log.debug("request object: #{req.inspect}")
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res
         when Net::HTTPSuccess
           return res.body
         else
-          $stderr.puts "Datastream " + ds_id + " not found for " + druid
-          return nil
+          LyberCore::Log.error("Attempted to reach #{url} but failed")
+          LyberCore::Log.error("Datastream #{dsid} not found for #{druid}")
        end
+    rescue Exception => e
+      raise e, "Couldn't get datastream from #{url}"
     end     
   end
   
@@ -325,8 +336,8 @@ class DorService
           raise res.error!
       end
     rescue Exception => e
-      $stderr.print "Unable to update workflow " + e
-      raise
+      LyberCore::Log.error("Unable to update workflow at url #{url}")
+      raise e, "Unable to update workflow at url #{url}"
     end
   end
 
