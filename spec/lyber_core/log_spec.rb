@@ -14,7 +14,7 @@ describe LyberCore::Log do
      collection = "baz"
      valid_logfile = "/tmp/fakelog.log"
      invalid_logfile = "/zzxx/fakelog.log"
-     ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
+     ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../fixtures")
      WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
      
     it "has a default value for logfile" do
