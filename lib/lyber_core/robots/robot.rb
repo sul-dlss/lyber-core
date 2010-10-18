@@ -149,8 +149,11 @@ module LyberCore
           # Parse the command line options and ignore anything not specified above
           begin
             o.parse!
+          rescue OptionParser::InvalidOption => e
+            LyberCore::Log.debug("e.inspect")
           rescue OptionParser::ParseError => e
-            puts e
+            LyberCore::Log.error("Couldn't parse options: #{e.backtrace}") 
+            raise e
           end
         
         end
