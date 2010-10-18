@@ -38,8 +38,9 @@ module LyberCore
       # start the timer,
       # read in the configuration information for the work step
       def initialize(workflow=nil, workflow_step=nil)
+        LyberCore::Log.debug("Initializing work queue with workflow #{workflow} and workflow_step #{workflow_step}")
         @start_time = Time.new
-        print "\nStarting #{workflow_step} at #{@start_time}\n"
+        LyberCore::Log.info("Starting #{workflow_step} at #{@start_time}")
         @workflow = workflow
         @workflow_step = workflow_step
         @item_count = 0
@@ -57,31 +58,44 @@ module LyberCore
       end
       
       def process_config_file
-          
-          puts "@workflow.workflow_config_dir = #{@workflow.workflow_config_dir}"
+          LyberCore::Log.debug("Processing config file ... ")
+          LyberCore::Log.debug("@workflow.workflow_config_dir = #{@workflow.workflow_config_dir}")
           
           @config_file = File.join(@workflow.workflow_config_dir, 'process-config.yaml')
+          LyberCore::Log.debug("I'm opening the config file at #{@config_file}")
           
           # Does the file exist?
           raise "Can't open process-config file #{@config_file}" unless File.file? @config_file
           
           process_config = YAML.load_file(config_file)
-          # @prerequisite = process_config[@workflow_step]['prerequisite']
-          # @batch_limit = process_config[@workflow_step]['batch_limit']  
-          # @error_limit = process_config[@workflow_step]['error_limit']
+          LyberCore::Log.debug("process_config: #{process_config.inspect}")
 
+          @prerequisite = process_config[@workflow_step]["prerequisite"]
+          LyberCore::Log.debug("@prerequisite: #{@prerequisite}")
+          
+          @batch_limit = process_config[@workflow_step]['batch_limit']  
+          LyberCore::Log.debug("@batch_limit: #{@batch_limit}")
+          
+          @error_limit = process_config[@workflow_step]['error_limit']
+          LyberCore::Log.debug("@error_limit: #{@error_limit}")
+          
       end
 
       # Explicitly specify a set of druids to be processed by the workflow step
       def enqueue_druids(druid_array)
+        LyberCore::Log.debug("\nEnqueing an array of druids...")
         @druids = druid_array
+        LyberCore::Log.debug("\n@druids = #{@druids}")
       end
 
       # Obtain the set of druids to be processed using a database query
       # to obtain the repository objects that are awaiting this step
       def enqueue_workstep_waiting()
+        LyberCore::Log.debug("\nEnqueing workstep waiting...")
         object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
+        LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
         @druids = DorService.get_druids_from_object_list(object_list_xml)
+        LyberCore::Log.debug("\n@druids = #{@druids}")
       end
 
       # Use an alternative set of identifiers as the basis of this queue
@@ -94,11 +108,11 @@ module LyberCore
       # Get the next WorkItem to be processed by the robot for the workflow step
       def next_item()
         if (@item_count >= @batch_limit )
-          puts "Batch limit of #{@batch_limit} items reached"
+          LyberCore::Log.info "Batch limit of #{@batch_limit} items reached"
           return nil
         end
         if (@error_count >= @error_limit )
-          puts "Error limit of #{@error_limit} items reached"
+          LyberCore::Log.info "Error limit of #{@error_limit} items reached"
           return nil
         end
         work_item =  LyberCore::Robots::WorkItem.new(self)
@@ -115,13 +129,13 @@ module LyberCore
         return  work_item
       end
 
-      # Output the batch's timings and other statistics to STDOUT for capture in a log
+      # Output the batch's timings and other statistics to the main log file
       def print_stats
         @end_time = Time.new
         @elapsed_time = @end_time - @start_time
-        puts "Total time: " + @elapsed_time.to_s + "\n"
-        puts "Completed objects: " + self.success_count.to_s + "\n"
-        puts "Errors: " + self.error_count.to_s + "\n"    
+        LyberCore::Log.info "Total time: " + @elapsed_time.to_s + "\n"
+        LyberCore::Log.info "Completed objects: " + self.success_count.to_s + "\n"
+        LyberCore::Log.info "Errors: " + self.error_count.to_s + "\n"    
       end
     end
   end
