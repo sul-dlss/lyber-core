@@ -13,6 +13,8 @@ module LyberCore
     # Initial state
     @@logfile = DEFAULT_LOGFILE
     @@log ||= Logger.new(@@logfile)
+    # $stdout.reopen(@@logfile)
+    # $stderr.reopen(@@logfile)
     @@log.level = DEFAULT_LOG_LEVEL
     @@log.formatter = DEFAULT_FORMATTER
     
@@ -43,7 +45,9 @@ module LyberCore
         current_log_level = @@log.level
         current_formatter = @@log.formatter
         @@logfile = new_logfile
-        @@log = Logger.new(@@logfile)    
+        @@log = Logger.new(@@logfile)   
+        # $stdout.reopen(@@logfile)
+        # $stderr.reopen(@@logfile) 
         @@log.level = current_log_level
         @@log.formatter = current_formatter
       rescue Exception => e
