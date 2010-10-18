@@ -102,5 +102,5 @@ end
 
 task :spec => :check_dependencies
 
-task :default => [:clean, :verify_rcov]
+task :default => [:clean, :verify_rcov, :doc]
 
