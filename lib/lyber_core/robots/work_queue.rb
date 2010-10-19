@@ -1,4 +1,5 @@
 require 'dor_service'
+require 'dlss_service'
 require 'yaml'
 
 module LyberCore
@@ -94,7 +95,7 @@ module LyberCore
         LyberCore::Log.debug("\nEnqueing workstep waiting...")
         object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
         LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
-        @druids = DorService.get_druids_from_object_list(object_list_xml)
+        @druids = DlssService.get_some_druids_from_object_list(object_list_xml,self.batch_limit)
         LyberCore::Log.debug("\n@druids = #{@druids}")
       end
 

@@ -276,7 +276,7 @@ class DorService
           LyberCore::Log.debug("completed: #{completed}")
           LyberCore::Log.debug("waiting: #{waiting}")
           LyberCore::Log.debug(res.inspect)
-          raise "Could not connect to url"
+          raise "Could not connect to url #{uri_string}"
        end
     end 
   end

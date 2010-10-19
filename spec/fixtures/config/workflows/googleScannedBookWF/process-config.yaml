@@ -4,8 +4,8 @@ register-object:
 
 descriptive-metadata:
     prerequisite: register-object
-    batch_limit: 1000
-    error_limit: 10
+    batch_limit: 5
+    error_limit: 5
 
 google-convert:
     prerequisite: register-object
