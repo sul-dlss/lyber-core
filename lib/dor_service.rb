@@ -319,20 +319,25 @@ class DorService
     return (badcount==0)
   end
   
+  # If an object encounters an error during processing, set its status to "error"
   def DorService.update_workflow_error_status(repository, druid, workflow, process, error_msg, error_txt = nil)
     begin
+      LyberCore::Log.debug("Updating workflow error status for druid #{druid}")
       url = URI.parse(WORKFLOW_URI + '/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
+      LyberCore::Log.debug("Using url #{url}")
       req = Net::HTTP::Put.new(url.path)
       req.body = '<process name="'+ process + '" status="error" errorMessage="' + error_msg + '" ' 
       req.body += 'errorText="' + error_txt + '" ' if(error_txt)
       req.body += '/>' 
       req.content_type = 'application/xml'
+      LyberCore::Log::debug("Putting request: #{req.inspect}")
       res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      LyberCore::Log::debug("Got response: #{res.inspect}")
       case res
         when Net::HTTPSuccess
           puts "#{workflow} - #{process} set to error for " + druid
         else
-          $stderr.print res.body
+          LyberCore::Log.error(res.body)
           raise res.error!
       end
     rescue Exception => e
