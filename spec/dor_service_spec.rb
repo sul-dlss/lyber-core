@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 # require 'benchmark'
+require 'nokogiri'
 
 describe DorService do
   it "#get_workflow_xml should throw an exception saying the method is depricated" do
@@ -19,6 +20,24 @@ describe DorService do
       # }
     end
   
+  end
+  
+  context "DorService.update_workflow_error_status" do
+    repository = "dor"
+    druid = "druid:pz901bm7518"
+    workflow = "googleScannedBookWF"
+    process = "process-content"
+    
+    it "cleans up any error codes that are passed" do
+
+      error_msg = '500 "Internal Server Error"'
+      error_txt = nil
+      message = DorService.construct_error_update_request(process, error_msg, error_txt)
+      lambda { doc = Nokogiri::XML(message) do |config|
+        config.strict       
+      end }.should_not raise_error
+    end
+    
   end
   
 end
