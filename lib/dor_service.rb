@@ -104,18 +104,25 @@ class DorService
  
   # See if an object exists with this dor_id (not druid, but sub-identifier)
   # Caller will have to handle any exception thrown
-  def DorService.get_druid_by_id (dor_id)
+  def DorService.get_druid_by_id(dor_id)
     url = URI.parse(DOR_URI + '/query_by_id?id=' + dor_id)
     req = Net::HTTP::Get.new(url.request_uri)
     res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      
     case res
       when Net::HTTPSuccess
         res.body =~ /druid="([^"\r\n]*)"/
         return $1
-      else
-        puts "Id not found in DOR " + dor_id
+      when Net::HTTPClientError
+        LyberCore::Log.debug("Barcode does not yet exist in DOR: #{dor_id}") 
         return nil
-    end
+      when Net::HTTPServerError
+        LyberCore::Log.error("Encountered HTTPServerError error when requesting #{url}: #{res.inspect}") 
+        raise "Encountered 500 error when requesting #{url}: #{res.inspect}"
+      else
+        LyberCore::Log.error("Encountered unknown error when requesting #{url}: #{res.inspect}") 
+        raise "Encountered unknown error when requesting #{url}: #{res.inspect}"
+      end
   end
   
   #############################################  Start of Datastream methods
