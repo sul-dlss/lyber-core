@@ -48,13 +48,13 @@ class DorService
       res = LyberCore::Connection.post(url, body, :content_type => content_type)
       res=~ /\/resources\/(.*)/
       druid = $1
-      puts "Child googleScannedPage object created for parent " + parent_druid 
-      puts "child_id " + child_id
-      puts "new druid " + druid
+      LyberCore::Log.info("Child googleScannedPage object created for parent #{parent_druid}") 
+      LyberCore::Log.debug("child_id = #{child_id}") 
+      LyberCore::Log.debug("new druid = #{druid}")
       return druid
     rescue Exception => e
-      $stderr.print "Unable to create object " + e
-      raise
+      LyberCore::Log.error("Unable to create object")
+      raise e, "Unable to create object "
     end
   end
   
@@ -63,7 +63,7 @@ class DorService
   #
   # == Parameters
   # - <b>form_data</b> - a hash of arrays that contains the form data, ie. {'param1' => ['val1', 'val2'], 'param2' => ['val3']}
-  def DorService.encodeParams form_data
+  def DorService.encodeParams(form_data)
     body = ""
     form_data.each_pair do |param, array|
       array.each do |value|

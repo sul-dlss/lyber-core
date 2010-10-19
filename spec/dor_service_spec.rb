@@ -12,6 +12,15 @@ describe DorService do
     lambda{ DorService.get_workflow_xml('somedruid', 'someworkflow')}.should raise_error(Exception, "This method is deprecated.  Please use Dor::WorkflowService#get_workflow_xml")
   end
   
+  context "DorService.encodeParams" do
+    
+    it "accepts a hash of arrays" do
+      my_hash = {'param1' => ['val1', 'val2'], 'param2' => ['val3']}
+      DorService.encodeParams(my_hash).should eql("param1=val1&param1=val2&param2=val3")
+    end
+
+  end
+  
   context "workflow" do
     
     it "transforms xml from the workflow service into a list of druids" do
