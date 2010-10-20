@@ -101,11 +101,6 @@ describe LyberCore::Log do
       LyberCore::Log.logfile.should eql(LyberCore::Log::DEFAULT_LOGFILE)
     end
     
-    it "can have a hash of logfiles" do
-      pending "A robot should be able to specify where its logs go, 
-      and different robots should be able to send their logs to different files."
-    end
-    
   end
   
 
