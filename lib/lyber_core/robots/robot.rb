@@ -39,8 +39,6 @@ module LyberCore
       
         # Set defaults
         @options = OpenStruct.new
-        @options.verbose = false
-        @options.quiet = false
         self.parse_options
         self.create_workflow
       end
