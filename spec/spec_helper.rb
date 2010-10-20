@@ -31,5 +31,5 @@ rescue NameError
 end
 
 
-
-Rails = Object.new unless(class_exists? 'Rails')
+Rails = Object.new unless defined? Rails
+# Rails = Object.new unless(class_exists? 'Rails')

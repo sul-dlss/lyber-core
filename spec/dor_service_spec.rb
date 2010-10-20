@@ -99,4 +99,8 @@ describe DorService do
     end
   end
   
+  context "DorService.getDatastream" do
+    
+  end
+  
 end

@@ -6,7 +6,7 @@ module Dor
 end
 
 DOR_URI = 'http://dor-dev.stanford.edu/dor'
-WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
+WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow' unless defined? WORKFLOW_URI
 
 FEDORA_URI = 'http://fedoraAdmin:fedoraAdmin@dor-dev.stanford.edu/fedora'
 SEDORA_USER = 'fedoraAdmin'

@@ -8,7 +8,7 @@ describe LyberCore::Robots::WorkQueue do
   workflow_name = "googleScannedBookWF"
     
   context "initial state" do
-    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures")
+    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures") unless defined? ROBOT_ROOT
     require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
     workflow_step = "descriptive-metadata"
   
