@@ -364,19 +364,30 @@ class DorService
     end
   end
 
-#========= This method send GET to jenson and returns MARC XML  ==========#
+    # This method sends a GET request to jenson and returns MARC XML
     def DorService.query_symphony(flexkey)
+      begin
+        symphony_url = 'http://zaph.stanford.edu'
+        path_info = '/cgi-bin/holding.pl?'
+        parm_list = URI.escape('search=location&flexkey=' + flexkey)
+        url_string = symphony_url + path_info + parm_list
 
-      symphony_url = 'http://zaph.stanford.edu'
-      path_info = '/cgi-bin/holding.pl?'
-      parm_list = URI.escape('search=location&flexkey=' + flexkey)
-
-      url = URI.parse( symphony_url + path_info + parm_list )
-      res = Net::HTTP.start(url.host, url.port) {|http|
-        http.get( path_info + parm_list )
-      }
-
-      res.body
+        url = URI.parse(url_string)
+        LyberCore::Log.debug("Attempting to query symphony: #{url_string}")
+        res = Net::HTTP.start(url.host, url.port) {|http|
+          http.get( path_info + parm_list )
+        }
+        case res
+          when Net::HTTPSuccess
+            LyberCore::Log.debug("Successfully queried symphony for #{flexkey}")
+            return res.body          
+          else
+            LyberCore::Log.error("Encountered an error from symphony: #{res.body}")
+            raise res.error!
+        end
+      rescue Exception => e
+        raise e, "Encountered an error from symphony"
+      end
 
      end #query_symphony
 

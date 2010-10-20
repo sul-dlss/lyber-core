@@ -103,4 +103,18 @@ describe DorService do
     
   end
   
+  context "DorService.query_symphony(flexkey)" do
+    it "raises an error if it can't connect to symphony" do
+      flexkey = "fakekey"
+      symphony_url = 'http://zaph.stanford.edu'
+      path_info = '/cgi-bin/holding.pl?'
+      parm_list = URI.escape('search=location&flexkey=' + flexkey)
+      fake_url = symphony_url + path_info + parm_list
+      FakeWeb.register_uri(:get, fake_url, 
+        :body => "",
+        :status => ["500", "Error encountered"])
+      lambda{ DorService.query_symphony(flexkey) }.should raise_exception(/Encountered an error from symphony/)
+    end
+  end
+  
 end
