@@ -89,4 +89,14 @@ describe DorService do
     
   end
   
+  context "DorService.add_identity_tags" do
+    it "takes an array of tags and constructs valid xml for them" do
+      tag_array = ["Tag 1", "Tag 2: The Reckoning", "Tag 3: >What's<> up!!!?", 'Tag 4: "Quotes"']
+      xml = DorService.construct_xml_for_tag_array(tag_array)
+      lambda { doc = Nokogiri::XML(xml) do |config|
+        config.strict       
+      end }.should_not raise_error
+    end
+  end
+  
 end

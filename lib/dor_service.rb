@@ -422,31 +422,36 @@ class DorService
   
 end
 
+  # Given an array of strings, construct valid xml in which each
+  # member of the array becomes a <tag> element
+  def DorService.construct_xml_for_tag_array(tag_array)
+    xml = "<tags>"
+    tag_array.each do |tag|
+      tag = tag.gsub(/\s+/," ").gsub(/[<>!]/,'')
+      xml << "<tag>#{tag}</tag>"
+    end
+    xml << "</tags>"
+  end
 
-def DorService.add_identity_tags(druid, tags)
+  
+  def DorService.add_identity_tags(druid, tags)
    begin
-     xml = "<tags>"
-     tags.each do |tag|
-       xml << "<tag>#{tag}</tag>"
-     end
-     xml << "</tags>"
-     LyberCore::Log.debug(xml)
      url = URI.parse(DOR_URI + '/objects/' + druid + '/datastreams/identityMetadata/tags' )
      req = Net::HTTP::Put.new(url.path)
-     req.body = xml
+     req.body = DorService.construct_xml_for_tag_array(tags)
      req.content_type = 'application/xml'
      res = DorService.get_https_connection(url).start {|http| http.request(req) }
      case res
        when Net::HTTPSuccess
          return true
        else
-         $stderr.print res.body
+         LyberCore::Log.error(res.body)
          raise res.error!
      end
    rescue Exception => e
      raise e
    end
- end
+  end
 
 #DorService.updateWorkflowStatus('dr:rf624mb644', 'GoogleScannedWF', 'descriptive-metadata', 'completed')
 ####Testing
