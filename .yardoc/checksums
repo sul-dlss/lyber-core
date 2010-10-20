@@ -1,5 +1,5 @@
 /usr/local/projects/lyber-core/lib/lyber_core/robots/work_queue.rb a0b537c9e087464540a54c9d974aa7ee3a473b3a
-/usr/local/projects/lyber-core/lib/dor_service.rb c3bb07825b69a1f35fe632e1c6c5a13e29bb8f8f
+/usr/local/projects/lyber-core/lib/dor_service.rb 8396c0b8a5b3fb27b1ee1566e3f7a0dafe506fe8
 lib/dor/suri_service.rb 1f0783901cd14f7190732b5fb0adee1c0f2c5933
 /usr/local/projects/lyber-core/lib/roxml_models/identity_metadata/dublin_core.rb af0d0c79908a9e777fe56aed54e46d570dfe7256
 lib/dor/workflow_service.rb 5e7b873f6f1932d25da489df37009426d25a1670
@@ -7,7 +7,7 @@ lib/dor/workflow_service.rb 5e7b873f6f1932d25da489df37009426d25a1670
 /usr/local/projects/lyber-core/lib/lyber_core/robots/workflow.rb 7bce0ea034f27bb748f1df859d7d07a146e1aba9
 /usr/local/projects/lyber-core/lib/dor/suri_service.rb 1f0783901cd14f7190732b5fb0adee1c0f2c5933
 lib/dlss_service.rb 166cb3c30276a30f08e889e6d09c43c8e156c77f
-lib/dor_service.rb c3bb07825b69a1f35fe632e1c6c5a13e29bb8f8f
+lib/dor_service.rb 8396c0b8a5b3fb27b1ee1566e3f7a0dafe506fe8
 /usr/local/projects/lyber-core/lib/lyber_core/utils/checksum_validate.rb 27c0f189ab08c6fc04fb8ca02b59f9a331c6d788
 /usr/local/projects/lyber-core/lib/lyber_core/connection.rb d3e46415c55cf86c8f2141686451f248cb1ce778
 /usr/local/projects/lyber-core/LICENSE 51172f80df63376117072f2698f05d26f7dc9231

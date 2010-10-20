@@ -353,7 +353,7 @@ class DorService
       LyberCore::Log::debug("Got response: #{res.inspect}")
       case res
         when Net::HTTPSuccess
-          puts "#{workflow} - #{process} set to error for " + druid
+          LyberCore::Log.error("#{workflow} - #{process} set to error for " + druid)
         else
           LyberCore::Log.error(res.body)
           raise res.error!
@@ -430,7 +430,7 @@ def DorService.add_identity_tags(druid, tags)
        xml << "<tag>#{tag}</tag>"
      end
      xml << "</tags>"
-     puts xml
+     LyberCore::Log.debug(xml)
      url = URI.parse(DOR_URI + '/objects/' + druid + '/datastreams/identityMetadata/tags' )
      req = Net::HTTP::Put.new(url.path)
      req.body = xml
@@ -444,7 +444,7 @@ def DorService.add_identity_tags(druid, tags)
          raise res.error!
      end
    rescue Exception => e
-     raise
+     raise e
    end
  end
 

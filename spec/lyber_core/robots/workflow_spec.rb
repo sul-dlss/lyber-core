@@ -71,7 +71,6 @@ describe LyberCore::Robots::Workflow do
     end
     
     it "inherits a logger from robot" do
-      puts @wf.logger.inspect
       @wf.logger.level.should eql(0)
       @wf.logger.debug("This is a debug statement")
     end

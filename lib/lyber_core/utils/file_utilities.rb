@@ -75,7 +75,7 @@ module LyberCore
         source_path=File.join(source_dir, filename)
         rsync='rsync -a -e ssh '
         rsync_cmd = rsync + "'" + source_path + "' " +  dest_dir
-        print rsync_cmd + "\n"
+        LyberCore::Log.debug("rsync command is: #{rsync_cmd}")
         self.execute(rsync_cmd)
         if not File.exists?(File.join(dest_dir, filename))
           raise "#{filename} is not found in  #{dest_dir}"
@@ -97,7 +97,7 @@ module LyberCore
       # or a test for the existence of the decrypted file fails.
       # The exception's message will contain the explaination of the failure
       def FileUtilities.gpgdecrypt(workspace_dir, targzgpg, targz, passphrase)
-        print "decrypting #{targzgpg}\n"
+        LyberCore::Log.debug("decrypting #{targzgpg}")
         gpg_cmd="/usr/bin/gpg --passphrase '#{passphrase}'  "  +
                  "--batch --no-mdc-warning --no-secmem-warning " +
                  " --output " + File.join(workspace_dir, targz)  +
@@ -122,7 +122,7 @@ module LyberCore
       # or a test for the existence of files in the target directory fails.
       # The exception's message will contain the explaination of the failure.
       def FileUtilities.unpack(original_dir, targz, destination_dir)
-        print "unpacking #{targz}\n"
+        LyberCore::Log.debug("unpacking #{targz}")
         FileUtils.mkdir_p(destination_dir)
         dir_save = Dir.pwd
         Dir.chdir(destination_dir)
@@ -150,7 +150,7 @@ module LyberCore
       # or a test of the md5sum output indicates a checksum mismatch.
       # The exception's message will contain the explaination of the failure.
       def FileUtilities.verify_checksums(directory, checksum_file)
-        print "verifying checksums in #{directory}\n"
+        LyberCore::Log.debug("verifying checksums in #{directory}")
         dir_save = Dir.pwd
         Dir.chdir(directory)
         checksum_cmd = 'md5sum -c ' + checksum_file + ' | grep -v OK | wc -l'

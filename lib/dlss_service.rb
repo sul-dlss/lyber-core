@@ -43,7 +43,7 @@ class DlssService
         when Net::HTTPSuccess
           return res.body
         else
-          $stderr.puts "Datastream " + ds_id + " not found for " + druid
+          LyberCore::Log.error("Datastream " + ds_id + " not found for " + druid)
           return nil
        end
     end     

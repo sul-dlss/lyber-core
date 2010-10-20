@@ -7,22 +7,21 @@ require 'uri'
 require 'fakeweb'
 
 describe DorService do
-  it "#get_workflow_xml should throw an exception saying the method is depricated" do
-    
-    lambda{ DorService.get_workflow_xml('somedruid', 'someworkflow')}.should raise_error(Exception, "This method is deprecated.  Please use Dor::WorkflowService#get_workflow_xml")
+
+  context "context" do
+    it "#get_workflow_xml should throw an exception saying the method is depricated" do
+      lambda{ DorService.get_workflow_xml('somedruid', 'someworkflow')}.should raise_error(Exception, "This method is deprecated.  Please use Dor::WorkflowService#get_workflow_xml")
+    end
   end
-  
+
   context "DorService.encodeParams" do
-    
     it "accepts a hash of arrays" do
       my_hash = {'param1' => ['val1', 'val2'], 'param2' => ['val3']}
       DorService.encodeParams(my_hash).should eql("param1=val1&param1=val2&param2=val3")
     end
-
   end
   
   context "workflow" do
-    
     it "transforms xml from the workflow service into a list of druids" do
       # puts Benchmark.measure {
       queue = open(File.expand_path(File.dirname(__FILE__) + "/fixtures/queue.xml"))
@@ -32,7 +31,6 @@ describe DorService do
       array.length.should eql(9)
       # }
     end
-  
   end
   
   context "DorService.get_druid_by_id" do

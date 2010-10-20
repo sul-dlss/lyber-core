@@ -78,7 +78,7 @@ module LyberCore
         @work_queue.success_count += 1
         @end_time = Time.new
         @elapsed_time = @end_time - @start_time
-        puts "#{item_id} completed in #{@elapsed_time} seconds"
+        LyberCore::Log.info("#{item_id} completed in #{@elapsed_time} seconds")
         if (@druid)
           Dor::WorkflowService.update_workflow_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, 'completed', @elapsed_time)
         end
@@ -89,12 +89,12 @@ module LyberCore
         @work_queue.error_count += 1
         @end_time = Time.new
         @elapsed_time = @end_time - @start_time
-        puts "#{item_id} error - #{e.inspect}"
+        LyberCore::Log.error("#{item_id} error - #{e.inspect}")
         # By default puts will output an array with a newline between each item.
-        puts e.backtrace
         if (@druid)
           DorService.update_workflow_error_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, e.message)
         end
+        raise e
       end
 
     end
