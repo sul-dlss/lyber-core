@@ -33,10 +33,51 @@ describe DorService do
     end
   end
   
+  context "DorService.get_datastream" do
+    
+    druid = "druid:wr056zx7133"
+    ds_id = "identityMetadata"
+    
+    before :all do
+      require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
+      FakeWeb.allow_net_connect = false
+    end
+    
+    after :all do
+      FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = true
+    end
+    
+    it "returns nil if it can't fetch the datastream" do
+      FakeWeb.register_uri(:get, %r|dor-dev\.stanford\.edu/|,
+        :body => "",
+        :status => ["404", "Not Found"])
+      id = DorService.get_datastream(druid, ds_id)
+      id.should eql(nil)
+    end
+    
+    it "raises an error if it encounters something unexpected" do
+      FakeWeb.register_uri(:get, %r|dor-dev\.stanford\.edu/|,
+        :body => "",
+        :status => ["302", "Boo!"])
+      lambda{ DorService.get_datastream(druid, ds_id) }.should raise_exception(/Encountered unknown error/)   
+    end
+    
+  end
+  
   context "DorService.get_druid_by_id" do
     
     before :all do
       require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
+    end
+    
+    before :each do
+      FakeWeb.allow_net_connect = false
+    end
+    
+    after :each do
+      FakeWeb.allow_net_connect = true
+      FakeWeb.clean_registry
     end
     
     barcode = "36105014905793"
@@ -45,6 +86,7 @@ describe DorService do
     # This is more of an integration test -- it actually tests the real 
     # query_by_id webservice
     it "takes a bar code and looks up its druid" do
+      FakeWeb.allow_net_connect = true
       DorService.get_druid_by_id(barcode).should eql("druid:tc627wc3480")
     end
     
@@ -52,7 +94,7 @@ describe DorService do
       FakeWeb.register_uri(:get, fake_url, 
         :body => "",
         :status => ["404", "Not Found"])
-      DorService.get_druid_by_id(barcode).should eql(nil)                                         
+      DorService.get_druid_by_id(barcode).should eql(nil)  
     end
     
     it "raises an error if it encounters a server error (500 code)" do

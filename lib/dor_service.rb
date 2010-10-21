@@ -159,21 +159,28 @@ class DorService
   def DorService.get_datastream(druid, ds_id)
     begin
       LyberCore::Log.debug("Connecting to #{FEDORA_URI}...")
-      url = URI.parse(FEDORA_URI + '/objects/' + druid + '/datastreams/' + ds_id + '/content')
-      LyberCore::Log.debug("Connecting to #{url}...")
+      url_string = "#{FEDORA_URI}/objects/#{druid}/datastreams/#{ds_id}/content"
+      url = URI.parse(url_string)
+      LyberCore::Log.debug("Connecting to #{url_string}...")
       req = Net::HTTP::Get.new(url.request_uri)
       LyberCore::Log.debug("request object: #{req.inspect}")
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
+      
       case res
         when Net::HTTPSuccess
           return res.body
+        when Net::HTTPClientError
+          LyberCore::Log.debug("Datastream not found at url #{url_string}") 
+          return nil
+        when Net::HTTPServerError
+          LyberCore::Log.error("Attempted to reach #{url_string} but failed")
+          raise "Encountered 500 error when requesting #{url_string}: #{res.inspect}"
         else
-          LyberCore::Log.error("Attempted to reach #{url} but failed")
-          LyberCore::Log.error("Datastream #{dsid} not found for #{druid}")           
-        return nil
-       end
+          LyberCore::Log.error("Encountered unknown error when requesting #{url}: #{res.inspect}") 
+          raise "Encountered unknown error when requesting #{url}: #{res.inspect}"
+        end
      rescue Exception => e
-       raise e, "Couldn't get datastream from #{url}"
+       raise e
      end     
   end
 
