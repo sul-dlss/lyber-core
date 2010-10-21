@@ -71,6 +71,44 @@ describe DorService do
     
   end
   
+  context "DorService.get_object_identifiers(druid)" do
+    
+    druid = "druid:wr056zx7133"
+    
+    before :each do
+      require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
+    end
+    
+    # This is an integration test. It actually connects to dor-dev
+    it "returns identityMetadata/otherId values for a given druid (live lookup)" do
+        ids = DorService.get_object_identifiers(druid)
+        ids["dissertationid"].should eql("0000000216")
+        ids["catkey"].should eql("8383197")
+    end
+    
+    # This uses a fixture instead of fetching the datastream
+    it "returns identityMetadata/otherId values for a given druid (fixture)" do
+      fixture_metadata = open(File.expand_path(File.dirname(__FILE__) + "/fixtures/identityMetadata.xml")) { |f| f.read }
+      FakeWeb.allow_net_connect = false
+      FakeWeb.register_uri(:get, %r|dor-dev\.stanford\.edu/|, :body => fixture_metadata)
+      ids = DorService.get_object_identifiers(druid)
+      ids["dissertationid"].should eql("0000000216")
+      ids["catkey"].should eql("8383197")
+      FakeWeb.allow_net_connect = true
+    end
+    
+    # This fakes an error from dor-dev
+    it "raises an error if it can't connect to fedora" do
+      FakeWeb.allow_net_connect = false
+      FakeWeb.register_uri(:get, %r|dor-dev\.stanford\.edu/|, 
+        :body => "",
+        :status => ["500", "Error encountered"])
+      lambda{ DorService.get_object_identifiers(druid) }.should raise_exception(/Couldn't get object identifiers for druid/)
+      FakeWeb.allow_net_connect = true
+    end
+    
+  end
+  
   context "DorService.update_workflow_error_status" do
     repository = "dor"
     druid = "druid:pz901bm7518"

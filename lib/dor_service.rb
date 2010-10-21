@@ -296,17 +296,25 @@ class DorService
     DlssService.get_all_druids_from_object_list(objectListXml)
   end
   
-  # Retrieves a string containing Identifiers for a DOR object 
+  # Retrieves the identityMetadata datastream for a DOR object,
+  # extracts the otherId values, and returns them in a hash
   def DorService.get_object_identifiers(druid)
-    identifiers = Hash.new
-    dorXml = Document.new(get_datastream(druid, 'identityMetadata'))
+    begin
+    identifiers = {}
+    identityMetadata = get_datastream(druid, 'identityMetadata')
+    raise "Unable to get identityMetadata datastream for #{druid}" if identityMetadata.nil?
+    dorXml = Document.new(identityMetadata)
+    
     dorXml.elements.each("identityMetadata/otherId") do |element| 
       identifiers[element.attributes["name"]] = case element.text
         when nil then nil
         else element.text.strip     
       end
     end
-    return identifiers    
+    return identifiers   
+    rescue Exception => e
+      raise e, "Couldn't get object identifiers for #{druid}"
+    end 
   end
   
   def DorService.transfer_object(objectid, sourceDir, destinationDir) 
