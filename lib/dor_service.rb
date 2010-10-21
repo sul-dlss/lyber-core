@@ -343,8 +343,9 @@ class DorService
       LyberCore::Log.debug("Updating workflow error status for druid #{druid}")
       LyberCore::Log.debug("Error message is: #{error_msg}")
       LyberCore::Log.debug("Error text is: #{error_txt}") 
-      url = URI.parse(WORKFLOW_URI + '/' + repository + '/objects/' + druid + '/workflows/' + workflow + '/' + process)
-      LyberCore::Log.debug("Using url #{url}")
+      url_string = "#{WORKFLOW_URI}/#{repository}/objects/#{druid}/workflows/#{workflow}/#{process}"
+      url = URI.parse(url_string)
+      LyberCore::Log.debug("Using url #{url_string}")
       req = Net::HTTP::Put.new(url.path)
       req.body = DorService.construct_error_update_request(process, error_msg, error_txt)
       req.content_type = 'application/xml'
@@ -352,15 +353,15 @@ class DorService
       res = DorService.get_https_connection(url).start {|http| http.request(req) }
       LyberCore::Log::debug("Got response: #{res.inspect}")
       case res
-        when Net::HTTPSuccess
-          LyberCore::Log.error("#{workflow} - #{process} set to error for " + druid)
-        else
-          LyberCore::Log.error(res.body)
-          raise res.error!
+       when Net::HTTPSuccess
+         LyberCore::Log.error("#{workflow} - #{process} set to error for " + druid)
+       else
+         LyberCore::Log.error(res.body)
+         raise res.error!, "Received error from the workflow service"
       end
     rescue Exception => e
-      LyberCore::Log.error("Unable to update workflow at url #{url}")
-      raise e, "Unable to update workflow at url #{url}"
+      LyberCore::Log.error("Unable to update workflow at url #{url_string}")
+      raise e, "Encountered an error from symphony at url #{url_string}"
     end
   end
 

@@ -87,6 +87,21 @@ describe DorService do
       end }.should_not raise_error
     end
     
+    it "raises a helpful error if it can't communicate with the workflow server" do
+      require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
+      repository = "foo"
+      druid = "druid:bar"
+      workflow = "workflow" 
+      process = "process" 
+      error_msg = "error_msg" 
+      error_txt = "Hello, Nurse!"
+      fake_url = "#{WORKFLOW_URI}/#{repository}/objects/#{druid}/workflows/#{workflow}/#{process}"
+      FakeWeb.register_uri(:get, fake_url, 
+        :body => "",
+        :status => ["500", "Error encountered"])
+      lambda{ DorService.update_workflow_error_status(repository, druid, workflow, process, error_msg, error_txt = nil) }.should raise_exception(/Encountered an error from symphony/)
+    end
+    
   end
   
   context "DorService.add_identity_tags" do
