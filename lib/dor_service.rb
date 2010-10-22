@@ -19,6 +19,8 @@ class DorService
       https
     end
    
+  # This should check to see if an object with the given PID already
+  # exists in the repository
   def DorService.create_object(form_data)
     begin      
       url = DOR_URI + '/objects'
@@ -29,8 +31,8 @@ class DorService
       druid = $1
       return druid
     rescue Exception => e
-      $stderr.print "Unable to create object " + e
-      raise
+      LyberCore::Log.error("Unable to create object #{e.backtrace}")
+      raise e
     end  
   end
   
