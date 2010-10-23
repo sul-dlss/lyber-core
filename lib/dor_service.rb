@@ -107,7 +107,9 @@ class DorService
   # See if an object exists with this dor_id (not druid, but sub-identifier)
   # Caller will have to handle any exception thrown
   def DorService.get_druid_by_id(dor_id)
-    url = URI.parse(DOR_URI + '/query_by_id?id=' + dor_id)
+    url_string = "#{DOR_URI}/query_by_id?id=#{dor_id}"
+    LyberCore::Log.debug("Fetching druid for dor_id #{dor_id} at url #{url_string}")
+    url = URI.parse(url_string)
     req = Net::HTTP::Get.new(url.request_uri)
     res = DorService.get_https_connection(url).start {|http| http.request(req) }
       
