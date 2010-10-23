@@ -41,7 +41,7 @@ module LyberCore
       @druid_list.each do |druid|
         LyberCore::Log.info("Deleting #{druid}")
         obj = ActiveFedora::Base.load_instance(druid)
-        # obj.delete
+        obj.delete
       end
     end
     
