@@ -37,11 +37,17 @@ module LyberCore
     
     # Iterate through the druids in @druid_list and delete each of them from FEDORA
     def delete_druids
-      connect_to_fedora
-      @druid_list.each do |druid|
-        LyberCore::Log.info("Deleting #{druid}")
-        obj = ActiveFedora::Base.load_instance(druid)
-        obj.delete
+      begin
+        connect_to_fedora
+        @druid_list.each do |druid|
+          LyberCore::Log.info("Deleting #{druid}")
+          obj = ActiveFedora::Base.load_instance(druid)
+          obj.delete
+        end
+      rescue ActiveFedora::ObjectNotFoundError
+        LyberCore::Log.info("#{druid} does not exist in this repository")
+      rescue Exception => e
+        raise e
       end
     end
     
