@@ -25,7 +25,7 @@ module LyberCore
     begin
       druid_list = []
       url_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{@repository}&workflow=#{@workflow}&completed=#{@registration_robot}"
-      LyberCore::Log.debug("Fetching druids from #{url_string}")
+      LyberCore::Log.info("Fetching druids from #{url_string}")
       doc = Nokogiri::XML(open(url_string))
       doc.xpath("//objects/object/@id").each do |id|
         druid_list << id.to_s
@@ -43,11 +43,13 @@ module LyberCore
         @druid_list.each do |druid|
           @current_druid = druid
           LyberCore::Log.info("Deleting #{@current_druid}")
-          obj = ActiveFedora::Base.load_instance(@current_druid)
-          obj.delete
+          begin
+            obj = ActiveFedora::Base.load_instance(@current_druid)
+            obj.delete
+          rescue ActiveFedora::ObjectNotFoundError
+            LyberCore::Log.info("#{@current_druid} does not exist in this repository")
+          end
         end
-      rescue ActiveFedora::ObjectNotFoundError
-        LyberCore::Log.info("#{@current_druid} does not exist in this repository")
       rescue Exception => e
         raise e
       end
@@ -62,7 +64,7 @@ module LyberCore
         else
           raise "I don't know how to connect to repository #{@repository}"
         end
-        LyberCore::Log.debug("connecting to #{repo_url}")
+        LyberCore::Log.info("connecting to #{repo_url}")
         Fedora::Repository.register(repo_url)
       rescue Errno::ECONNREFUSED => e
        raise e, "Can't connect to Fedora at url #{repo_url}"
