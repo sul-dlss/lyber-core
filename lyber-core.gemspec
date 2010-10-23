@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{lyber-core}
-  s.version = "0.9.5"
+  s.version = "0.9.5.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-10-20}
+  s.date = %q{2010-10-22}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -49,6 +49,7 @@ Also contains core classes to build robots}
      ".yardoc/objects/DorService/add_datastream_unless_exists_c.dat",
      ".yardoc/objects/DorService/add_identity_tags_c.dat",
      ".yardoc/objects/DorService/construct_error_update_request_c.dat",
+     ".yardoc/objects/DorService/construct_xml_for_tag_array_c.dat",
      ".yardoc/objects/DorService/create_child_object_c.dat",
      ".yardoc/objects/DorService/create_object_c.dat",
      ".yardoc/objects/DorService/encodeParams_c.dat",
@@ -302,6 +303,7 @@ Also contains core classes to build robots}
      "spec/dor_service_spec.rb",
      "spec/fixtures/config/environments/test.rb",
      "spec/lyber_core/connection_spec.rb",
+     "spec/lyber_core/destroyer_spec.rb",
      "spec/lyber_core/log_spec.rb",
      "spec/lyber_core/robots/robot_spec.rb",
      "spec/lyber_core/robots/test_robot.rb",
@@ -320,10 +322,10 @@ Also contains core classes to build robots}
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<active-fedora>, [">= 1.1.13"])
+      s.add_runtime_dependency(%q<active-fedora>, [">= 1.2"])
       s.add_runtime_dependency(%q<actionpack>, ["= 2.3.9"])
       s.add_runtime_dependency(%q<activesupport>, ["= 2.3.9"])
-      s.add_runtime_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_runtime_dependency(%q<bagit>, [">= 0.1.0"])
       s.add_runtime_dependency(%q<bundler>, [">= 1.0.0"])
       s.add_runtime_dependency(%q<columnize>, ["= 0.3.1"])
       s.add_runtime_dependency(%q<facets>, ["= 2.8.4"])
@@ -349,10 +351,10 @@ Also contains core classes to build robots}
       s.add_runtime_dependency(%q<validatable>, [">= 0"])
       s.add_runtime_dependency(%q<xml-simple>, [">= 0"])
     else
-      s.add_dependency(%q<active-fedora>, [">= 1.1.13"])
+      s.add_dependency(%q<active-fedora>, [">= 1.2"])
       s.add_dependency(%q<actionpack>, ["= 2.3.9"])
       s.add_dependency(%q<activesupport>, ["= 2.3.9"])
-      s.add_dependency(%q<bagit>, ["= 0.1.0"])
+      s.add_dependency(%q<bagit>, [">= 0.1.0"])
       s.add_dependency(%q<bundler>, [">= 1.0.0"])
       s.add_dependency(%q<columnize>, ["= 0.3.1"])
       s.add_dependency(%q<facets>, ["= 2.8.4"])
@@ -379,10 +381,10 @@ Also contains core classes to build robots}
       s.add_dependency(%q<xml-simple>, [">= 0"])
     end
   else
-    s.add_dependency(%q<active-fedora>, [">= 1.1.13"])
+    s.add_dependency(%q<active-fedora>, [">= 1.2"])
     s.add_dependency(%q<actionpack>, ["= 2.3.9"])
     s.add_dependency(%q<activesupport>, ["= 2.3.9"])
-    s.add_dependency(%q<bagit>, ["= 0.1.0"])
+    s.add_dependency(%q<bagit>, [">= 0.1.0"])
     s.add_dependency(%q<bundler>, [">= 1.0.0"])
     s.add_dependency(%q<columnize>, ["= 0.3.1"])
     s.add_dependency(%q<facets>, ["= 2.8.4"])

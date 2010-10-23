@@ -6,9 +6,9 @@ module Dor
 end
 
 DOR_URI = 'http://dor-dev.stanford.edu/dor'
-WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow' unless defined? WORKFLOW_URI
+WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
 
-FEDORA_URI = 'http://fedoraAdmin:fedoraAdmin@dor-dev.stanford.edu/fedora'
+FEDORA_URI = 'https://fedoraAdmin:fedoraAdmin@dor-dev.stanford.edu/fedora'
 SEDORA_USER = 'fedoraAdmin'
 SEDORA_PASS = 'fedoraAdmin'
 SEDORA_URI= "http://#{SEDORA_USER}:#{SEDORA_PASS}@sdr-fedora-dev.stanford.edu/fedora"
@@ -17,9 +17,9 @@ SEDORA_URI= "http://#{SEDORA_USER}:#{SEDORA_PASS}@sdr-fedora-dev.stanford.edu/fe
 #MD_URI = 'http://lyberservices-dev.stanford.edu:8080'
 #CONTENT_SERVER_URL = 'http://lyberservices-dev'
 
-CERT_FILE = '/home/lyberadmin/certs/ls-test.crt'
-KEY_FILE = '/home/lyberadmin/certs/ls-test.key'
-KEY_PASS = 'lstest'
+CERT_FILE = SSL_CLIENT_CERT_FILE = File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.crt')
+KEY_FILE = SSL_CLIENT_KEY_FILE = File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.key')
+KEY_PASS = SSL_CLIENT_KEY_PASS = 'lsdev'
 
 #SDR_USER_HOST = 'convert@sdr-stage:'
 #SDR_DEPOSIT_HOME='/convert/dor/dev'

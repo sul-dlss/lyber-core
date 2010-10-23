@@ -29,10 +29,10 @@ begin
     # requirements twice is a temporary measure that will be
     # fixed once jeweler 1.5 is out of beta. See note below. 
     
-    gem.add_dependency "active-fedora", ">=1.1.13"
+    gem.add_dependency "active-fedora", ">=1.2"
     gem.add_dependency "actionpack", "2.3.9"
     gem.add_dependency "activesupport", "2.3.9"
-    gem.add_dependency "bagit", "0.1.0"
+    gem.add_dependency "bagit", ">=0.1.0"
     gem.add_dependency "bundler", ">= 1.0.0"
     gem.add_dependency "columnize", "0.3.1"
     gem.add_dependency "facets", "2.8.4"
