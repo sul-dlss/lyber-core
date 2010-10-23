@@ -10,6 +10,7 @@ module LyberCore
   attr_reader :workflow
   attr_reader :registration_robot
   attr_reader :druid_list
+  attr_reader :current_druid
   
   # Given a repository, a workflow and the name of a robot that registers objects in fedora
   # we can generate a list of all the druids that were created by that robot
@@ -40,12 +41,13 @@ module LyberCore
       begin
         connect_to_fedora
         @druid_list.each do |druid|
-          LyberCore::Log.info("Deleting #{druid}")
-          obj = ActiveFedora::Base.load_instance(druid)
+          @current_druid = druid
+          LyberCore::Log.info("Deleting #{@current_druid}")
+          obj = ActiveFedora::Base.load_instance(@current_druid)
           obj.delete
         end
       rescue ActiveFedora::ObjectNotFoundError
-        LyberCore::Log.info("#{druid} does not exist in this repository")
+        LyberCore::Log.info("#{@current_druid} does not exist in this repository")
       rescue Exception => e
         raise e
       end
