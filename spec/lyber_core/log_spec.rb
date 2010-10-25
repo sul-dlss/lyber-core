@@ -35,8 +35,8 @@ describe LyberCore::Log do
       LyberCore::Log.should respond_to(:level)
     end
 
-    it "starts in error reporting mode (log level 3)" do
-      LyberCore::Log.level.should eql(Logger::ERROR)       
+    it "starts in info reporting mode (log level 1)" do
+      LyberCore::Log.level.should eql(Logger::INFO)       
     end
     
     it "can be put into debug mode (log level 0)" do  

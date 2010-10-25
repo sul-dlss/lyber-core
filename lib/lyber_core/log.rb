@@ -6,7 +6,7 @@ module LyberCore
         
     # Default values
     DEFAULT_LOGFILE = "/tmp/lybercore_log.log"
-    DEFAULT_LOG_LEVEL = 3
+    DEFAULT_LOG_LEVEL = Logger::INFO
     DEFAULT_FORMATTER = proc{|s,t,p,m|"%5s [%s] (%s) %s :: %s\n" % [s, 
                        t.strftime("%Y-%m-%d %H:%M:%S"), $$, p, m]}
         
