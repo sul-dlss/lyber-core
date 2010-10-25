@@ -22,7 +22,7 @@ begin
                       "Also contains core classes to build robots"
     gem.email = "wmene@stanford.edu"
     gem.homepage = "http://github.com/wmene/lyber-core"
-    gem.authors = ["Willy Mene"]
+    gem.authors = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene"]
     
     # These are a copy of the requirements in Gemfile
     # Gemfile should be the canonical version, and listing
