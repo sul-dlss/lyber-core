@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Willy Mene"]
-  s.date = %q{2010-10-22}
+  s.date = %q{2010-10-23}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -82,6 +82,16 @@ Also contains core classes to build robots}
      ".yardoc/objects/LyberCore/Connection/get_https_connection_c.dat",
      ".yardoc/objects/LyberCore/Connection/post_c.dat",
      ".yardoc/objects/LyberCore/Connection/put_c.dat",
+     ".yardoc/objects/LyberCore/Destroyer.dat",
+     ".yardoc/objects/LyberCore/Destroyer/connect_to_fedora_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/current_druid_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/delete_druids_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/druid_list_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/get_druid_list_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/initialize_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/registration_robot_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/repository_i.dat",
+     ".yardoc/objects/LyberCore/Destroyer/workflow_i.dat",
      ".yardoc/objects/LyberCore/Log.dat",
      ".yardoc/objects/LyberCore/Log/DEFAULT_FORMATTER.dat",
      ".yardoc/objects/LyberCore/Log/DEFAULT_LOGFILE.dat",
