@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 require 'lyber_core'
-require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")  
+require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")
+require 'fakeweb'
 
 
 describe LyberCore::Robots::WorkQueue do
@@ -53,12 +54,15 @@ describe LyberCore::Robots::WorkQueue do
      workflow.stub(:waiting).and_return("descriptive-metadata")
      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
      workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
-     queue = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/queue.xml")
-     (File.file? queue).should eql(true)
-     DorService.stub(:all).and_return(queue)
+     queuefile = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/queue.xml")
+     (File.file? queuefile).should eql(true)
+     queue = IO.read(queuefile)
+     FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+       :body => queue)
      wq = LyberCore::Robots::WorkQueue.new(workflow, workflow.waiting)
      wq.enqueue_workstep_waiting
      wq.druids.length.should eql(wq.batch_limit)
+     FakeWeb.clean_registry
    end
   
   end
