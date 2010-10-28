@@ -49,7 +49,7 @@ begin
     gem.add_dependency "rake", ">=0.8.7"
     gem.add_dependency "rdoc", ">=2.3.0"
     gem.add_dependency "roxml", ">=3.1.5"
-    gem.add_dependency "rspec"
+    gem.add_dependency "rspec", "1.3.1"
     gem.add_dependency "rubyforge", "2.0.4"
     gem.add_dependency "ruby-debug"
     gem.add_dependency "semver"
