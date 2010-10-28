@@ -12,7 +12,7 @@ lib/dor_service.rb c9fbea2a5f7bad6f8228736bd7c0acc268d07ed9
 /usr/local/projects/lyber-core/lib/lyber_core/utils/checksum_validate.rb 27c0f189ab08c6fc04fb8ca02b59f9a331c6d788
 /usr/local/projects/lyber-core/lib/lyber_core/connection.rb d3e46415c55cf86c8f2141686451f248cb1ce778
 /usr/local/projects/lyber-core/LICENSE 51172f80df63376117072f2698f05d26f7dc9231
-lib/lyber_core/log.rb 2be49386b24000371c18f848a444eec19091dc7d
+lib/lyber_core/log.rb 436835635b627e414d897b6892c3de01f44a1fb8
 LICENSE 51172f80df63376117072f2698f05d26f7dc9231
 /usr/local/projects/lyber-core/lib/lyber_core/destroyer.rb c507da30b3161507c86c11d14a16a81a271a1e33
 lib/lyber_core/robots/work_item.rb a2f3c5583c9bdd944132ee0c9068cfef13546dec
@@ -33,7 +33,7 @@ lib/lyber_core.rb ee59367fb9a21b75ad10dbc64073eac4a33ed21c
 README.rdoc ea845f418471066d115e2535a3393d1854c7bac2
 /usr/local/projects/lyber-core/lib/roxml_models/identity_metadata/identity_metadata.rb 8a27d7d3257b4377ce99db55d06556ff2a476283
 lib/roxml_models/identity_metadata/identity_metadata.rb 8a27d7d3257b4377ce99db55d06556ff2a476283
-/usr/local/projects/lyber-core/lib/lyber_core/log.rb 2be49386b24000371c18f848a444eec19091dc7d
+/usr/local/projects/lyber-core/lib/lyber_core/log.rb 436835635b627e414d897b6892c3de01f44a1fb8
 lib/lyber_core/connection.rb d3e46415c55cf86c8f2141686451f248cb1ce778
 /usr/local/projects/lyber-core/lib/lyber_core/robots/workspace.rb 6ad976efc52bafa511b2e26e38bb47c3a07e7991
 /usr/local/projects/lyber-core/README.rdoc ea845f418471066d115e2535a3393d1854c7bac2
