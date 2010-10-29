@@ -20,3 +20,4 @@ pkg
 coverage.data
 
 ## PROJECT::SPECIFIC
+.yardoc
