@@ -12,8 +12,13 @@ module LyberCore
 
         # can override the default location of workspace files
         # by setting WORKSPACE_HOME environmental variable
-        if not (workspace_home = ENV['WORKSPACE_HOME'] )
-          workspace_home = WORKSPACE_HOME
+        begin
+          if not (workspace_home = ENV['WORKSPACE_HOME'] )
+            workspace_home = WORKSPACE_HOME
+          end
+        rescue NameError => e
+          LyberCore::Log.fatal("WORKSPACE_HOME is undefined. Do you need to set it in your config file?")
+          raise e
         end
 
         if (@collection_name)
@@ -32,6 +37,7 @@ module LyberCore
         return dir_name
       end
 
+      # The place where the original tar file from google is stored
       def original_dir(druid)
         return object_dir('original', druid)
       end
