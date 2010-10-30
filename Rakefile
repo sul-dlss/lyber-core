@@ -99,7 +99,7 @@ end
 
 require 'spec/rake/verify_rcov'
 RCov::VerifyTask.new(:verify_rcov => ['clean', 'rcov']) do |t|
-  t.threshold = 65.22
+  t.threshold = 66.39
   t.index_html = 'coverage/index.html'
 end
 

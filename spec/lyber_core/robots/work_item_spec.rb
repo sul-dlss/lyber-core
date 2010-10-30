@@ -65,4 +65,30 @@ describe LyberCore::Robots::WorkItem do
         
   end #set_success
   
+  describe "#set_error" do
+    
+    before(:each) do
+      @work_queue.should_receive(:error_count).and_return(0)
+      @work_queue.should_receive(:error_count=)
+      @work_queue.should_receive(:workflow_step).and_return("fake-workflow-step")
+      @workflow = mock("workflow")
+      @workflow.should_receive(:repository).and_return("dor")
+      @workflow.should_receive(:workflow_id).and_return("googleScannedBookWF")
+      @work_queue.stub(:workflow).and_return(@workflow)
+      DorService.should_receive(:update_workflow_error_status).and_return(true)
+      @work_item.druid = "changeme:boosh"
+    end
+    
+    it "sets an error with a standard exception" do
+      e = Exception.new("The sky is falling!")
+      @work_item.set_error(e)
+    end
+    
+    it "sets an error with a Errno::EACCES error" do
+      e = Errno::EACCES.new
+      @work_item.set_error(e)    
+    end
+    
+  end
+  
 end #LyberCore::WorkItem

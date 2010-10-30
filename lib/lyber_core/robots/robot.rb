@@ -119,6 +119,8 @@ module LyberCore
             process_item(work_item)
             work_item.set_success
           rescue Exception => e
+            # LyberCore::Log.error("Encountered exception processing #{work_item.druid}: #{e.to_s}")
+            # LyberCore::Log.debug("Encountered exception processing #{work_item.druid}: #{e.backtrace.join("\n")}")
             work_item.set_error(e)
           end
         end

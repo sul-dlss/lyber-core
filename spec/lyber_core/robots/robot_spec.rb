@@ -146,7 +146,7 @@ describe LyberCore::Robots::Robot do
       
       workflow_name = "googleScannedBookWF"
   
-      it "should process a batch of druids from the Workflow" do   
+      it "processes a batch of druids from the Workflow" do   
         
         require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
     
@@ -165,7 +165,7 @@ describe LyberCore::Robots::Robot do
         # robot.start
       end
     
-      it "should process queue of objects" do
+      it "processes a queue of objects" do
     
         mock_queue = mock('queue')
         mock_item = mock('item')
@@ -184,6 +184,24 @@ describe LyberCore::Robots::Robot do
     
         robot.process_queue(mock_queue)
     
+      end
+      
+      it "keeps going even if it encounters an error in one of the objects" do
+        mock_queue = mock('queue')
+        mock_item = mock('item')
+        mock_item.should_receive(:druid).and_return("foo:bar")
+        mock_item.should_receive(:set_success).and_return(true)
+        
+        mock_item2 = mock('item2')
+        mock_item2.should_receive(:druid).and_raise(Errno::EACCES)
+        mock_item2.should_receive(:set_error).and_return(true)
+        
+        mock_dorservice = mock('dorservice')
+        mock_queue.should_receive(:next_item).and_return(mock_item, mock_item2, nil)
+        
+        mock_queue.should_receive(:print_stats)
+        robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
+        robot.process_queue(mock_queue)
       end
     
     end

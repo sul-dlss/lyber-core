@@ -36,10 +36,8 @@ describe LyberCore::Robots::Workflow do
     correct_robot_root = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")
       
     before :all do
-      
-      Object.send(:remove_const, :ROBOT_ROOT) if defined? ROBOT_ROOT
+      # Object.send(:remove_const, :ROBOT_ROOT) if defined? ROBOT_ROOT
       ROBOT_ROOT = correct_robot_root 
-
       @wf = LyberCore::Robots::Workflow.new(wf_name, {:collection_name => collection})
     end
     
