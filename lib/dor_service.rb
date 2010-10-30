@@ -379,8 +379,9 @@ class DorService
          raise res.error!, "Received error from the workflow service"
       end
     rescue Exception => e
-      LyberCore::Log.error("Unable to update workflow at url #{url_string}")
-      raise e, "Encountered an error from symphony at url #{url_string}"
+      msg = "Unable to update workflow service at url #{url_string}"
+      LyberCore::Log.error(msg)
+      raise e, msg
     end
   end
 

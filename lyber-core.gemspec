@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alpana Pande", "Bess Sadler", "Chris Fitzpatrick", "Douglas Kim", "Richard Anderson", "Willy Mene"]
-  s.date = %q{2010-10-29}
+  s.date = %q{2010-10-30}
   s.description = %q{Contains classes to make http connections with a client-cert, use Jhove, and call Suri
 Also contains core classes to build robots}
   s.email = %q{wmene@stanford.edu}
@@ -176,7 +176,6 @@ Also contains core classes to build robots}
      ".yardoc/objects/LyberCore/Robots/Workflow/collection_config_dir_i.dat",
      ".yardoc/objects/LyberCore/Robots/Workflow/collection_name_i.dat",
      ".yardoc/objects/LyberCore/Robots/Workflow/initialize_i.dat",
-     ".yardoc/objects/LyberCore/Robots/Workflow/logger_i.dat",
      ".yardoc/objects/LyberCore/Robots/Workflow/object_template_filepath_i.dat",
      ".yardoc/objects/LyberCore/Robots/Workflow/queue_i.dat",
      ".yardoc/objects/LyberCore/Robots/Workflow/repository_i.dat",

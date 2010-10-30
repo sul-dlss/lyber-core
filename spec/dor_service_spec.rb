@@ -161,7 +161,6 @@ describe DorService do
     process = "process-content"
     
     it "cleans up any error codes that are passed" do
-
       error_msg = '500 "Internal Server Error"'
       error_txt = nil
       message = DorService.construct_error_update_request(process, error_msg, error_txt)
@@ -182,7 +181,7 @@ describe DorService do
       FakeWeb.register_uri(:get, fake_url, 
         :body => "",
         :status => ["500", "Error encountered"])
-      lambda{ DorService.update_workflow_error_status(repository, druid, workflow, process, error_msg, error_txt = nil) }.should raise_exception(/Encountered an error from symphony/)
+      lambda{ DorService.update_workflow_error_status(repository, druid, workflow, process, error_msg, error_txt = nil) }.should raise_exception(/Unable to update workflow service at url/)
     end
     
   end
