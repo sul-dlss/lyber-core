@@ -41,8 +41,19 @@ module LyberCore
         @options = OpenStruct.new
         self.parse_options
         self.create_workflow
+        self.set_workspace
       end
-
+      
+      # Some workflows require a directory where their content lives
+      # If a robot is invoked with a :workspace => true option, its @workspace
+      # should be set from the value in 
+      def set_workspace
+        if(@opts[:workspace])
+          @workspace = LyberCore::Robots::Workspace.new(@workflow_name, @collection_name)
+          LyberCore::Log.debug("workspace = #{workspace.inspect}")
+        end
+      end
+      
       # Create the workflow at instantiation, not when we start running the robot.
       # That way we can do better error checking and ensure that everything is going
       # to run okay before we actually start things.
@@ -64,10 +75,7 @@ module LyberCore
       def start()
         
         LyberCore::Log.debug("Starting robot...")
-        if(@opts[:workspace] == true)
-          @workspace = LyberCore::Robots::Workspace.new(@workflow_name, @collection_name)
-          LyberCore::Log.debug("workspace = #{workspace.inspect}")
-        end
+
         queue = @workflow.queue(@workflow_step)
       
         # If we have arguments, parse out the parts that indicate druids

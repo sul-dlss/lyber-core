@@ -22,8 +22,8 @@ describe LyberCore::Robots::Workflow do
     incorrect_robot_root = File.expand_path(File.dirname(__FILE__) + "/../../fake/")
     
     it "raises an error if it can't find a workflow config" do
-      Object.send(:remove_const, :ROBOT_ROOT) if defined? ROBOT_ROOT
       ROBOT_ROOT = incorrect_robot_root    
+      # LyberCore::Robots::Workflow.new(wf_name)
       lambda {LyberCore::Robots::Workflow.new(wf_name)}.should raise_error(/Workflow config not found/)      
     end
   end
@@ -36,15 +36,11 @@ describe LyberCore::Robots::Workflow do
     correct_robot_root = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")
       
     before :all do
-
-      logfile = "/tmp/workflow_spec.log"
-      logger = Logger.new(logfile)
-      logger.level = 0
       
       Object.send(:remove_const, :ROBOT_ROOT) if defined? ROBOT_ROOT
       ROBOT_ROOT = correct_robot_root 
 
-      @wf = LyberCore::Robots::Workflow.new(wf_name, {:logger => logger, :collection_name => collection})
+      @wf = LyberCore::Robots::Workflow.new(wf_name, {:collection_name => collection})
     end
     
     it "can be initialized as long as you set ROBOT_ROOT first" do
@@ -70,11 +66,32 @@ describe LyberCore::Robots::Workflow do
       @wf.workflow_name.should eql(wf_name)
     end
     
-    it "inherits a logger from robot" do
-      @wf.logger.level.should eql(0)
-      @wf.logger.debug("This is a debug statement")
+  end
+  
+  context "workflow-config" do
+    workflow_name = "googleScannedBookWF"
+    correct_robot_root = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")
+    ROBOT_ROOT = correct_robot_root
+    
+    before(:all) do
+      @wf = LyberCore::Robots::Workflow.new(workflow_name)
+    end
+    
+    it "has a workflow config directory" do
+      @wf.workflow_config_dir.should eql(File.join(ROBOT_ROOT, "config", "workflows", workflow_name))
+    end
+    
+    it "has a collection_config_dir if it was invoked with a collection name" do
+      pending
+    end
+    
+    it "has a workflow config file" do
+      @wf.workflow_config_file.should eql(File.join(ROBOT_ROOT, "config", "workflows", workflow_name, "workflow-config.yaml"))
+    end
+    
+    it "has a workflow config" do
+      @wf.workflow_config["grin-dir"].should eql('gfetch@dpgthumper2:/pool0/gfetch/grinDownloadFiles/')
     end
     
   end
-  
 end

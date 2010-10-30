@@ -3,14 +3,19 @@ require 'lyber_core'
 require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")  
 
 describe LyberCore::Robots::Robot do
-    
-  describe "environment loading" do
-      
-    wf_name = "sdrIngestWF"
-    wf_step = "populate-metadata"
-    collection = "baz"
-    valid_logfile = "/tmp/fakelog.log"
   
+  ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
+  require "#{ROBOT_ROOT}/config/environments/test.rb"
+    
+  context "environment loading" do
+    
+    before(:all) do
+      wf_name = "sdrIngestWF"
+      wf_step = "populate-metadata"
+      collection = "baz"
+      valid_logfile = "/tmp/fakelog.log"
+    end
+      
     # it "raises an exception if WORKFLOW_URI is not defined" do
     #   pending "This test passes when run on its own, but undefining WORKFLOW_URI seems to break the other tests"
     #   Object.send(:remove_const, :WORKFLOW_URI) if defined? WORKFLOW_URI
@@ -18,8 +23,6 @@ describe LyberCore::Robots::Robot do
     # end
       
   end
-  
-  
   
   context "initial state" do
     
@@ -57,7 +60,7 @@ describe LyberCore::Robots::Robot do
     wf_step = "populate-metadata"
     valid_logfile = "/tmp/fakelog.log"
     invalid_logfile = "/zzxx/fakelog.log"
- 
+   
     before :each do
       LyberCore::Log.restore_defaults
     end
@@ -78,30 +81,23 @@ describe LyberCore::Robots::Robot do
       
   context "workflow" do
       
-      before :each do
-        require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
-      end
-      
-      require 'dor_service'      
-      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures") unless defined? ROBOT_ROOT
-      workflow_logfile = "/tmp/workflow_testing.log"
-      
       it "can inspect its workflow object" do
-        robot = TestRobot.new("sdrIngestWF", "populate-metadata", :logfile => workflow_logfile)
+        robot = TestRobot.new("sdrIngestWF", "populate-metadata")
         robot.workflow.repository.should eql("sdr")
-      end
-    
-    end
+      end    
+  end
             
   context "command line options" do
     
-    workflow_name = "googleScannedBookWF"
+    before(:all) do
+      @workflow_name = "googleScannedBookWF"
+    end
     
     it "can accept a single druid for processing" do
       mock_workflow = mock('workflow')
       mock_queue = mock('queue')
       ARGV << "--druid=sdrtwo:blah"
-      robot = TestRobot.new(workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
+      robot = TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
       robot.get_druid_list[0].should eql("sdrtwo:blah")
     end
     
@@ -109,7 +105,7 @@ describe LyberCore::Robots::Robot do
       mock_workflow = mock('workflow')
       mock_queue = mock('queue')
       ARGV << "--file=fakefile"
-      robot = TestRobot.new(workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
+      robot = TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
       robot.options.file.should eql("fakefile")
     end
     
@@ -119,7 +115,7 @@ describe LyberCore::Robots::Robot do
       mock_workflow = mock('workflow')
       mock_queue = mock('queue')
       ARGV << "--format pretty"
-      lambda { TestRobot.new(workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain') }.should_not raise_exception()
+      lambda { TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain') }.should_not raise_exception()
     end
     
     it "can override the default logfile via the commandline" do
@@ -136,12 +132,20 @@ describe LyberCore::Robots::Robot do
     
   end
   
-  
+  context "workspace" do
+    
+    it "can be invoked with a workspace" do
+      workflow_name = "googleScannedBookWF"
+      robot = TestRobot.new(workflow_name, "google-download", :workspace => true)
+      robot.workspace.workspace_base.should eql("#{WORKSPACE_HOME}/#{workflow_name}")
+    end
+    
+  end
   
   context "other" do
       
       workflow_name = "googleScannedBookWF"
-
+  
       it "should process a batch of druids from the Workflow" do   
         
         require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
@@ -181,7 +185,7 @@ describe LyberCore::Robots::Robot do
         robot.process_queue(mock_queue)
     
       end
+    
     end
-  
   
 end
