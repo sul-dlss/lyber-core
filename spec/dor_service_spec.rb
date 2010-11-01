@@ -5,6 +5,8 @@ require 'nokogiri'
 require 'net/http'
 require 'uri'
 require 'fakeweb'
+require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
+
 
 describe DorService do
 
@@ -33,13 +35,20 @@ describe DorService do
     end
   end
   
+  context "get empty workflow queue" do
+    
+    it "raises a helpful exception if it encounters an empty workflow queue" do
+      pending
+      DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
+    end
+  end
+  
   context "DorService.get_datastream" do
     
     druid = "druid:wr056zx7133"
     ds_id = "identityMetadata"
     
     before :all do
-      require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
       FakeWeb.allow_net_connect = false
     end
     
@@ -66,10 +75,6 @@ describe DorService do
   end
   
   context "DorService.get_druid_by_id" do
-    
-    before :all do
-      require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
-    end
     
     before :each do
       FakeWeb.allow_net_connect = false
@@ -119,10 +124,6 @@ describe DorService do
   context "DorService.get_object_identifiers(druid)" do
     
     druid = "druid:wr056zx7133"
-    
-    before :each do
-      require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
-    end
     
     # This is an integration test. It actually connects to dor-dev
     it "returns identityMetadata/otherId values for a given druid (live lookup)" do
@@ -182,7 +183,6 @@ describe DorService do
     end
     
     it "raises a helpful error if it can't communicate with the workflow server" do
-      require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments/test.rb")  
       repository = "foo"
       druid = "druid:bar"
       workflow = "workflow" 
