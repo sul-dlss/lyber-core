@@ -348,8 +348,8 @@ class DorService
   # Given a process and an error message, constuct an xml fragment that can be
   # posted to the workflow service to record the error generated for a given druid
   def DorService.construct_error_update_request(process, error_msg, error_txt)
-    clean_error_msg = error_msg.gsub(/\s+/," ").gsub(/"/,"'")
-    clean_error_txt = error_txt.gsub(/\s+/," ").gsub(/"/,"'") unless error_txt.nil?
+    clean_error_msg = error_msg.gsub(/\s+/," ").gsub(/[`'#<>]/,'').gsub(/"/,"'")
+    clean_error_txt = error_txt.gsub(/\s+/," ").gsub(/[`'#<>]/,'').gsub(/"/,"'") unless error_txt.nil?
     body = '<process name="'+ process + '" status="error" errorMessage="' + clean_error_msg + '" ' 
     body += 'errorText="' + clean_error_txt + '" ' unless error_txt.nil?
     body += '/>'  

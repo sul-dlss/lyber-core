@@ -160,13 +160,25 @@ describe DorService do
     workflow = "googleScannedBookWF"
     process = "process-content"
     
-    it "cleans up any error codes that are passed" do
-      error_msg = '500 "Internal Server Error"'
-      error_txt = nil
-      message = DorService.construct_error_update_request(process, error_msg, error_txt)
-      lambda { doc = Nokogiri::XML(message) do |config|
-        config.strict       
-      end }.should_not raise_error
+    context "#construct_error_update_request" do
+      
+      it "cleans up any error codes that are passed" do
+        error_msg = '500 "Internal Server Error"'
+        error_txt = nil
+        message = DorService.construct_error_update_request(process, error_msg, error_txt)
+        lambda { doc = Nokogiri::XML(message) do |config|
+          config.strict       
+        end }.should_not raise_error
+      end
+      
+      it "cleans up even very messy error text" do
+        error_msg = "undefined local variable or method `druid' for #<GoogleScannedBook::GoogleDownload:0x2b6e1bc97b38>"
+        error_txt = nil
+        message = DorService.construct_error_update_request(process, error_msg, error_txt)
+        lambda { doc = Nokogiri::XML(message) do |config|
+          config.strict       
+        end }.should_not raise_error
+      end
     end
     
     it "raises a helpful error if it can't communicate with the workflow server" do
