@@ -7,8 +7,7 @@ describe LyberCore::Destroyer do
   before :all do
     FakeWeb.allow_net_connect = false
     fixture_metadata = open(File.expand_path(File.dirname(__FILE__) + "/../fixtures/objects.xml")) { |f| f.read }
-    FakeWeb.allow_net_connect = false
-    FakeWeb.register_uri(:get, %r|lyberservices|, :body => fixture_metadata)
+    FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu|, :body => fixture_metadata)
     @dfo = LyberCore::Destroyer.new("dor","googleScannedBookWF", "register-object")
   end
 
