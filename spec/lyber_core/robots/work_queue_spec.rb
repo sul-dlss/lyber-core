@@ -45,26 +45,40 @@ describe LyberCore::Robots::WorkQueue do
      wq = LyberCore::Robots::WorkQueue.new(workflow, "descriptive-metadata")
      wq.batch_limit.should eql(5)
    end
-   
-   it "only grabs as many druids as it needs for a batch" do
-     workflow = stub("workflow")
-     workflow.stub(:repository).and_return("dor")
-     workflow.stub(:workflow_id).and_return("googleScannedBookWF")
-     workflow.stub(:completed).and_return("register-object")
-     workflow.stub(:waiting).and_return("descriptive-metadata")
-     workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
-     workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
-     queuefile = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/queue.xml")
-     (File.file? queuefile).should eql(true)
-     queue = IO.read(queuefile)
-     FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-       :body => queue)
-     wq = LyberCore::Robots::WorkQueue.new(workflow, workflow.waiting)
-     wq.enqueue_workstep_waiting
-     wq.druids.length.should eql(wq.batch_limit)
-     FakeWeb.clean_registry
-   end
   
+  end
+  
+  context "enqueue_workstep_waiting" do
+    
+    before(:each) do
+      @workflow = stub("workflow")
+      @workflow.stub(:repository).and_return("dor")
+      @workflow.stub(:workflow_id).and_return("googleScannedBookWF")
+      @workflow.stub(:completed).and_return("register-object")
+      @workflow.stub(:waiting).and_return("descriptive-metadata")
+      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
+      @workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
+    end
+    
+    it "only grabs as many druids as it needs for a batch" do
+      queuefile = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/queue.xml")
+      (File.file? queuefile).should eql(true)
+      queue = IO.read(queuefile)
+      FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+        :body => queue)
+      wq = LyberCore::Robots::WorkQueue.new(@workflow, @workflow.waiting)
+      wq.enqueue_workstep_waiting
+      wq.druids.length.should eql(wq.batch_limit)
+      FakeWeb.clean_registry
+    end
+
+    it "enqueue_workstep_waiting catches and raises an EmptyQueue exception" do
+      FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+        :body => "No objects found")
+      wq = LyberCore::Robots::WorkQueue.new(@workflow, @workflow.waiting)
+      lambda { wq.enqueue_workstep_waiting }.should raise_exception(LyberCore::Exceptions::EmptyQueue)
+    end
+    
   end
   
 end

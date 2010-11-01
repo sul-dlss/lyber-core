@@ -1,5 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 require 'lyber_core'
+require 'fakeweb'
 require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")  
 
 describe LyberCore::Robots::Robot do
@@ -86,7 +87,24 @@ describe LyberCore::Robots::Robot do
         robot.workflow.repository.should eql("sdr")
       end    
   end
-            
+      
+  context "empty workflow queue" do
+    
+    it "does not report an error if it encounters an empty workflow queue" do
+      repository = "dor"
+      workflow = "googleScannedBookWF"
+      completed = "google-download"
+      waiting = "process-content"
+      FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+        :body => "No objects found")
+      robot = TestRobot.new(workflow, waiting)
+      robot.should_not_receive(:process_queue)
+      robot.start        
+    end
+    
+  end    
+  
+        
   context "command line options" do
     
     before(:all) do

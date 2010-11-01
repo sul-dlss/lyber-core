@@ -38,8 +38,13 @@ describe DorService do
   context "get empty workflow queue" do
     
     it "raises a helpful exception if it encounters an empty workflow queue" do
-      pending
-      DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
+      repository = "dor"
+      workflow = "googleScannedBookWF"
+      completed = "google-download"
+      waiting = "process-content"
+      FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+        :body => "No objects found")
+      lambda { DorService.get_objects_for_workstep(repository, workflow, completed, waiting) }.should raise_exception(LyberCore::Exceptions::EmptyQueue)
     end
   end
   

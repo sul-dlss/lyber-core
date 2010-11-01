@@ -10,4 +10,5 @@ require 'lyber_core/robots/workflow'
 require 'lyber_core/robots/workspace'
 require 'lyber_core/robots/work_queue'
 require 'lyber_core/robots/work_item'
+require 'lyber_core/exceptions/empty_queue'
 

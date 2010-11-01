@@ -92,11 +92,15 @@ module LyberCore
       # Obtain the set of druids to be processed using a database query
       # to obtain the repository objects that are awaiting this step
       def enqueue_workstep_waiting()
-        LyberCore::Log.debug("\nEnqueing workstep waiting...")
-        object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
-        LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
-        @druids = DlssService.get_some_druids_from_object_list(object_list_xml,self.batch_limit)
-        LyberCore::Log.debug("\n@druids = #{@druids}")
+        begin
+          LyberCore::Log.debug("\nEnqueing workstep waiting...")
+          object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
+          LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
+          @druids = DlssService.get_some_druids_from_object_list(object_list_xml,self.batch_limit)
+          LyberCore::Log.debug("\n@druids = #{@druids}")
+        rescue Exception => e
+          raise e
+        end
       end
 
       # Use an alternative set of identifiers as the basis of this queue
@@ -137,6 +141,13 @@ module LyberCore
         LyberCore::Log.info "Total time: " + @elapsed_time.to_s + "\n"
         LyberCore::Log.info "Completed objects: " + self.success_count.to_s + "\n"
         LyberCore::Log.info "Errors: " + self.error_count.to_s + "\n"    
+      end
+      
+      def print_empty_stats
+        @end_time = Time.new
+        @elapsed_time = @end_time - @start_time
+        LyberCore::Log.info "Total time: " + @elapsed_time.to_s + "\n"
+        LyberCore::Log.info "Empty queue"   
       end
     end
   end

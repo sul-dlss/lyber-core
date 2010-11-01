@@ -285,7 +285,11 @@ class DorService
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res
         when Net::HTTPSuccess
-          return res.body
+          if res.body == "No objects found" 
+            raise LyberCore::Exceptions::EmptyQueue.new, "empty queue" 
+          else
+            return res.body
+          end
         else
           LyberCore::Log.fatal("Workflow queue not found for #{workflow} : #{waiting}")
           LyberCore::Log.debug("I am attempting to connect to WORKFLOW_URI #{WORKFLOW_URI}")

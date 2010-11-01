@@ -74,17 +74,23 @@ module LyberCore
       # == Create a new workflow 
       def start()
         
-        LyberCore::Log.debug("Starting robot...")
+        begin
+          LyberCore::Log.debug("Starting robot...")
 
-        queue = @workflow.queue(@workflow_step)
+          queue = @workflow.queue(@workflow_step)
       
-        # If we have arguments, parse out the parts that indicate druids
-        if(@options.file or @options.druid)
-          queue.enqueue_druids(get_druid_list)
-        else
-          queue.enqueue_workstep_waiting()
+          # If we have arguments, parse out the parts that indicate druids
+          if(@options.file or @options.druid)
+            queue.enqueue_druids(get_druid_list)
+          else
+            queue.enqueue_workstep_waiting()
+          end
+          process_queue(queue)
+        rescue LyberCore::Exceptions::EmptyQueue
+          LyberCore::Log.info("Empty queue -- no objects to process")
+        rescue Exception => e
+          LyberCore::Log.error(e.backtrace.join("\n"))
         end
-        process_queue(queue)
       end
 
       # Generate a list of druids to process
