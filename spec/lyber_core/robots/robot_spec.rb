@@ -90,6 +90,15 @@ describe LyberCore::Robots::Robot do
       
   context "empty workflow queue" do
     
+    before :all do
+      FakeWeb.allow_net_connect = false
+    end
+    
+    after :all do
+      FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = true
+    end
+    
     it "does not report an error if it encounters an empty workflow queue" do
       repository = "dor"
       workflow = "googleScannedBookWF"
@@ -99,7 +108,7 @@ describe LyberCore::Robots::Robot do
         :body => "No objects found")
       robot = TestRobot.new(workflow, waiting)
       robot.should_not_receive(:process_queue)
-      robot.start        
+      robot.start
     end
     
   end    
