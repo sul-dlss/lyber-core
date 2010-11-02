@@ -86,6 +86,10 @@ module LyberCore
             queue.enqueue_workstep_waiting()
           end
           process_queue(queue)
+        # TODO: Implement a FatalError class
+        # rescue LyberCore::Exceptions::FatalError => e
+        #   LyberCore::Log.fatal("e.msg")
+        #   exit
         rescue LyberCore::Exceptions::EmptyQueue
           LyberCore::Log.info("Empty queue -- no objects to process")
         rescue Exception => e
