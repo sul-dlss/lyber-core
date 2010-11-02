@@ -38,6 +38,7 @@ The BagitBag class requires the bagit gem
   http://github.com/flazz/bagit
 
 == Releases
+- <b>0.9.5.4</b> Custom exception classes, more checking of error conditions
 - <b>0.9.5.3</b> More robust testing, minor bug fixes, compatible with active_fedora 1.2.6
 - <b>0.9.5</b> Significantly refactored to provide central logging and many more debugging statements. 
 - <b>0.9.4</b> First version that requires Ruby 1.8.7.  Built with bundler and rvm
