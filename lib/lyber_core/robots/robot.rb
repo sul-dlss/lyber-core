@@ -93,6 +93,7 @@ module LyberCore
         rescue LyberCore::Exceptions::EmptyQueue
           LyberCore::Log.info("Empty queue -- no objects to process")
         rescue Exception => e
+          LyberCore::Log.error(e.msg)
           LyberCore::Log.error(e.backtrace.join("\n"))
         end
       end

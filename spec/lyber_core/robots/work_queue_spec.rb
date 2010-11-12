@@ -74,7 +74,8 @@ describe LyberCore::Robots::WorkQueue do
 
     it "enqueue_workstep_waiting catches and raises an EmptyQueue exception" do
       FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-        :body => "No objects found")
+        :body => "No objects found",
+        :status => ["404", "Not Found"])
       wq = LyberCore::Robots::WorkQueue.new(@workflow, @workflow.waiting)
       lambda { wq.enqueue_workstep_waiting }.should raise_exception(LyberCore::Exceptions::EmptyQueue)
     end

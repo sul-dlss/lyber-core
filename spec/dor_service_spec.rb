@@ -43,7 +43,8 @@ describe DorService do
       completed = "google-download"
       waiting = "process-content"
       FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-        :body => "No objects found")
+        :body => "No objects found",
+        :status => ["404", "Not Found"])
       lambda { DorService.get_objects_for_workstep(repository, workflow, completed, waiting) }.should raise_exception(LyberCore::Exceptions::EmptyQueue)
     end
   end

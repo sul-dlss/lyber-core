@@ -285,10 +285,13 @@ class DorService
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res
         when Net::HTTPSuccess
-          if res.body == "No objects found" 
-            raise LyberCore::Exceptions::EmptyQueue.new, "empty queue" 
+          return res.body
+        when Net::HTTPNotFound
+          if res.body =~ /No objects found/i 
+            raise LyberCore::Exceptions::EmptyQueue.new, "empty queue"
           else
-            return res.body
+            LyberCore::Log.fatal("404 Not Found returned, but response from workflow service incorrect for #{workflow} : #{waiting}")
+            raise "404 Not Found returned, but response from workflow service incorrect #{uri_string}"
           end
         else
           LyberCore::Log.fatal("Workflow queue not found for #{workflow} : #{waiting}")
@@ -301,6 +304,10 @@ class DorService
           raise "Could not connect to url #{uri_string}"
        end
     end 
+  end
+  
+  def DorService.log_and_raise_workflow_connection_problem(repository, workflow, completed, waiting, response)
+    
   end
   
   # Transforms the XML from getObjectsForWorkStep into a list of druids
