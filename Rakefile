@@ -48,9 +48,9 @@ begin
     gem.add_dependency "multipart-post", ">=1.0.1"
     gem.add_dependency "nokogiri", ">=1.4.3.1"
     gem.add_dependency "rake", ">=0.8.7"
+    gem.add_dependency "roxml", "<= 3.1.5"
     gem.add_dependency "rcov"
     gem.add_dependency "rdoc"
-    gem.add_dependency "roxml"
     gem.add_dependency "rspec", "< 2.0" # We're not ready to upgrade to rspec 2
     gem.add_dependency "ruby-debug"
     gem.add_dependency "rubyforge"
