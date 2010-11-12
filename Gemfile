@@ -22,7 +22,7 @@ gem "nokogiri", "~> 1.4.3.1"
 gem "rake", ">= 0.8.7"
 gem "rcov"
 gem "rdoc"
-gem "roxml"
+gem "roxml", "<= 3.1.5"
 gem "rspec", "< 2.0"        # We're not ready to upgrade to rspec 2
 gem "rubyforge"
 gem "ruby-debug"
