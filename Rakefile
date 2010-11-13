@@ -29,7 +29,6 @@ begin
     # requirements twice is a temporary measure that will be
     # fixed once jeweler 1.5 is out of beta. See note below. 
     
-    gem.add_dependency "active-fedora", ">=1.2"
     gem.add_dependency "actionpack"
     gem.add_dependency "active-fedora", ">=1.2.6"
     gem.add_dependency "activeresource"
@@ -37,30 +36,31 @@ begin
     gem.add_dependency "bagit", ">=0.1.0"
     gem.add_dependency "columnize"
     gem.add_dependency "facets", ">=2.9"
-    gem.add_dependency "fakeweb"
-    gem.add_dependency "gemcutter", ">=0.6.1"
-    gem.add_dependency "git"
-    gem.add_dependency "haml"
-    gem.add_dependency "jeweler", ">=1.4"
     gem.add_dependency "json_pure", ">=1.4.6"
     gem.add_dependency "linecache", ">=0.43"
     gem.add_dependency "mime-types", ">=1.16"
     gem.add_dependency "multipart-post", ">=1.0.1"
     gem.add_dependency "nokogiri", ">=1.4.3.1"
-    gem.add_dependency "rake", ">=0.8.7"
     gem.add_dependency "roxml", "<= 3.1.5"
-    gem.add_dependency "rcov"
-    gem.add_dependency "rdoc"
-    gem.add_dependency "rspec", "< 2.0" # We're not ready to upgrade to rspec 2
-    gem.add_dependency "ruby-debug"
-    gem.add_dependency "rubyforge"
     gem.add_dependency "semver", ">=0.1.0"
     gem.add_dependency "solr-ruby", ">=0.0.8"
     gem.add_dependency "solrizer", ">=0.3.1"
     gem.add_dependency "systemu", ">=1.2.0"
     gem.add_dependency "validatable"
     gem.add_dependency "xml-simple", ">=1.0.12"
-    gem.add_dependency "yard"
+    
+    gem.add_development_dependency "fakeweb"
+    gem.add_development_dependency "gemcutter", ">=0.6.1"
+    gem.add_development_dependency "git"
+    gem.add_development_dependency "haml"
+    gem.add_development_dependency "jeweler", ">=1.4"
+    gem.add_development_dependency "rake", ">=0.8.7"
+    gem.add_development_dependency "rcov"
+    gem.add_development_dependency "rdoc"
+    gem.add_development_dependency "rspec", "< 2.0" # We're not ready to upgrade to rspec 2
+    gem.add_development_dependency "ruby-debug"
+    gem.add_development_dependency "rubyforge"
+    gem.add_development_dependency "yard"
     
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
     
