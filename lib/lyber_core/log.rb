@@ -37,17 +37,11 @@ module LyberCore
     # and re-opens it with the new logfile location. It raises an exception if it
     # cannot write to the specified logfile. 
     def Log.set_logfile(new_logfile)
-      
       begin
-        File.open(new_logfile, 'w') {}
-        raise "Couldn't open file #{new_logfile} for writing" unless File.writable?(new_logfile) 
-        
         current_log_level = @@log.level
         current_formatter = @@log.formatter
+        @@log = Logger.new(new_logfile)
         @@logfile = new_logfile
-        @@log = Logger.new(@@logfile)   
-        # $stdout.reopen(@@logfile)
-        # $stderr.reopen(@@logfile) 
         @@log.level = current_log_level
         @@log.formatter = current_formatter
       rescue Exception => e

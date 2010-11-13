@@ -33,8 +33,14 @@ module LyberCore
         @workflow_step = workflow_step
         @collection_name = args[:collection_name]      
         @opts = args
-        
-        LyberCore::Log.set_logfile(args[:logfile]) if args[:logfile] 
+
+        if args[:logfile]
+          LyberCore::Log.set_logfile(args[:logfile])
+        else
+          robot_logfile = File.join(ROBOT_ROOT,'log',workflow_step+'.log')
+          LyberCore::Log.set_logfile(robot_logfile)
+        end
+
         LyberCore::Log.set_level(args[:loglevel]) if args[:loglevel] 
       
         # Set defaults
