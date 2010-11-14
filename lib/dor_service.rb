@@ -180,7 +180,7 @@ class DorService
           LyberCore::Log.error("Attempted to reach #{url_string} but failed")
           raise "Encountered 500 error when requesting #{url_string}: #{res.inspect}"
         else
-          LyberCore::Log.error("Encountered unknown error when requesting #{url}: #{res.inspect}") 
+          LyberCore::Log.error("Encountered unknown error when requesting #{url}: #{res.inspect}")
           raise "Encountered unknown error when requesting #{url}: #{res.inspect}"
         end
      rescue Exception => e
@@ -342,7 +342,7 @@ class DorService
   def DorService.transfer_object(objectid, sourceDir, destinationDir) 
     rsync='rsync -a -e ssh '
     rsync_cmd = rsync + "'" + sourceDir + objectid + "' " +  destinationDir
-    print rsync_cmd + "\n"
+    LyberCore::Log.debug(rsync_cmd + "\n")
     system(rsync_cmd)
     return File.exists?(File.join(destinationDir, objectid))
   end
@@ -442,9 +442,12 @@ class DorService
       case res
         when Net::HTTPSuccess
           return true
+        when Net::HTTPServerError
+          LyberCore::Log.error("Attempted to set datastream #{url} but failed")
+          raise "Encountered 500 error setting datastream #{url}: #{res.inspect}"
         else
-          $stderr.print res.body
-          raise res.error!
+          LyberCore::Log.error("Encountered unknown error when setting datastream #{url}: #{res.inspect}")
+          raise "Encountered unknown error when setting datastream #{url}: #{res.inspect}"
       end
     rescue Exception => e
       raise
@@ -487,9 +490,12 @@ end
      case res
        when Net::HTTPSuccess
          return true
+       when Net::HTTPServerError
+         LyberCore::Log.error("Attempted to add identity tags #{url} but failed")
+         raise "Encountered 500 error when adding identity tags #{url}: #{res.inspect}"
        else
-         LyberCore::Log.error(res.body)
-         raise res.error!
+         LyberCore::Log.error("Encountered unknown error when adding identity tags #{url}: #{res.inspect}")
+         raise "Encountered unknown error when adding identity tags #{url}: #{res.inspect}"
      end
    rescue Exception => e
      raise e
