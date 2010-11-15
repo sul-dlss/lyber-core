@@ -38,6 +38,7 @@ The BagitBag class requires the bagit gem
   http://github.com/flazz/bagit
 
 == Releases
+- <b>0.9.5.5</b> Robots now log to ROBOT_ROOT/log/robot_name.log unless specified in constructor
 - <b>0.9.5.4</b> Custom exception classes, more checking of error conditions
 - <b>0.9.5.3</b> More robust testing, minor bug fixes, compatible with active_fedora 1.2.6
 - <b>0.9.5</b> Significantly refactored to provide central logging and many more debugging statements. 

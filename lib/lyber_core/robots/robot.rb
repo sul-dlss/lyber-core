@@ -37,6 +37,7 @@ module LyberCore
         if args[:logfile]
           LyberCore::Log.set_logfile(args[:logfile])
         else
+          FileUtils.mkdir(File.join(ROBOT_ROOT, 'log')) unless(File.exists?(File.join(ROBOT_ROOT, 'log')))
           robot_logfile = File.join(ROBOT_ROOT,'log',workflow_step+'.log')
           LyberCore::Log.set_logfile(robot_logfile)
         end

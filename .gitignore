@@ -18,6 +18,8 @@ coverage
 rdoc
 pkg
 coverage.data
+log
+spec/fixtures/log
 
 ## PROJECT::SPECIFIC
 .yardoc
