@@ -45,6 +45,7 @@ class IdentityMetadata
   xml_name :identityMetadata
   xml_accessor :objectId
   xml_accessor :objectType
+  xml_accessor :objectAdminClass
   xml_accessor :objectLabel
   xml_accessor :objectCreator
   xml_accessor :citationTitle
