@@ -73,20 +73,12 @@ PLATFORMS
 DEPENDENCIES
   actionpack
   active-fedora (~> 1.2.6)
-  activeresource
-  activesupport
   bagit (~> 0.1.0)
-  columnize
-  facets (~> 2.9)
   fakeweb
   gemcutter (~> 0.6.1)
   git
   haml
   jeweler (~> 1.4)
-  json_pure (~> 1.4.6)
-  linecache (~> 0.43)
-  mime-types (~> 1.16)
-  multipart-post (~> 1.0.1)
   nokogiri (~> 1.4.3.1)
   rake (>= 0.8.7)
   rcov
@@ -95,10 +87,8 @@ DEPENDENCIES
   rspec (< 2.0)
   ruby-debug
   rubyforge
-  semver (~> 0.1.0)
   solr-ruby (~> 0.0.8)
   solrizer (~> 0.3.1)
   systemu (~> 1.2.0)
   validatable
-  xml-simple (~> 1.0.12)
   yard
