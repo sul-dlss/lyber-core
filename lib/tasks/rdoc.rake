@@ -3,7 +3,7 @@ task :doc => ['doc:generate']
 
 namespace :doc do
   project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
-  doc_destination = File.join(project_root, 'doc', 'rdoc')
+  doc_destination = File.join(project_root, 'rdoc')
 
   begin
     require 'yard'
@@ -26,7 +26,7 @@ namespace :doc do
 
   desc "Remove generated documenation"
   task :clean do
-    rm_r doc_dir if File.exists?(doc_destination)
+    rm_r doc_destination if File.exists?(doc_destination)
   end
 
 end
