@@ -260,12 +260,20 @@ class DorService
   #   
   # end
   
-  # Returns string containing object list XML from a DOR query
-  # XML returned looks like:
-  #   <objects>
-  #     <object druid="dr:123" url="http://localhost:9999/jersey-spring/objects/dr:123%5c" />
-  #     <object druid="dr:abc" url="http://localhost:9999/jersey-spring/objects/dr:abc%5c" />
-  #   </objects>
+  # Returns string containing object list XML from a workflow DOR query
+  # 
+  # @param [String] repository  name of the repository you are querying.  Right now, <tt>dor</tt> and <tt>sdr</tt> are supported
+  # @param [String] workflow name of the workflow being queried, eg <tt>googleScannedBookWF</tt>
+  # @param [String, Array] completed if only querying for one completed step, pass in a String.
+  #   If querying for two completed steps, pass in an Array of the two completed steps
+  # @param [String] waiting the name of the waiting step
+  # @raise [LyberCore::Exceptions::EmptyQueue] When the query is successful, but no objects are found in that queue 
+  # @raise [Exception] For other problems like connection failures
+  # @return [String] XML containing all the objects that match the specific query. It looks like:
+  #     <objects>
+  #       <object druid="dr:123" url="http://localhost:9999/jersey-spring/objects/dr:123%5c" />
+  #       <object druid="dr:abc" url="http://localhost:9999/jersey-spring/objects/dr:abc%5c" />
+  #     </objects>
   def DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
     LyberCore::Log.debug("DorService.get_objects_for_workstep(#{repository}, #{workflow}, #{completed}, #{waiting})")
     begin  
@@ -278,7 +286,13 @@ class DorService
         raise "WORKFLOW_URI is not set"   
       end
       
-      uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&completed=#{completed}&waiting=#{waiting}"
+      if(completed.class == Array)
+        raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
+        uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}"
+        completed.each {|step| uri_string << "&completed=#{step}"}
+      else
+        uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}"
+      end
       LyberCore::Log.info("Attempting to connect to #{uri_string}")
       url = URI.parse(uri_string)
       req = Net::HTTP::Get.new(url.request_uri)
@@ -287,7 +301,7 @@ class DorService
         when Net::HTTPSuccess
           return res.body
         when Net::HTTPNotFound
-          if res.body =~ /No objects found/i 
+          if res.body =~ /No objects found/i
             raise LyberCore::Exceptions::EmptyQueue.new, "empty queue"
           else
             LyberCore::Log.fatal("404 Not Found returned, but response from workflow service incorrect for #{workflow} : #{waiting}")

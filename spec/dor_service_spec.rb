@@ -35,6 +35,46 @@ describe DorService do
     end
   end
   
+  describe "DorService.get_objects_for_workstep" do
+    repository = "dor"
+    workflow = "googleScannedBookWF"
+    completed = "google-download"
+    waiting = "process-content"
+    
+    context "a query with one step completed and one waiting" do
+      it "creates the URI string with only the one completed step" do
+        uri_str = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}"
+        uri = URI.parse(uri_str)
+        
+        URI.should_receive(:parse).with(/workflow_queue\?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}/).any_number_of_times.and_return(uri)
+
+        FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+          :body => "<xml>some workflow</xml>")
+
+        DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
+      end
+    end
+    
+    context "a query with TWO steps completed and one waiting" do
+      it "creates the URI string with the two completed steps correctly" do
+        second_completed="google-convert"
+        uri_str = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}&completed=#{second_completed}"
+        uri = URI.parse(uri_str)
+        
+        URI.should_receive(:parse).with(/workflow_queue\?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}&completed=#{second_completed}/).any_number_of_times.and_return(uri)
+
+        FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+          :body => "<xml>some workflow</xml>")
+
+        DorService.get_objects_for_workstep(repository, workflow, [completed, second_completed], waiting)
+      end
+      
+      it "raises an exception if you pass in an array with more than 2 strings for the completed parameter" do
+        lambda { DorService.get_objects_for_workstep(repository, workflow, ['1', '2', '3'], waiting) }.should raise_exception(RuntimeError, 'The workflow service can only handle queries with no more than 2 completed steps')
+      end
+    end
+  end
+  
   context "get empty workflow queue" do
     
     it "raises a helpful exception if it encounters an empty workflow queue" do
