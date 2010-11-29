@@ -79,23 +79,23 @@ module LyberCore
     end
     
     def Log.fatal(msg)
-      @@log.fatal(msg)
+      @@log.add(Logger::FATAL) { msg }
     end
     
     def Log.error(msg)
-      @@log.error(msg)
+      @@log.add(Logger::ERROR) { msg }
     end
     
     def Log.warn(msg)
-      @@log.warn(msg)
+      @@log.add(Logger::WARN) { msg }
     end
     
     def Log.info(msg)
-      @@log.info(msg)
+      @@log.add(Logger::INFO) { msg }
     end
     
     def Log.debug(msg)
-      @@log.debug(msg)
+      @@log.add(Logger::DEBUG) { msg }
     end
     
     
