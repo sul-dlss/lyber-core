@@ -41,6 +41,12 @@ describe LyberCore::Robots::Robot do
       robot.workflow_step.should eql(wf_step)
       robot.collection_name.should eql(collection)
     end
+    
+    it "can tell us what environment it's running in" do
+      pending
+      robot = TestRobot.new(wf_name, wf_step, :collection_name => collection)
+      robot.env.should eql("test") 
+    end
   
     # it "has a workflow after it has started" do
     #   ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/..")      
