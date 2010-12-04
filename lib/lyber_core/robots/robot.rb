@@ -99,90 +99,51 @@ module LyberCore
         end
       end
       
-      def start_master(stomp)
-        LyberCore::Log.info("Running as master...")
-        LyberCore::Log.info("Publishing to #{@msg_queue_name}")
+      def start_master()
+        LyberCore::Log.debug("Running as master...")
+        stomp = Stomp::Client.new(MSG_BROKER_CONFIG)
         queue = establish_queue()
         while work_item = queue.next_item do
           stomp.begin("enqueue_#{work_item.druid}")
           begin
-            timeout(MSG_BROKER_TIMEOUT) do
-              begin
-                stomp.publish(@msg_queue_name, work_item.druid, :persistent => true)
-                work_item.set_status('queued')
-                stomp.commit("enqueue_#{work_item.druid}")
-              rescue
-                stomp.abort("enqueue_#{work_item.druid}")
-              end
-            end
-          rescue Timeout::Error
-            LyberCore::Log.error("Message broker unreachable for more than #{MSG_BROKER_TIMEOUT} seconds. Aborting master mode.")
-            raise
+            stomp.publish(@msg_queue_name, work_item, :persistent => true)
+            #TODO: Set work item status to queued.
+            stomp.commit("enqueue_#{work_item.druid}")
+          rescue
+            stomp.abort("enqueue_#{work_item.druid}")
           end
         end
       end
       
-      def start_slave(stomp)
-        LyberCore::Log.info("Running as slave...")
-        # Note: stomp is a Stomp::Connection, not a Stomp::Client!
-        LyberCore::Log.info("Subscribing to #{@msg_queue_name}")
-        stomp.subscribe(@msg_queue_name, :ack => :client)
-        msg = nil
-        interrupt = false
-        old_trap = trap "SIGINT", proc { 
-          interrupt = true
-          LyberCore::Log.info("Shutting down due to user interrupt...")
-        }
-        begin
-          until interrupt
-            begin
-              timeout(MSG_BROKER_TIMEOUT) do
-                msg = stomp.receive
-              end
-              if msg.command == 'MESSAGE'
-                queue = @workflow.queue(@workflow_step)
-                queue.enqueue_druids([msg.body.strip])
-                process_queue(queue)
-              end
-              # TODO: Generate statistics about the work
-            rescue Timeout::Error
-              msg = nil
-              break
-            rescue Exception => e
-              LyberCore::Log.error(e)
-              LyberCore::Log.error(e.backtrace.join("\n"))
-            ensure
-              unless msg.nil?
-                stomp.ack msg.headers['message-id']
-              end
-            end
+      def start_slave()
+        LyberCore::Log.debug("Running as slave...")
+        stomp = Stomp::Client.new(MSG_BROKER_CONFIG)
+        stomp.subscribe(@msg_queue_name, :ack => :client) do |msg|
+          begin
+            queue = @workflow.queue(@workflow_step)
+            queue.enqueue_druids([msg.body.strip])
+            process_queue(queue)
+            # TODO: Generate statistics about the work
+          rescue Exception => e
+            LyberCore::Log.error(e.msg)
+            LyberCore::Log.error(e.backtrace.join("\n"))
+          ensure
+            stomp.acknowledge(msg)
           end
-        ensure
-          trap "SIGINT", old_trap
         end
         # TODO: Decouple work_item, work_queue, and identity logic
+        # TODO: Figure out how to decide when to stop listening
+        # But for now...
+        stomp.join()
       end
       
       def start()
         LyberCore::Log.debug("Starting robot...")
-        if @options.mode == :master or @options.mode == :slave
-          require 'stomp'
-          
-          msg_broker_config = {
-            :hosts => [{:host => MSG_BROKER_HOST, :port => MSG_BROKER_PORT}],
-            :initial_reconnect_delay => 1.0,
-            :use_exponential_back_off => true,
-            :back_off_multiplier => 1.05,
-            :max_reconnect_delay => 3.0,
-            :reliable => true
-          }
-          
-          stomp = Stomp::Connection.new(msg_broker_config)
-          if @options.mode == :master
-            start_master(stomp)
-          end
-          # Run as slave when master is done
-          start_slave(stomp)
+        if @options.mode == :slave
+          start_slave()
+        elsif @options.mode == :master
+          start_master()
+          start_slave()
         else
           start_standalone()
         end
