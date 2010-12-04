@@ -56,7 +56,7 @@ describe LyberCore::Robots::Robot do
     #   robot.start
     #   puts robot.workflow
     # end
-  
+    
   end
 
   context "logging" do
@@ -163,6 +163,28 @@ describe LyberCore::Robots::Robot do
     
     it "can accept both a file of druids for processing and a logfile on a single command line" do
       pending
+    end
+    
+    it "defaults to standalone mode" do
+      robot = TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
+      robot.options.mode.should be_nil
+    end
+    
+    it "can recognize master mode" do
+      ARGV << "--mode=master"
+      robot = TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
+      robot.options.mode.should eql(:master)
+    end
+    
+    it "can recognize slave mode" do
+      ARGV << "--mode=slave"
+      robot = TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
+      robot.options.mode.should eql(:slave)
+    end
+    
+    it "should complain about an invalid mode" do
+      ARGV << "--mode=invalid"
+      lambda { TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain') }.should raise_exception(OptionParser::InvalidArgument)
     end
     
   end

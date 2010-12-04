@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency "roxml", "<= 3.1.5"
   s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "solrizer", ">= 0.3.1"   # There was a bug in 0.3.0, we need at least the version after
+  s.add_dependency "stomp"
   s.add_dependency "systemu", ">= 1.2.0"
   s.add_dependency "validatable"
   
@@ -36,6 +37,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec", "< 2.0" # We're not ready to upgrade to rspec 2
   s.add_development_dependency "ruby-debug"
+  s.add_development_dependency "stompserver"
   s.add_development_dependency "yard"
  
   s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.rdoc)
