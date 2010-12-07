@@ -73,15 +73,21 @@ module LyberCore
         return pairs[0] if (pairs.size > 0)
       end
 
+      # Record a non-error status for the workstep operation
+      def set_status(status)
+        @elapsed_time = Time.new - @start_time
+        @end_time = Time.new
+        @elapsed_time = @end_time - @start_time
+        LyberCore::Log.info("#{item_id} #{status} in #{@elapsed_time} seconds")
+        if (@druid)
+          Dor::WorkflowService.update_workflow_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, status, @elapsed_time)
+        end
+      end
+
       # Record the successful outcome of the workstep operation for this workitem
       def set_success
         @work_queue.success_count += 1
-        @end_time = Time.new
-        @elapsed_time = @end_time - @start_time
-        LyberCore::Log.info("#{item_id} completed in #{@elapsed_time} seconds")
-        if (@druid)
-          Dor::WorkflowService.update_workflow_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, 'completed', @elapsed_time)
-        end
+        self.set_status('completed')
       end
 
       # Record the unsuccessful outcome of the workstep operation for this workitem
@@ -97,7 +103,7 @@ module LyberCore
         # We've caught and processed the error at this point, I don't think we want to raise it again. --bess
         # raise e
       end
-
+      
     end
   end
 end
