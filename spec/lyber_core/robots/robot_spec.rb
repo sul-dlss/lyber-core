@@ -263,4 +263,46 @@ describe LyberCore::Robots::Robot do
     
     end
   
+    context "messaging" do
+
+      it "should post to the queue in master mode" do
+        mock_stomp = mock('stomp')
+        mock_stomp.should_receive(:begin).twice
+        mock_stomp.should_receive(:publish).twice.and_return(true)
+        mock_stomp.should_receive(:commit).twice
+        mock_queue = mock('queue')
+
+        mock_item = mock('item')
+        mock_item.should_receive(:druid).any_number_of_times.and_return("foo:bar")
+        mock_item.should_receive(:set_status).with('queued').and_return(true)
+
+        mock_item2 = mock('item2')
+        mock_item2.should_receive(:druid).any_number_of_times.and_return("foo:baz")
+        mock_item2.should_receive(:set_status).with('queued').and_return(true)
+        
+        mock_queue.should_receive(:next_item).and_return(mock_item, mock_item2, nil)
+        robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
+        robot.stub!(:establish_queue).and_return(mock_queue)
+        robot.start_master(mock_stomp)
+      end
+      
+      it "should read from the queue and process them in slave mode" do
+        mock_message1 = mock('message1')
+        mock_message1.should_receive(:body).any_number_of_times.and_return('foo:bar')
+
+        mock_message2 = mock('message2')
+        mock_message2.should_receive(:body).any_number_of_times.and_return('foo:baz')
+
+        mock_stomp = mock('stomp')
+        mock_stomp.should_receive(:subscribe).once.with('/queue/dor.googleScannedBookWF.descriptive-metadata', { :ack => :client }).and_yield(mock_message1).and_yield(mock_message2)
+        mock_stomp.should_receive(:acknowledge).twice.and_return(true)
+        mock_stomp.should_receive(:join).once.and_return(true)
+        
+        robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
+        robot.should_receive(:process_item).exactly(3).twice
+        robot.start_slave(mock_stomp)
+      end
+      
+    end
+
 end

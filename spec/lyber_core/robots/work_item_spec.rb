@@ -35,7 +35,7 @@ describe LyberCore::Robots::WorkItem do
 
       end 
     end #identity_metadata
-    
+  
     describe "#identity_metadata_save" do
 
       it "should make a new identityMetadata ds if none exists" do
@@ -56,9 +56,24 @@ describe LyberCore::Robots::WorkItem do
 
     end #identity_metadata_save
     
+    describe "#set_status" do
+
+      it "should set a named status when told to" do
+        pending
+  #      @work_item.druid = "changeme:boosh"
+  #      DorService.should_receive(:update_workflow_status).with(anything(), "changeme:boosh", anything(), anything(), 'testing', anything()).and_return(true)
+  #      @work_item.set_status('testing')
+      end
+
+    end #set_status
+
     describe "#set_success" do
 
       it "should set the success when told to" do    
+        pending
+  #      @work_item.druid = "changeme:boosh"
+  #      DorService.should_receive(:update_workflow_status).with(anything(), "changeme:boosh", anything(), anything(), 'completed', anything()).and_return(true)
+  #      @work_item.set_success
       end 
 
     end #set_success
