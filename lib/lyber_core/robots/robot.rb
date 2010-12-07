@@ -99,15 +99,14 @@ module LyberCore
         end
       end
       
-      def start_master()
+      def start_master(stomp)
         LyberCore::Log.debug("Running as master...")
-        stomp = Stomp::Client.new(MSG_BROKER_CONFIG)
         queue = establish_queue()
         while work_item = queue.next_item do
           stomp.begin("enqueue_#{work_item.druid}")
           begin
             stomp.publish(@msg_queue_name, work_item, :persistent => true)
-            #TODO: Set work item status to queued.
+            work_item.set_status('queued')
             stomp.commit("enqueue_#{work_item.druid}")
           rescue
             stomp.abort("enqueue_#{work_item.druid}")
@@ -115,9 +114,8 @@ module LyberCore
         end
       end
       
-      def start_slave()
+      def start_slave(stomp)
         LyberCore::Log.debug("Running as slave...")
-        stomp = Stomp::Client.new(MSG_BROKER_CONFIG)
         stomp.subscribe(@msg_queue_name, :ack => :client) do |msg|
           begin
             queue = @workflow.queue(@workflow_step)
@@ -125,7 +123,7 @@ module LyberCore
             process_queue(queue)
             # TODO: Generate statistics about the work
           rescue Exception => e
-            LyberCore::Log.error(e.msg)
+            LyberCore::Log.error(e)
             LyberCore::Log.error(e.backtrace.join("\n"))
           ensure
             stomp.acknowledge(msg)
@@ -139,11 +137,13 @@ module LyberCore
       
       def start()
         LyberCore::Log.debug("Starting robot...")
-        if @options.mode == :slave
-          start_slave()
-        elsif @options.mode == :master
-          start_master()
-          start_slave()
+        if @options.mode == :master or @options.mode == :slave
+          stomp = Stomp::Client.new(MSG_BROKER_CONFIG)
+          if @options.mode == :master
+            start_master(stomp)
+          end
+          # Run as slave when master is done
+          start_slave(stomp)
         else
           start_standalone()
         end
