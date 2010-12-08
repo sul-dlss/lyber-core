@@ -286,12 +286,12 @@ class DorService
         raise "WORKFLOW_URI is not set"   
       end
       
+      uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}"
       if(completed.class == Array)
         raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
-        uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}"
         completed.each {|step| uri_string << "&completed=#{step}"}
       else
-        uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}"
+        uri_string << "&completed=#{completed}"
       end
       LyberCore::Log.info("Attempting to connect to #{uri_string}")
       url = URI.parse(uri_string)
