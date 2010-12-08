@@ -49,7 +49,7 @@ describe DorService do
         URI.should_receive(:parse).with(/workflow_queue\?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}/).any_number_of_times.and_return(uri)
 
         FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-          :body => "<xml>some workflow</xml>")
+          :body => "<objects count=\"1\"><xml>some workflow</xml></objects>")
 
         DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
       end
@@ -64,7 +64,7 @@ describe DorService do
         URI.should_receive(:parse).with(/workflow_queue\?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}&completed=#{completed}&completed=#{second_completed}/).any_number_of_times.and_return(uri)
 
         FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-          :body => "<xml>some workflow</xml>")
+          :body => "<objects count=\"1\"><xml>some workflow</xml></objects>")
 
         DorService.get_objects_for_workstep(repository, workflow, [completed, second_completed], waiting)
       end
@@ -83,8 +83,7 @@ describe DorService do
       completed = "google-download"
       waiting = "process-content"
       FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-        :body => "No objects found",
-        :status => ["404", "Not Found"])
+        :body => "<objects count=\"0\" />")
       lambda { DorService.get_objects_for_workstep(repository, workflow, completed, waiting) }.should raise_exception(LyberCore::Exceptions::EmptyQueue)
     end
   end

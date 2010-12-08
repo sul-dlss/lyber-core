@@ -299,13 +299,19 @@ class DorService
       res = DorService.get_https_connection(url).start {|http| http.request(req) }  
       case res
         when Net::HTTPSuccess
-          return res.body
-        when Net::HTTPNotFound
-          if res.body =~ /No objects found/i
-            raise LyberCore::Exceptions::EmptyQueue.new, "empty queue"
+          begin
+            doc = Nokogiri::XML(res.body)
+            count = doc.root.at_xpath("//objects/@count").content.to_i
+          rescue Exception => e
+            msg = "Could not parse response from Workflow Service"
+            LyberCore::Log.error(msg + "\n#{res.body}")
+            raise e, msg
+          end
+          
+          if(count == 0)
+            raise LyberCore::Exceptions::EmptyQueue.new, "empty queue" 
           else
-            LyberCore::Log.fatal("404 Not Found returned, but response from workflow service incorrect for #{workflow} : #{waiting}")
-            raise "404 Not Found returned, but response from workflow service incorrect #{uri_string}"
+            return res.body
           end
         else
           LyberCore::Log.fatal("Workflow queue not found for #{workflow} : #{waiting}")

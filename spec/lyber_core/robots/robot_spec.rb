@@ -111,8 +111,7 @@ describe LyberCore::Robots::Robot do
       completed = "google-download"
       waiting = "process-content"
       FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-        :body => "No objects found",
-        :status => ["404", "Not Found"])
+        :body => "<objects count=\"0\" />")
       robot = TestRobot.new(workflow, waiting)
       robot.should_not_receive(:process_queue)
       robot.start
