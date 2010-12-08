@@ -40,7 +40,8 @@ task :spec => :check_dependencies
 
 task :default => [:clean, :verify_rcov, :doc]
 
+# To release the gem to the DLSS gemserver, run 'rake dlss_release'
 require 'lyber_core/rake/dlss_release'
 LyberCore::DlssRelease.new
-# To release the gem to the DLSS gemserver, run 'rake dlss_release'
+
 

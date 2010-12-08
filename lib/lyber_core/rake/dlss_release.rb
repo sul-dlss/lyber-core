@@ -10,7 +10,7 @@ module LyberCore
   #   require 'lyber_core/rake/dlss_release'
   #   LyberCore::DlssRelease.new
   # 
-  # To build and release the gem, run the following:
+  # To build and release the gem, run the following AFTER pushing your code to the git repository on AFS:
   #   rake dlss_release
   #
   # == Requirements
@@ -84,16 +84,20 @@ module LyberCore
         puts "Make sure:"
         puts "  1) Version #{@version} of #{@gemname} has not been tagged and released previously"
         puts "  2) All of the tests pass"
+        puts "  3) You've pushed the code to the git repository on AFS (usually 'git push origin master')"
         puts "Type 'yes' to continue if all of these statements are true"
 
         resp = STDIN.gets.chomp
         unless(resp =~ /yes/ )
-          raise "\nPlease change the value of s.version in the #{@gemname}.gemspec file and make sure all tests pass"
+          raise "Please complete the prerequisites"
         end
 
         puts "Releasing version #{@version} of the #{@gemname} gem"
         
         begin
+          tags = `git tag`.split("\n")
+          raise "tag v#{@version} already exists. Change the version number in the #{@gemname}.gemspec file" if tags.include?("v#{@version}")
+          
           puts "...Tagging release"
           sh "git tag -a v#{@version} -m 'Gem version #{@version}'"
           sh "git push origin --tags"
