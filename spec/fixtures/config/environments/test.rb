@@ -35,4 +35,4 @@ SOLR_URL = 'http://127.0.0.1:8983/solr/test'
 
 WORKSPACE_HOME=File.expand_path(File.dirname(__FILE__) + '/../../workspace_home')
 
-MSG_BROKER_TIMEOUT = 2
+MSG_BROKER_TIMEOUT = 5
