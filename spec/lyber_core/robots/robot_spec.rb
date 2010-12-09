@@ -265,11 +265,12 @@ describe LyberCore::Robots::Robot do
   
     context "messaging" do
 
-      it "should post to the queue in master mode" do
+      it "should post druids to the queue in master mode" do
         mock_stomp = mock('stomp')
         mock_stomp.should_receive(:begin).twice
         mock_stomp.should_receive(:publish).twice.and_return(true)
         mock_stomp.should_receive(:commit).twice
+        
         mock_queue = mock('queue')
 
         mock_item = mock('item')
@@ -286,21 +287,39 @@ describe LyberCore::Robots::Robot do
         robot.start_master(mock_stomp)
       end
       
-      it "should read from the queue and process them in slave mode" do
+      it "should read druids from the queue and process them in slave mode and time out" do
         mock_message1 = mock('message1')
+        mock_message1.should_receive(:headers).and_return({'message-id'=>'message1'})
         mock_message1.should_receive(:body).any_number_of_times.and_return('foo:bar')
 
         mock_message2 = mock('message2')
+        mock_message2.should_receive(:headers).and_return({'message-id'=>'message2'})
         mock_message2.should_receive(:body).any_number_of_times.and_return('foo:baz')
 
-        mock_stomp = mock('stomp')
-        mock_stomp.should_receive(:subscribe).once.with('/queue/dor.googleScannedBookWF.descriptive-metadata', { :ack => :client }).and_yield(mock_message1).and_yield(mock_message2)
-        mock_stomp.should_receive(:acknowledge).twice.and_return(true)
-        mock_stomp.should_receive(:join).once.and_return(true)
+        # Message 3 should never be received by the client unless the timeout fails
+        # We set it up anyway so that a timeout failure is reported as a timeout failure
+        # and not as a NoMethodError
+        mock_message3 = mock('message3')
+        mock_message3.should_receive(:headers).at_most(1).times.and_return({'message-id'=>'message3'})
+        mock_message3.should_receive(:body).any_number_of_times.and_return('foo:quux')
+
+        mock_stomp = double('stomp')
+        messages = [[0, mock_message1], [0, mock_message2], [MSG_BROKER_TIMEOUT+2, mock_message3]]
+        mock_stomp.stub(:receive) do
+          (sleep_time,return_value) = messages.shift
+          sleep(sleep_time) && return_value
+        end
+        mock_stomp.should_receive(:receive).exactly(3).times
+        mock_stomp.should_receive(:subscribe).once.with('/queue/dor.googleScannedBookWF.descriptive-metadata', anything())
+        mock_stomp.should_receive(:ack).twice.and_return(true)
         
         robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
-        robot.should_receive(:process_item).exactly(3).twice
+        robot.should_receive(:process_item).twice
+        start_time = Time.now
         robot.start_slave(mock_stomp)
+        elapsed_time = Time.now - start_time
+        elapsed_time.should be >= MSG_BROKER_TIMEOUT
+        elapsed_time.should be <= MSG_BROKER_TIMEOUT+1
       end
       
     end

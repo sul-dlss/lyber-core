@@ -34,3 +34,5 @@ SDR2_EXAMPLE_OBJECTS=File.expand_path(File.dirname(__FILE__)) << '/../../sdr2_ex
 SOLR_URL = 'http://127.0.0.1:8983/solr/test'
 
 WORKSPACE_HOME=File.expand_path(File.dirname(__FILE__) + '/../../workspace_home')
+
+MSG_BROKER_TIMEOUT = 5

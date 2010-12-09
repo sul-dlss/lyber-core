@@ -116,29 +116,37 @@ module LyberCore
       
       def start_slave(stomp)
         LyberCore::Log.debug("Running as slave...")
-        stomp.subscribe(@msg_queue_name, :ack => :client) do |msg|
+        # Note: stomp is a Stomp::Connection, not a Stomp::Client!
+        stomp.subscribe(@msg_queue_name, :ack => :client)
+        msg = nil
+        while true
           begin
+            timeout(MSG_BROKER_TIMEOUT) do
+              msg = stomp.receive
+            end
             queue = @workflow.queue(@workflow_step)
             queue.enqueue_druids([msg.body.strip])
             process_queue(queue)
             # TODO: Generate statistics about the work
+          rescue Timeout::Error
+            msg = nil
+            break
           rescue Exception => e
             LyberCore::Log.error(e)
             LyberCore::Log.error(e.backtrace.join("\n"))
           ensure
-            stomp.acknowledge(msg)
+            unless msg.nil?
+              stomp.ack msg.headers['message-id']
+            end
           end
         end
         # TODO: Decouple work_item, work_queue, and identity logic
-        # TODO: Figure out how to decide when to stop listening
-        # But for now...
-        stomp.join()
       end
       
       def start()
         LyberCore::Log.debug("Starting robot...")
         if @options.mode == :master or @options.mode == :slave
-          stomp = Stomp::Client.new(MSG_BROKER_CONFIG)
+          stomp = Stomp::Connection.new(MSG_BROKER_CONFIG)
           if @options.mode == :master
             start_master(stomp)
           end
