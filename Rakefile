@@ -30,15 +30,9 @@ task :clean do
   FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
 end
 
-require 'spec/rake/verify_rcov'
-RCov::VerifyTask.new(:verify_rcov => ['clean', 'rcov']) do |t|
-  t.threshold = 66.69
-  t.index_html = 'coverage/index.html'
-end
-
 task :spec => :check_dependencies
 
-task :default => [:clean, :verify_rcov, :doc]
+task :default => [:clean, :rcov, :doc]
 
 # To release the gem to the DLSS gemserver, run 'rake dlss_release'
 require 'lyber_core/rake/dlss_release'
