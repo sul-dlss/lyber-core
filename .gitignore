@@ -1,5 +1,6 @@
 ## MAC OS
 .DS_Store
+nohup.out
 
 ## TEXTMATE
 *.tmproj
