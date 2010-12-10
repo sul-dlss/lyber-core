@@ -146,7 +146,16 @@ module LyberCore
       def start()
         LyberCore::Log.debug("Starting robot...")
         if @options.mode == :master or @options.mode == :slave
-          stomp = Stomp::Connection.new(MSG_BROKER_CONFIG)
+          msg_broker_config = {
+            :hosts => [{:host => MSG_BROKER_HOST, :port => MSG_BROKER_PORT}],
+            :initial_reconnect_delay => 1.0,
+            :use_exponential_back_off => true,
+            :back_off_multiplier => 1.05,
+            :max_reconnect_delay => 3.0,
+            :reliable => true
+          }
+          
+          stomp = Stomp::Connection.new(msg_broker_config)
           if @options.mode == :master
             start_master(stomp)
           end
