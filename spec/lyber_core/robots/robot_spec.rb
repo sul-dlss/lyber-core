@@ -287,6 +287,24 @@ describe LyberCore::Robots::Robot do
         robot.start_master(mock_stomp)
       end
       
+      it "should time out if the server is unavailable in master mode" do
+        mock_stomp = double('stomp')
+        mock_stomp.should_receive(:begin).once
+        mock_stomp.stub(:publish) do
+          sleep(MSG_BROKER_TIMEOUT+2)
+        end
+
+        mock_item = mock('item')
+        mock_item.should_receive(:druid).any_number_of_times.and_return("foo:bar")
+
+        mock_queue = mock('queue')
+        mock_queue.should_receive(:next_item).and_return(mock_item)
+        
+        robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
+        robot.stub!(:establish_queue).and_return(mock_queue)
+        expect { robot.start_master(mock_stomp) }.to raise_error(Timeout::Error)
+      end
+      
       it "should read druids from the queue and process them in slave mode and time out" do
         mock_message1 = mock('message1')
         mock_message1.should_receive(:headers).and_return({'message-id'=>'message1'})
@@ -319,7 +337,7 @@ describe LyberCore::Robots::Robot do
         robot.start_slave(mock_stomp)
         elapsed_time = Time.now - start_time
         elapsed_time.should be >= MSG_BROKER_TIMEOUT
-        elapsed_time.should be <= MSG_BROKER_TIMEOUT+1
+        elapsed_time.should be <= MSG_BROKER_TIMEOUT+1.5
       end
       
     end

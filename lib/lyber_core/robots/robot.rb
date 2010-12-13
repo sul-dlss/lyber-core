@@ -105,11 +105,18 @@ module LyberCore
         while work_item = queue.next_item do
           stomp.begin("enqueue_#{work_item.druid}")
           begin
-            stomp.publish(@msg_queue_name, work_item, :persistent => true)
-            work_item.set_status('queued')
-            stomp.commit("enqueue_#{work_item.druid}")
-          rescue
-            stomp.abort("enqueue_#{work_item.druid}")
+            timeout(MSG_BROKER_TIMEOUT) do
+              begin
+                stomp.publish(@msg_queue_name, work_item, :persistent => true)
+                work_item.set_status('queued')
+                stomp.commit("enqueue_#{work_item.druid}")
+              rescue
+                stomp.abort("enqueue_#{work_item.druid}")
+              end
+            end
+          rescue Timeout::Error
+            LyberCore::Log.error("Message broker unreachable for more than #{MSG_BROKER_TIMEOUT} seconds. Aborting master mode.")
+            raise
           end
         end
       end
