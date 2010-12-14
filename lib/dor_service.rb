@@ -132,7 +132,7 @@ class DorService
   #############################################  Start of Datastream methods
   # Until ActiveFedora supports client-side certificate configuration, we are stuck with our own methods to access datastreams
   
-  #/objects/{pid}/datastreams/{dsID} ? [controlGroup] [dsLocation] [altIDs] [dsLabel] [versionable] [dsState] [formatURI] [checksumType] [checksum] [logMessage]
+  #/objects/pid/datastreams/dsID ? [controlGroup] [dsLocation] [altIDs] [dsLabel] [versionable] [dsState] [formatURI] [checksumType] [checksum] [logMessage]
   def DorService.add_datastream(druid, ds_id, ds_label, xml, content_type='application/xml', versionable = false )
     DorService.add_datastream_managed(druid, ds_id, ds_label, xml, content_type, versionable)
   end
