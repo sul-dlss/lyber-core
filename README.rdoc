@@ -42,6 +42,7 @@ Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
 See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>0.9.6.2</b> Handles new response from workflow service when there are no objects in the queue: <objects count="0"\>
 - <b>0.9.6</b> DorService.get_objects_for_workstep can handle one or two completed steps.  Trimmed-down gem dependencies now defined in lyber-core.gemspec. 'rake dlss_release' will tag, build and publish gem
 - <b>0.9.5.5</b> Robots now log to ROBOT_ROOT/log/robot_name.log unless specified in constructor
 - <b>0.9.5.4</b> Custom exception classes, more checking of error conditions
