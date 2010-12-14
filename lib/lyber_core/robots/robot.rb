@@ -100,14 +100,15 @@ module LyberCore
       end
       
       def start_master(stomp)
-        LyberCore::Log.debug("Running as master...")
+        LyberCore::Log.info("Running as master...")
+        LyberCore::Log.info("Publishing to #{@msg_queue_name}")
         queue = establish_queue()
         while work_item = queue.next_item do
           stomp.begin("enqueue_#{work_item.druid}")
           begin
             timeout(MSG_BROKER_TIMEOUT) do
               begin
-                stomp.publish(@msg_queue_name, work_item, :persistent => true)
+                stomp.publish(@msg_queue_name, work_item.druid, :persistent => true)
                 work_item.set_status('queued')
                 stomp.commit("enqueue_#{work_item.druid}")
               rescue
@@ -122,30 +123,42 @@ module LyberCore
       end
       
       def start_slave(stomp)
-        LyberCore::Log.debug("Running as slave...")
+        LyberCore::Log.info("Running as slave...")
         # Note: stomp is a Stomp::Connection, not a Stomp::Client!
+        LyberCore::Log.info("Subscribing to #{@msg_queue_name}")
         stomp.subscribe(@msg_queue_name, :ack => :client)
         msg = nil
-        while true
-          begin
-            timeout(MSG_BROKER_TIMEOUT) do
-              msg = stomp.receive
-            end
-            queue = @workflow.queue(@workflow_step)
-            queue.enqueue_druids([msg.body.strip])
-            process_queue(queue)
-            # TODO: Generate statistics about the work
-          rescue Timeout::Error
-            msg = nil
-            break
-          rescue Exception => e
-            LyberCore::Log.error(e)
-            LyberCore::Log.error(e.backtrace.join("\n"))
-          ensure
-            unless msg.nil?
-              stomp.ack msg.headers['message-id']
+        interrupt = false
+        old_trap = trap "SIGINT", proc { 
+          interrupt = true
+          LyberCore::Log.info("Shutting down due to user interrupt...")
+        }
+        begin
+          until interrupt
+            begin
+              timeout(MSG_BROKER_TIMEOUT) do
+                msg = stomp.receive
+              end
+              if msg.command == 'MESSAGE'
+                queue = @workflow.queue(@workflow_step)
+                queue.enqueue_druids([msg.body.strip])
+                process_queue(queue)
+              end
+              # TODO: Generate statistics about the work
+            rescue Timeout::Error
+              msg = nil
+              break
+            rescue Exception => e
+              LyberCore::Log.error(e)
+              LyberCore::Log.error(e.backtrace.join("\n"))
+            ensure
+              unless msg.nil?
+                stomp.ack msg.headers['message-id']
+              end
             end
           end
+        ensure
+          trap "SIGINT", old_trap
         end
         # TODO: Decouple work_item, work_queue, and identity logic
       end
@@ -153,6 +166,8 @@ module LyberCore
       def start()
         LyberCore::Log.debug("Starting robot...")
         if @options.mode == :master or @options.mode == :slave
+          require 'stomp'
+          
           msg_broker_config = {
             :hosts => [{:host => MSG_BROKER_HOST, :port => MSG_BROKER_PORT}],
             :initial_reconnect_delay => 1.0,

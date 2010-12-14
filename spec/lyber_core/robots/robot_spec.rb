@@ -307,10 +307,12 @@ describe LyberCore::Robots::Robot do
       
       it "should read druids from the queue and process them in slave mode and time out" do
         mock_message1 = mock('message1')
+        mock_message1.should_receive(:command).any_number_of_times.and_return('MESSAGE')
         mock_message1.should_receive(:headers).and_return({'message-id'=>'message1'})
         mock_message1.should_receive(:body).any_number_of_times.and_return('foo:bar')
 
         mock_message2 = mock('message2')
+        mock_message2.should_receive(:command).any_number_of_times.and_return('MESSAGE')
         mock_message2.should_receive(:headers).and_return({'message-id'=>'message2'})
         mock_message2.should_receive(:body).any_number_of_times.and_return('foo:baz')
 
@@ -318,6 +320,7 @@ describe LyberCore::Robots::Robot do
         # We set it up anyway so that a timeout failure is reported as a timeout failure
         # and not as a NoMethodError
         mock_message3 = mock('message3')
+        mock_message3.should_receive(:command).any_number_of_times.and_return('MESSAGE')
         mock_message3.should_receive(:headers).at_most(1).times.and_return({'message-id'=>'message3'})
         mock_message3.should_receive(:body).any_number_of_times.and_return('foo:quux')
 

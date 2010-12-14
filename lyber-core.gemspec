@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "lyber-core"
   s.version     = "0.9.6.3"
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene"]
+  s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene","Michael Klein"]
   s.email       = ["wmene@stanford.edu"]
   s.homepage    = "http://github.com/wmene/lyber-core"
   s.summary     = "Core services used by the SULAIR Digital Library"
