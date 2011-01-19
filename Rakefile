@@ -30,9 +30,7 @@ task :clean do
   FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
 end
 
-task :spec => :check_dependencies
-
-task :default => [:clean, :rcov, :doc]
+task :default => [:rcov, :doc]
 
 # To release the gem to the DLSS gemserver, run 'rake dlss_release'
 require 'lyber_core/rake/dlss_release'

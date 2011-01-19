@@ -3,21 +3,18 @@ require 'systemu'
 
 # File Utilities for use in transferring filesystem objects,
 # decrypting a file, unpacking a targz archive, and validating checksums
-# Author:: rnanders@stanford.edu
+# @author rnanders@stanford.edu
 module LyberCore
   module Utils
     class FileUtilities
 
 
-      # Executes a system command in a subprocess
-      #
-      # = Inputs:
-      # * command = the command to be executed
-      #
-      # = Return value:
-      # * The method will return stdout from the command if execution was successful.
-      # * The method will raise an exception if if execution fails
+      # Executes a system command in a subprocess. 
+      # The method will return stdout from the command if execution was successful.
+      # The method will raise an exception if if execution fails. 
       # The exception's message will contain the explaination of the failure.
+      # @param [String] command the command to be executed
+      # @return [String] stdout from the command if execution was successful
       def FileUtilities.execute(command)
         status, stdout, stderr = systemu(command)
         if (status.exitstatus != 0)
@@ -25,7 +22,9 @@ module LyberCore
         end
         return stdout
       rescue
-        raise "Command failed to execute: #{command}"
+        raise "Command failed to execute: \"#{command}\"
+        stderr output was: #{stderr}
+        stdout output was: #{stdout}"
       end
 
       # Generates a dirname for storing or retrieving a file in
