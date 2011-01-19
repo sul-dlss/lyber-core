@@ -16,6 +16,7 @@ describe LyberCore::Utils::FileUtilities do
       LyberCore::Utils::FileUtilities.should_receive(:systemu).with(command).and_return([status,"some stdout",""])
       LyberCore::Utils::FileUtilities.execute(command).should == "some stdout"
     end
+    
     it "should raise error if status non-zero" do
       command = "my command"
       status = $?
@@ -23,6 +24,12 @@ describe LyberCore::Utils::FileUtilities do
       status.should_receive(:exitstatus).and_return(-1)
       lambda {LyberCore::Utils::FileUtilities.execute(command)}.should raise_error
     end
+    
+    it "should return an error message that includes info from stderr and stdout" do
+      command = "ls /foobar"
+      lambda {LyberCore::Utils::FileUtilities.execute(command)}.should raise_error(/stderr output was/)
+    end
+    
   end
 
   describe "transfer_object" do
