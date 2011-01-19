@@ -10,13 +10,15 @@ describe LyberCore::Log do
     end
     
     wf_name = "sdrIngestWF"
-     wf_step = "populate-metadata"
-     collection = "baz"
-     valid_logfile = "/tmp/fakelog.log"
-     invalid_logfile = "/zzxx/fakelog.log"
-     ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../fixtures")
-     WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
-     
+    wf_step = "populate-metadata"
+    collection = "baz"
+    valid_logfile = "/tmp/fakelog.log"
+    invalid_logfile = "/zzxx/fakelog.log"
+    with_warnings_suppressed do
+      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../fixtures")
+      WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
+    end
+
     it "has a default value for logfile" do
       LyberCore::Log.logfile.should eql(LyberCore::Log::DEFAULT_LOGFILE)
     end

@@ -5,7 +5,9 @@ require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")
 
 describe LyberCore::Robots::Robot do
   
-  ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
+  with_warnings_suppressed do
+    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")   
+  end   
   require "#{ROBOT_ROOT}/config/environments/test.rb"
     
   context "environment loading" do

@@ -3,7 +3,9 @@ require 'lyber_core'
 
 describe LyberCore::Robots::Workspace do
   
-  ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")      
+  with_warnings_suppressed do
+    ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")   
+  end   
   require "#{ROBOT_ROOT}/config/environments/test.rb"
   
   before(:all) do

@@ -37,7 +37,9 @@ describe LyberCore::Robots::Workflow do
       
     before :all do
       # Object.send(:remove_const, :ROBOT_ROOT) if defined? ROBOT_ROOT
-      ROBOT_ROOT = correct_robot_root 
+      with_warnings_suppressed do
+        ROBOT_ROOT = correct_robot_root 
+      end
       @wf = LyberCore::Robots::Workflow.new(wf_name, {:collection_name => collection})
     end
     
@@ -69,7 +71,9 @@ describe LyberCore::Robots::Workflow do
   context "workflow-config" do
     workflow_name = "googleScannedBookWF"
     correct_robot_root = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/")
-    ROBOT_ROOT = correct_robot_root
+    with_warnings_suppressed do
+      ROBOT_ROOT = correct_robot_root
+    end
     
     before(:all) do
       @wf = LyberCore::Robots::Workflow.new(workflow_name)
