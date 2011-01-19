@@ -106,6 +106,3 @@ DEPENDENCIES
   systemu (>= 1.2.0)
   validatable
   yard
-
-METADATA
-  version: 1.0.6
