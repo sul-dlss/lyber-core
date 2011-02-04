@@ -59,6 +59,7 @@ describe LyberCore::Robots::Workspace do
   end
   
   it "raises an error if it cannot create a workspace" do
+    pending
     dir = "/foo"
     lambda { @workspace.ensure_workspace_exists(dir) }.should raise_exception
   end

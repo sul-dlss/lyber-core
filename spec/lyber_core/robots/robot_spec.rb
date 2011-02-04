@@ -222,20 +222,20 @@ describe LyberCore::Robots::Robot do
       end
       
       it "keeps going even if it encounters an error in one of the objects" do
+        mock_item_bad = mock('item')
+        mock_item_bad.should_receive(:druid).and_return('druid:xy123')
+        mock_item_bad.should_receive(:set_error).and_return(true)
+
+        mock_item_good = mock('item')
+        mock_item_good.should_receive(:set_success).and_return(true)
+
         mock_queue = mock('queue')
-        mock_item = mock('item')
-        mock_item.should_receive(:druid).and_return("foo:bar")
-        mock_item.should_receive(:set_success).and_return(true)
-        
-        mock_item2 = mock('item2')
-        mock_item2.should_receive(:druid).and_raise(Errno::EACCES)
-        mock_item2.should_receive(:set_error).and_return(true)
-        
-        mock_dorservice = mock('dorservice')
-        mock_queue.should_receive(:next_item).and_return(mock_item, mock_item2, nil)
-        
+        mock_queue.should_receive(:next_item).and_return(mock_item_bad, mock_item_good, nil)
         mock_queue.should_receive(:print_stats)
-        robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
+
+        robot = TestRobot.new(workflow_name, 'descriptive-metadata')
+        robot.should_receive(:process_item).with(mock_item_bad).and_raise(Errno::EACCES)
+        robot.should_receive(:process_item).with(mock_item_good)
         robot.process_queue(mock_queue)
       end
     

@@ -111,7 +111,8 @@ class DorService
     LyberCore::Log.debug("Fetching druid for dor_id #{dor_id} at url #{url_string}")
     url = URI.parse(url_string)
     req = Net::HTTP::Get.new(url.request_uri)
-    res = DorService.get_https_connection(url).start {|http| http.request(req) }
+    # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+    res = LyberCore::Connection.send_request(url,req)
       
     case res
       when Net::HTTPSuccess
@@ -168,8 +169,9 @@ class DorService
       LyberCore::Log.debug("Connecting to #{url_string}...")
       req = Net::HTTP::Get.new(url.request_uri)
       LyberCore::Log.debug("request object: #{req.inspect}")
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }  
-      
+      # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      res = LyberCore::Connection.send_request(url,req)
+
       case res
         when Net::HTTPSuccess
           return res.body
@@ -203,7 +205,8 @@ class DorService
       req = Net::HTTP::Get.new(url.request_uri)
       req.basic_auth FEDORA_USER, FEDORA_PASS
       LyberCore::Log.debug("request object: #{req.inspect}")
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }  
+      # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      res = LyberCore::Connection.send_request(url,req)
       case res
         when Net::HTTPSuccess
           return res.body
@@ -296,7 +299,8 @@ class DorService
       LyberCore::Log.info("Attempting to connect to #{uri_string}")
       url = URI.parse(uri_string)
       req = Net::HTTP::Get.new(url.request_uri)
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }  
+      # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      res = LyberCore::Connection.send_request(url,req)
       case res
         when Net::HTTPSuccess
           begin
@@ -400,7 +404,8 @@ class DorService
       req.body = DorService.construct_error_update_request(process, error_msg, error_txt)
       req.content_type = 'application/xml'
       LyberCore::Log::debug("Putting request: #{req.inspect}")
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      res = LyberCore::Connection.send_request(url,req)
       LyberCore::Log::debug("Got response: #{res.inspect}")
       case res
        when Net::HTTPSuccess
@@ -458,7 +463,8 @@ class DorService
       req.basic_auth FEDORA_USER, FEDORA_PASS
       req.body = content[:xml] if(content[:xml])
       req.content_type = content[:type]
-      res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+      res = LyberCore::Connection.send_request(url,req)
       case res
         when Net::HTTPSuccess
           return true
@@ -506,7 +512,8 @@ end
      req = Net::HTTP::Put.new(url.path)
      req.body = DorService.construct_xml_for_tag_array(tags)
      req.content_type = 'application/xml'
-     res = DorService.get_https_connection(url).start {|http| http.request(req) }
+     # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+     res = LyberCore::Connection.send_request(url,req)
      case res
        when Net::HTTPSuccess
          return true

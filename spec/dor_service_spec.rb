@@ -10,6 +10,15 @@ require File.expand_path(File.dirname(__FILE__) + "/fixtures/config/environments
 
 describe DorService do
 
+  before(:all) do
+    with_warnings_suppressed do
+      LyberCore::CERT_FILE = File.dirname(__FILE__) + '/certs/dummy.crt'
+      LyberCore::KEY_FILE = File.dirname(__FILE__) + '/certs/dummy.key'
+      LyberCore::KEY_PASS = 'dummy'
+    end
+  end
+  
+
   context "context" do
     it "#get_workflow_xml should throw an exception saying the method is depricated" do
       lambda{ DorService.get_workflow_xml('somedruid', 'someworkflow')}.should raise_error(Exception, "This method is deprecated.  Please use Dor::WorkflowService#get_workflow_xml")
@@ -172,6 +181,7 @@ describe DorService do
     
     # This is an integration test. It actually connects to dor-dev
     it "returns identityMetadata/otherId values for a given druid (live lookup)" do
+      pending
         ids = DorService.get_object_identifiers(druid)
         ids["dissertationid"].should eql("0000000216")
         ids["catkey"].should eql("8383197")

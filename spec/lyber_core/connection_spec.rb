@@ -54,16 +54,26 @@ describe LyberCore::Connection do
       b = LyberCore::Connection.post('https://some.edu/some/path', @xml, :auth_user => 'user', :auth_password => 'password')
       b.should == 'returned text'
     end
+
+    it "should throw a ServiceError if a timeout exception occurs after 2 retries" do
+      Net::HTTP::Post.should_receive(:new).and_return(@mock_request)
+      Net::HTTP.should_receive(:new).exactly(3).times.and_return(@http)
+      @http.should_receive(:start).exactly(3).times.and_raise(Timeout::Error)
+
+      lambda{ LyberCore::Connection.post('https://some.edu/some/path', @xml)
+        }.should raise_error(LyberCore::Exceptions::ServiceError)
+    end
     
-    it "should throw an exception if response to connect is an HTTP error" do
-      e = "server error"
+    it "should throw an wxception if response to connect is an HTTP error" do
+      e = 'HTTP Server Error'
       res = Net::HTTPServerError.new("", "", "")
       res.should_receive(:error!).and_return(e)
       Net::HTTP::Post.should_receive(:new).and_return(@mock_request)
       Net::HTTP.should_receive(:new).and_return(@http)
       @http.should_receive(:start).and_return(res)
     
-      lambda{ LyberCore::Connection.post('https://some.edu/some/path', @xml) }.should raise_error(Exception, e)
+      lambda{ LyberCore::Connection.post('https://some.edu/some/path', @xml)
+        }.should raise_error(Exception, e)
     end
     
   end

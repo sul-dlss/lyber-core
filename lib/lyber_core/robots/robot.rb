@@ -100,8 +100,7 @@ module LyberCore
         rescue LyberCore::Exceptions::EmptyQueue
           LyberCore::Log.info("Empty queue -- no objects to process")
         rescue Exception => e
-          LyberCore::Log.error(e.message)
-          LyberCore::Log.error(e.backtrace.join("\n"))
+          LyberCore::Log.exception(e)
         end
       end
 
@@ -136,10 +135,18 @@ module LyberCore
             #call overridden method
             process_item(work_item)
             work_item.set_success
+          rescue LyberCore::Exceptions::FatalError => fatal_error
+            # ToDo cleanup/rollback transaction
+            raise fatal_error
+          rescue LyberCore::Exceptions::ItemError => item_error
+            # ToDo cleanup/rollback transaction
+            LyberCore::Log.exception(item_error)
+            work_item.set_error(item_error.inspect)
           rescue Exception => e
-            # LyberCore::Log.error("Encountered exception processing #{work_item.druid}: #{e.to_s}")
-            # LyberCore::Log.debug("Encountered exception processing #{work_item.druid}: #{e.backtrace.join("\n")}")
-            work_item.set_error(e)
+            # ToDo cleanup/rollback transaction
+            item_error = LyberCore::Exceptions::ItemError.new(work_item.druid, "Unexpected item error", e)
+            LyberCore::Log.exception(item_error)
+            work_item.set_error(item_error.inspect)
           end
         end
         queue.print_stats()

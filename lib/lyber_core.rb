@@ -11,4 +11,7 @@ require 'lyber_core/robots/workspace'
 require 'lyber_core/robots/work_queue'
 require 'lyber_core/robots/work_item'
 require 'lyber_core/exceptions/empty_queue'
+require 'lyber_core/exceptions/fatal_error'
+require 'lyber_core/exceptions/service_error'
+require 'lyber_core/exceptions/item_error'
 

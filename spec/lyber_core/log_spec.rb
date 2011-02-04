@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'lyber_core'
 
+
 describe LyberCore::Log do
   
   describe "initial state" do
@@ -102,7 +103,33 @@ describe LyberCore::Log do
       LyberCore::Log.level.should eql(LyberCore::Log::DEFAULT_LOG_LEVEL)       
       LyberCore::Log.logfile.should eql(LyberCore::Log::DEFAULT_LOGFILE)
     end
-    
+
+    it "can format an error message from an exception" do
+      re = RuntimeError.new("runtime message")
+      re.set_backtrace(caller)
+      log_msg = LyberCore::Log.exception_message(re)
+      log_msg.should eql "#{re.inspect} #{re.backtrace.inspect}"
+    end
+
+    it "can log information from any exception object" do
+      re = RuntimeError.new("runtime message")
+      re.set_backtrace(caller)
+      log_msg = LyberCore::Log.exception_message(re)
+      LyberCore::Log.should_receive(:error).with(log_msg)
+      LyberCore::Log.exception(re)
+    end
+
+
+    it "can log information from an FatalError exception object" do
+      re = RuntimeError.new("runtime message")
+      re.set_backtrace(caller)
+      se = LyberCore::Exceptions::ServiceError.new("service message", re)
+      log_msg = LyberCore::Log.exception_message(se)
+      LyberCore::Log.should_receive(:fatal).with(log_msg)
+      LyberCore::Log.exception(se)
+    end
+
+
   end
   
 

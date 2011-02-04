@@ -97,7 +97,19 @@ module LyberCore
     def Log.debug(msg)
       @@log.add(Logger::DEBUG) { msg }
     end
-    
+
+    def Log.exception(e)
+      msg = Log.exception_message(e)
+      if e.is_a?(LyberCore::Exceptions::FatalError)
+        Log.fatal(msg)
+      else
+        Log.error(msg)
+      end
+    end
+
+    def Log.exception_message(e)
+      msg = "#{e.inspect} #{e.backtrace.inspect}"
+    end
     
   end
   

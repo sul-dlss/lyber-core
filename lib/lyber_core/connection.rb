@@ -2,6 +2,25 @@ require 'net/https'
 require 'uri'
 require 'cgi'
 
+# Extend the Integer class to facilitate retries of code blocks if specified exception(s) occur
+# see: http://blog.josh-nesbitt.net/2010/02/08/writing-contingent-ruby-code-with-retryable/
+class Integer
+  def tries(options={}, &block)
+    attempts          = self
+    exception_classes = [*options[:on] || StandardError]
+    begin
+      # First attempt
+      return yield
+    rescue *exception_classes
+      # 2nd to n-1 attempts
+      retry if (attempts -= 1) > 1
+    end
+    # final (nth) attempt
+    yield
+  end
+end
+
+
 module LyberCore
   class Connection
     def Connection.get_https_connection(url)
@@ -62,7 +81,7 @@ module LyberCore
         req.basic_auth options[:auth_user], options[:auth_password]
       end
 
-      res = Connection.get_https_connection(url).start {|http| http.request(req) }
+      res = Connection.send_request(url, req)
       case res
       when Net::HTTPSuccess
         if(block_given?)
@@ -72,9 +91,21 @@ module LyberCore
         end
       else
         raise res.error!
+        # ??? raise LyberCore::Exceptions::ServiceError.new('HTTP Request failed',res.error!)
       end
 
     end
+
+
+    # Send the request to the server, with multiple retries if specified exceptions occur
+    def Connection.send_request(url, req)
+      3.tries :on => [Timeout::Error, EOFError, Errno::ECONNRESET] do
+        Connection.get_https_connection(url).start {|http| http.request(req) }
+      end
+    rescue Exception => e
+      raise LyberCore::Exceptions::ServiceError.new('HTTP Request failed',e)
+    end
+
   end
   
   
