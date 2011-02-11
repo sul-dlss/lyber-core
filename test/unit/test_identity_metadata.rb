@@ -17,7 +17,7 @@ class TestIdentityMetadata < Test::Unit::TestCase
   end
 
   def test_parse
-    idmd_xml = IdentityMetadata.from_xml(File.read("../test_data/IdentityMetadata-before.xml"))
+    idmd_xml = IdentityMetadata.from_xml(File.read(File.join(File.dirname(__FILE__), "../test_data/IdentityMetadata-before.xml")))
     assert_equal("druid:rt923jk342",idmd_xml.objectId)
     assert_equal("STANFORD_342837261527",idmd_xml.sourceId.value)
     assert_equal("google",idmd_xml.sourceId.source)
@@ -27,7 +27,7 @@ class TestIdentityMetadata < Test::Unit::TestCase
   end
 
   def test_modify
-    idmd_xml = IdentityMetadata.from_xml(File.read('../test_data/IdentityMetadata-before.xml'))
+    idmd_xml = IdentityMetadata.from_xml(File.read(File.join(File.dirname(__FILE__) ,'../test_data/IdentityMetadata-before.xml')))
     citationTitle = idmd_xml.citationTitle
     assert_equal("",citationTitle)
     idmd_xml.citationTitle='Squirrels of North America'
@@ -38,14 +38,14 @@ class TestIdentityMetadata < Test::Unit::TestCase
     idmd_xml.add_tag('Google Books : US pre-1923')
     idmd_xml = idmd_xml.to_xml
     idmd_str = idmd_xml.to_s
-    expected_roxml = IdentityMetadata.from_xml(File.read('../test_data/IdentityMetadata-after.xml'))
+    expected_roxml = IdentityMetadata.from_xml(File.read(File.join(File.dirname(__FILE__) ,'../test_data/IdentityMetadata-after.xml')))
     expected_xml = expected_roxml.to_xml
     expected_str = expected_xml.to_s
     assert_equal(expected_str,idmd_str)
   end
 
   def test_identifiers
-    idmd_xml = IdentityMetadata.from_xml(File.read('../test_data/IdentityMetadata-before.xml'))
+    idmd_xml = IdentityMetadata.from_xml(File.read(File.join(File.dirname(__FILE__) ,'../test_data/IdentityMetadata-before.xml')))
     barcode = idmd_xml.get_identifier_value('barcode')
     assert_equal('342837261527', barcode )
     uuid  = idmd_xml.get_identifier_value('uuid')

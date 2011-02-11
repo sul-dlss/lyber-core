@@ -1,0 +1,21 @@
+<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <dc:title>The adventures of Gil Blas of Santillane</dc:title>
+      <dc:creator>Le Sage, Alain Rene</dc:creator>
+      <dc:creator>Smollett, Tobias George</dc:creator>
+		<dc:subject>xmlSubject</dc:subject>
+		<dc:subject>xmlSubject2</dc:subject>
+		<dc:description>xmlDescription</dc:description>
+		<dc:publisher>xmlPublisher</dc:publisher>
+		<dc:contributor>xmlContributor</dc:contributor>
+		<dc:date>xmlDate</dc:date>
+		<dc:type>xmlType</dc:type>
+		<dc:format>xmlFormat</dc:format>
+		<dc:identifier>xmlIdentifier</dc:identifier>
+		<dc:source>xmlSource</dc:source>
+			<dc:language>xmlLanguage</dc:language>
+			<dc:relation>xmlRelation</dc:relation>
+			<dc:coverage>xmlCoverage</dc:coverage>
+			<dc:rights>xmlRights</dc:rights>
+				
+</oai_dc:dc>
+
