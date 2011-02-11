@@ -15,23 +15,23 @@ describe LyberCore::Robots::WorkItem do
   context "legacy roxml stuff" do    
     describe "#identity_metadata" do
 
-      it "should create a new ROXML object if the @identity_metadata is nil and there is no druid" do
+      it "should create a new identityMetadata object if the @identity_metadata is nil and there is no druid" do
 
         @work_item.druid = nil
         identity_metadata = @work_item.identity_metadata
         identity_metadata.should be_kind_of(IdentityMetadata)
-        identity_metadata.to_xml.should be_kind_of(Nokogiri::XML::Element)
+        identity_metadata.to_xml.should be_kind_of(String)
 
       end 
 
-      it "should create get the existing identity_metadata XML as a ROXML object the @identity_metadata is nil but there is a druid" do
+      it "should create get the existing identity_metadata XML as a IM object the @identity_metadata is nil but there is a druid" do
 
         @work_item.druid = "changeme:boosh"
         DorService.should_receive(:get_datastream).with("changeme:boosh", 'identityMetadata').and_return("<identityMetadata/>")
 
         identity_metadata = @work_item.identity_metadata
         identity_metadata.should be_kind_of(IdentityMetadata)
-        identity_metadata.to_xml.should be_kind_of(Nokogiri::XML::Element)
+        identity_metadata.to_xml.should be_kind_of(String)
 
       end 
     end #identity_metadata
@@ -43,7 +43,7 @@ describe LyberCore::Robots::WorkItem do
       @work_item.druid = "changeme:boosh"
       @work_item.identity_metadata = IdentityMetadata.new
       DorService.should_receive(:get_datastream).with("changeme:boosh", 'identityMetadata').and_return(nil)
-      DorService.should_receive(:add_datastream).with("changeme:boosh", 'identityMetadata', 'identityMetadata', "<identityMetadata/>" )
+      DorService.should_receive(:add_datastream).with("changeme:boosh", 'identityMetadata', 'identityMetadata', "<?xml version=\"1.0\"?>\n<identityMetadata/>\n" )
       @work_item.identity_metadata_save
     end 
 
@@ -51,12 +51,14 @@ describe LyberCore::Robots::WorkItem do
       @work_item.druid = "changeme:boosh"
       @work_item.identity_metadata = IdentityMetadata.new
       DorService.should_receive(:get_datastream).with("changeme:boosh", 'identityMetadata').and_return("<identityMetadata/>")
-      DorService.should_receive(:update_datastream).with("changeme:boosh", 'identityMetadata', "<identityMetadata/>",  content_type='application/xml', versionable = false )
+      DorService.should_receive(:update_datastream).with("changeme:boosh", 'identityMetadata', "<?xml version=\"1.0\"?>\n<identityMetadata/>\n",  content_type='application/xml', versionable = false )
       @work_item.identity_metadata_save      
     end
 
+
   end #identity_metadata_save
   
+
   describe "#set_status" do
 
     it "should set a named status when told to" do
@@ -65,8 +67,8 @@ describe LyberCore::Robots::WorkItem do
 #      DorService.should_receive(:update_workflow_status).with(anything(), "changeme:boosh", anything(), anything(), 'testing', anything()).and_return(true)
 #      @work_item.set_status('testing')
     end
-
   end #set_status
+  
 
   describe "#set_success" do
 
