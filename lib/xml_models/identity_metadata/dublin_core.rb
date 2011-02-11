@@ -25,61 +25,93 @@ class DublinCore
   
   
   attr_accessor :xml
-  attr_accessor :title
   
-  def initialize()  
-    @title ||= ["foo title"]
-    @xml = build_xml()
+  attr_accessor :title
+  attr_accessor :creator
+  attr_accessor :subject
+  attr_accessor :description
+  attr_accessor :publisher
+  attr_accessor :contributor
+  attr_accessor :date
+  attr_accessor :type
+  attr_accessor :format
+  attr_accessor :identifier
+  attr_accessor :source
+  attr_accessor :language
+  attr_accessor :relation
+  attr_accessor :coverage
+  attr_accessor :rights
+  
+
+
+
+  def initialize(xml = nil)  
    
+    @title ||= []  
+    @creator ||= []  
+    @subject ||= []  
+    @description ||= []  
+    @publisher ||= []  
+    @contributor ||= []  
+    @date ||= []  
+    @type ||= []  
+    @format ||= []  
+    @identifier ||= []  
+    @source ||= []  
+    @language ||= []  
+    @relation ||= []  
+    @coverage ||= []   
+    @rights ||= []
+    
+    # if the new is given an xml string, store that in the xml attr_accessor and don't rebuild.
+    # this will allow users to access the raw unprocessed  XML string via @xml. 
+    if xml.nil?
+      build_xml()
+    else
+      @xml = xml
+    end
+      
   end #initalize
   
   
   def build_xml()
-      puts @title
-      puts self.title
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.dc('xmlns:dc' => 'http://purl.org/dc/elements/1.1/', 'xmlns:srw_dc' => 'info:srw/schema/1/dc-schema', "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance"   ) {
           xml.parent.namespace = xml.parent.add_namespace_definition('oai_dc','http://www.openarchives.org/OAI/2.0/oai_dc/')
           xml.parent.add_namespace_definition("xsi:schemaLocation", "http://www.openarchives.org/OAI/2.0/oai_dc/ http://cosimo.stanford.edu/standards/oai_dc/v2/oai_dc.xsd")
-          @title.each do |t|
-            xml['oai_dc'].title_ t
-          end
+          self.instance_variables.each do |var|
+            unless var == "@xml"         
+              self.instance_variable_get(var).each { |v| xml['dc'].send("#{var.gsub('@','')}_", v) }
+            end #unless
+          end #instance_Variables.each
         }
       end
-      
-      return builder
-
-        
-  end
-    
-  def to_xml
-    self.xml.to_xml
+      @xml = builder.to_xml
   end
   
+  
+  
+  # This method rebuilds the xml attr_accesor and returns it as a string.   
+  def to_xml
+    build_xml
+    return self.xml
+  end #to_xml
+
+
+  # This method takes DC XML as a string, and maps the root child node to their proper attr_accesor. 
+  
+  def self.from_xml(xml="")
+    dc = DublinCore.new(xml)
+    doc = Nokogiri::XML(xml)
+    children = doc.root.element_children
+    children.each do |c|
+      if dc.instance_variables.include?("@#{c.name}")
+        dc.send("#{c.name}").send("<<", c.text.strip)
+      end #if
+    end  #each
+    return dc
+  end #from_xml
+
+
   
 end #dublin_core
-
-
-=begin
-
-xml_namespaces \
-  :oai_dc => "http://www.openarchives.org/OAI/2.0/oai_dc/",
-      :dc => "http://purl.org/dc/elements/1.1/"
-
-xml_name :root => 'oai_dc:dc'
-xml_reader :title, :as => [], :from => 'dc:title'
-xml_reader :creator, :as => [], :from => 'dc:creator'
-xml_reader :subject, :as => [], :from => 'dc:subject'
-xml_reader :description, :as => [], :from => 'dc:description'
-xml_reader :publisher, :as => [], :from => 'dc:publisher'
-xml_reader :contributor, :as => [], :from => 'dc:contributor'
-xml_reader :date, :as => [], :from => 'dc:date'
-xml_reader :type, :as => [], :from => 'dc:type'
-xml_reader :format, :as => [], :from => 'dc:format'
-xml_reader :identifier, :as => [], :from => 'dc:identifier'
-xml_reader :source, :as => [], :from => 'dc:source'
-xml_reader :language, :as => [], :from => 'dc:language'
-xml_reader :relation, :as => [], :from => 'dc:relation'
-xml_reader :coverage, :as => [], :from => 'dc:coverage'
-xml_reader :rights, :as => [], :from => 'dc:rights'
-=end

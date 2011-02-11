@@ -1,6 +1,7 @@
 require 'dor_service'
-require "roxml_models/identity_metadata/identity_metadata"
-require "roxml_models/identity_metadata/dublin_core"
+require "xml_models/identity_metadata/identity_metadata"
+require "xml_models/identity_metadata/dublin_core"
+
 
 # Represents a single object being processed as part of a workflow queue
 module LyberCore
@@ -32,9 +33,9 @@ module LyberCore
       #save the IdentityMetadata object to identityMetadata datastream
       def identity_metadata_save
         unless DorService.get_datastream(@druid, 'identityMetadata')
-          DorService.add_datastream(@druid, 'identityMetadata', 'identityMetadata', self.identity_metadata.to_xml.to_xml)
+          DorService.add_datastream(@druid, 'identityMetadata', 'identityMetadata', self.identity_metadata.to_xml)
         else
-          DorService.update_datastream(@druid, 'identityMetadata', self.identity_metadata.to_xml.to_xml, content_type='application/xml', versionable = false)
+          DorService.update_datastream(@druid, 'identityMetadata', self.identity_metadata.to_xml, content_type='application/xml', versionable = false)
         end #unless
       end #identity_metadata_save
 
