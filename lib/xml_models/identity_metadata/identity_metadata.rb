@@ -24,7 +24,7 @@ class SourceId
   
   # A convience method just to return self when #each is called
   def each
-    return self
+    yield self
   end
   
 end
@@ -35,7 +35,7 @@ class OtherId
   
   # A convience method just to return self when #each is called
    def each
-     return self
+     yield self
    end
   
 end
