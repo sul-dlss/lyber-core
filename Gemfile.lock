@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lyber-core (0.9.7)
+    lyber-core (0.9.7.1)
       actionpack
       active-fedora (>= 1.2.6)
       bagit (>= 0.1.0)
@@ -13,8 +13,7 @@ PATH
       validatable
 
 GEM
-  remote: http://gemcutter.org/
-  remote: http://gems.github.com/
+  remote: http://rubygems.org/
   remote: http://sulair-rails-dev.stanford.edu/
   specs:
     actionpack (2.3.11)
