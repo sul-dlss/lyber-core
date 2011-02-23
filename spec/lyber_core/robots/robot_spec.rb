@@ -304,7 +304,7 @@ describe LyberCore::Robots::Robot do
         
         robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
         robot.stub!(:establish_queue).and_return(mock_queue)
-        expect { robot.start_master(mock_stomp) }.to raise_error(Timeout::Error)
+        expect { robot.start_master(mock_stomp) }.to raise_error(LyberCore::Exceptions::FatalError)
       end
       
       it "should read druids from the queue and process them in slave mode and time out" do
