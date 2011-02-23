@@ -241,15 +241,9 @@ module LyberCore
         rescue LyberCore::Exceptions::FatalError => fatal_error
           # ToDo cleanup/rollback transaction
           raise fatal_error
-        rescue LyberCore::Exceptions::ItemError => item_error
-          # ToDo cleanup/rollback transaction
-          LyberCore::Log.exception(item_error)
-          work_item.set_error(item_error.inspect)
         rescue Exception => e
           # ToDo cleanup/rollback transaction
-          item_error = LyberCore::Exceptions::ItemError.new(work_item.druid, "Unexpected item error", e)
-          LyberCore::Log.exception(item_error)
-          work_item.set_error(item_error.inspect)
+          work_item.set_error(e)
         end
       end
       

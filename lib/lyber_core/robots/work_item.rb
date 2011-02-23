@@ -96,13 +96,15 @@ module LyberCore
         @work_queue.error_count += 1
         @end_time = Time.new
         @elapsed_time = @end_time - @start_time
-        LyberCore::Log.error("#{item_id} error - #{e.backtrace}")
-        # By default puts will output an array with a newline between each item.
-        if (@druid)
-          DorService.update_workflow_error_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, e.message)
+        if (e.is_a?(LyberCore::Exceptions::ItemError) )
+          item_error = e
+        else
+          item_error = LyberCore::Exceptions::ItemError.new(@druid, "Item error", e)
         end
-        # We've caught and processed the error at this point, I don't think we want to raise it again. --bess
-        # raise e
+        LyberCore::Log.exception(item_error)
+        if (@druid)
+          DorService.update_workflow_error_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, item_error.message)
+        end
       end
       
     end
