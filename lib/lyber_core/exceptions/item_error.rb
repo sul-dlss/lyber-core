@@ -7,7 +7,11 @@ module LyberCore
   module Exceptions
     class ItemError < LyberCore::Exceptions::ChainedError
       def initialize(druid, msg, cause=nil)
-        message = "#{druid} - #{msg}"
+        if (druid)
+          message = "#{druid} - #{msg}"
+        else
+          message= msg
+        end
         super(message, cause)
       end
     end

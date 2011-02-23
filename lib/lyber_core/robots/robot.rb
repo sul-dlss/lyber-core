@@ -83,20 +83,9 @@ module LyberCore
     
       # == Create a new workflow 
       def start_standalone()
-        
-        begin
-          LyberCore::Log.debug("Running as standalone...")
-          queue = establish_queue()
-          process_queue(queue)
-        # TODO: Implement a FatalError class
-        # rescue LyberCore::Exceptions::FatalError => e
-        #   LyberCore::Log.fatal("e.msg")
-        #   exit
-        rescue LyberCore::Exceptions::EmptyQueue
-          LyberCore::Log.info("Empty queue -- no objects to process")
-        rescue Exception => e
-          LyberCore::Log.exception(e)
-        end
+        LyberCore::Log.debug("Running as standalone...")
+        queue = establish_queue()
+        process_queue(queue)
       end
       
       def start_master(stomp)
@@ -116,8 +105,8 @@ module LyberCore
               end
             end
           rescue Timeout::Error
-            LyberCore::Log.error("Message broker unreachable for more than #{MSG_BROKER_TIMEOUT} seconds. Aborting master mode.")
-            raise
+            # the FatalError will be trapped and logged by  the start() method
+            raise LyberCore::Exceptions::FatalError.new("Message broker unreachable for more than #{MSG_BROKER_TIMEOUT} seconds. Aborting master mode.")
           end
         end
       end
@@ -148,9 +137,6 @@ module LyberCore
             rescue Timeout::Error
               msg = nil
               break
-            rescue Exception => e
-              LyberCore::Log.error(e)
-              LyberCore::Log.error(e.backtrace.join("\n"))
             ensure
               unless msg.nil?
                 stomp.ack msg.headers['message-id']
@@ -186,6 +172,10 @@ module LyberCore
         else
           start_standalone()
         end
+        rescue LyberCore::Exceptions::EmptyQueue
+          LyberCore::Log.info("Empty queue -- no objects to process")
+        rescue Exception => e
+          LyberCore::Log.exception(e)
       end
 
       # Generate a queue of work items based from file, druid, or service
@@ -241,15 +231,9 @@ module LyberCore
         rescue LyberCore::Exceptions::FatalError => fatal_error
           # ToDo cleanup/rollback transaction
           raise fatal_error
-        rescue LyberCore::Exceptions::ItemError => item_error
-          # ToDo cleanup/rollback transaction
-          LyberCore::Log.exception(item_error)
-          work_item.set_error(item_error.inspect)
         rescue Exception => e
           # ToDo cleanup/rollback transaction
-          item_error = LyberCore::Exceptions::ItemError.new(work_item.druid, "Unexpected item error", e)
-          LyberCore::Log.exception(item_error)
-          work_item.set_error(item_error.inspect)
+          work_item.set_error(e)
         end
       end
       

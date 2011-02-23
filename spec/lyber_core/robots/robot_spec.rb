@@ -244,11 +244,13 @@ describe LyberCore::Robots::Robot do
       end
       
       it "keeps going even if it encounters an error in one of the objects" do
-        mock_item_bad = mock('item')
-        mock_item_bad.should_receive(:druid).and_return('druid:xy123')
-        mock_item_bad.should_receive(:set_error).and_return(true)
+        druid = 'druid:xy123'
+        my_error = Errno::EACCES.new("my error")
+        mock_item_bad = mock('baditem')
+        #mock_item_bad.should_receive(:druid).and_return(druid)
+        mock_item_bad.should_receive(:set_error).with(my_error).and_return(true)
 
-        mock_item_good = mock('item')
+        mock_item_good = mock('gooditem')
         mock_item_good.should_receive(:set_success).and_return(true)
 
         mock_queue = mock('queue')
@@ -256,7 +258,7 @@ describe LyberCore::Robots::Robot do
         mock_queue.should_receive(:print_stats)
 
         robot = TestRobot.new(workflow_name, 'descriptive-metadata')
-        robot.should_receive(:process_item).with(mock_item_bad).and_raise(Errno::EACCES)
+        robot.should_receive(:process_item).with(mock_item_bad).and_raise(my_error)
         robot.should_receive(:process_item).with(mock_item_good)
         robot.process_queue(mock_queue)
       end
@@ -302,7 +304,7 @@ describe LyberCore::Robots::Robot do
         
         robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
         robot.stub!(:establish_queue).and_return(mock_queue)
-        expect { robot.start_master(mock_stomp) }.to raise_error(Timeout::Error)
+        expect { robot.start_master(mock_stomp) }.to raise_error(LyberCore::Exceptions::FatalError)
       end
       
       it "should read druids from the queue and process them in slave mode and time out" do

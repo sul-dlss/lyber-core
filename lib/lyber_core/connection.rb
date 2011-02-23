@@ -12,6 +12,7 @@ class Integer
       # First attempt
       return yield
     rescue *exception_classes
+      sleep 300
       # 2nd to n-1 attempts
       retry if (attempts -= 1) > 1
     end

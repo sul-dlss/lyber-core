@@ -45,7 +45,7 @@ module LyberCore
       def self.md5_hash_from_content_metadata(content_md)
         content_md_checksum_hash = {}
         doc = Nokogiri::XML(content_md)
-        doc.xpath('/contentMetadata/resource/file').each do |filenode|
+        doc.xpath('/contentMetadata/resource[@type="page"]/file').each do |filenode|
            filename = filenode.attribute('id')
            if (filename)
              md5_element = filenode.xpath('checksum[@type="MD5"]').first
