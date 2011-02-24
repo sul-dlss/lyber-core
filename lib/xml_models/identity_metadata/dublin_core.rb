@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'nokogiri'
 
 #<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"

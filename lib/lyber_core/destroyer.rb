@@ -2,7 +2,6 @@ module LyberCore
     
   class LyberCore::Destroyer
     
-  require 'rubygems'
   require 'active-fedora'
   require 'open-uri'
   

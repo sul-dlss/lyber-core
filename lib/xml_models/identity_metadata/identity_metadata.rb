@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'nokogiri'
 #<identityMetadata>
 #     <objectId>druid:rt923jk342</objectId>

@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper'
 # require 'benchmark'
-require 'rubygems'
 require 'nokogiri'
 require 'net/http'
 require 'uri'
