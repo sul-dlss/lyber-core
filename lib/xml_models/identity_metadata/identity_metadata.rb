@@ -152,6 +152,12 @@ class IdentityMetadata
   def get_tags()
      self.tags.collect { |t| t.value }
   end
+  
+  # Convenience method to return the first agreementId.  There's usually only one.
+  # Returns nil if there are no agreementIds.
+  def agreementId
+    @agreementIds.first
+  end
      
    
   # Return the OtherId hash for the specified identier name
