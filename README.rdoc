@@ -38,10 +38,13 @@ The BagitBag class requires the bagit gem
   http://github.com/flazz/bagit
 
 == Build and release procedure
+Modify the version number in lyber-core.gemspec, then push your commits to AFS.  DO NOT TAG!
 Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
 See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>0.9.7.2</b> IdentityMetadata bugfixes
+- <b>0.9.7.1</b> Enhanced exception handling 
 - <b>0.9.7</b> ActiveMQ message-based robot parallelization as described here: https://consul.stanford.edu/x/tQjdBw . Removal of ROXML models. 
 - <b>0.9.6.3</b> Better error reporting for LyberCore::Utils::FileUtilities.execute, which means when a system command fails we have a better idea of why. 
 - <b>0.9.6.2</b> Handles new response from workflow service when there are no objects in the queue: <objects count="0"\>
