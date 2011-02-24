@@ -72,14 +72,14 @@ class IdentityMetadata
   attr_reader :sourceId, :tags
   # these instance vars map to nodes in the identityMetadata XML
   attr_accessor :objectTypes, :objectLabels, :objectCreators, :citationCreators, :citationTitle, 
-                :otherIds, :agreementIds
+                :otherIds, :agreementIds, :objectAdminClass
   # this stores the xml string
   attr_accessor :xml
   
   
   def initialize(xml = nil)  
     
-     @objectId, @citationTitle = "", "" #there can only be one of these values
+     @objectId, @citationTitle, @objectAdminClass = "", "", "" #there can only be one of these values
      @sourceId  =  SourceId.new #there can be only one. 
      @otherIds, @tags  = [], [] # this is an array that will be filled with OtherId and Tag objects
      @objectTypes, @objectLabels, @objectCreators, @citationCreators, @agreementIds =  [], [], [], [], [], []
@@ -102,8 +102,11 @@ class IdentityMetadata
         xml.identityMetadata {
           self.instance_variables.each do |var_name|
             unless var_name == "@xml"
-              tag_name = var_name[1..-1].chomp('s')
               var = self.instance_variable_get(var_name)
+              tag_name = var_name[1..-1]
+              if var.is_a?(Array)
+                tag_name.chomp!('s')
+              end
               # wrap the singleton properties in a one-element array
               var = [var] unless var.respond_to?(:each)
               var.each do |v| 
@@ -241,6 +244,8 @@ class IdentityMetadata
            im.objectId = c.text.strip
          elsif c.name == "citationTitle" #citationTitle also needs to be mapped to citationTitle attr_accessor
            im.citationTitle = c.text.strip
+         elsif c.name == "objectAdminClass" #objectAdminClass also needs to be mapped to objectAdminClass attr_accessor
+           im.objectAdminClass = c.text.strip
          else # everything else gets put into an attr_accessor array (note the added 's' on the attr_accessor.)
            im.send("#{c.name}s").send("<<", c.text.strip)
          end #if
