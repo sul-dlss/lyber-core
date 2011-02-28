@@ -27,7 +27,8 @@ describe LyberCore::Utils::FileUtilities do
     
     it "should return an error message that includes info from stderr and stdout" do
       command = "ls /foobar"
-      lambda {LyberCore::Utils::FileUtilities.execute(command)}.should raise_error(/stderr output was/)
+      lambda {LyberCore::Utils::FileUtilities.execute(command)}.should
+        raise_error(RuntimeError, 'Command failed to execute: [ls /foobar] caused by <STDERR = ls: /foobar: No such file or directory>')
     end
     
   end

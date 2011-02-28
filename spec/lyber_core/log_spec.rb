@@ -111,6 +111,14 @@ describe LyberCore::Log do
       log_msg.should eql "#{re.inspect} #{re.backtrace.inspect}"
     end
 
+    it "will replace newlines with semicolons when logging an exception with a multiline message" do
+      msg = "runtime\nmessage"
+      re = RuntimeError.new(msg)
+      re.set_backtrace(caller)
+      log_msg = LyberCore::Log.exception_message(re)
+      log_msg.should eql "#<RuntimeError: runtime; message> #{re.backtrace.inspect}"
+    end
+
     it "can log information from any exception object" do
       re = RuntimeError.new("runtime message")
       re.set_backtrace(caller)

@@ -22,9 +22,10 @@ module LyberCore
         end
         return stdout
       rescue
-        raise "Command failed to execute: \"#{command}\"
-        stderr output was: #{stderr}
-        stdout output was: #{stdout}"
+        msg = "Command failed to execute: [#{command}] caused by <STDERR = #{stderr.split($/).join('; ')}>"
+        msg << " STDOUT = #{stdout.split($/).join('; ')}" if (stdout && (stdout.length > 0))
+        raise msg
+
       end
 
       # Generates a dirname for storing or retrieving a file in

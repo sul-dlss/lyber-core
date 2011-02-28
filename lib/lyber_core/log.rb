@@ -108,7 +108,7 @@ module LyberCore
     end
 
     def Log.exception_message(e)
-      msg = "#{e.inspect} #{e.backtrace.inspect}"
+      msg = e.inspect.split($/).join('; ') + " " + e.backtrace.inspect
     end
     
   end

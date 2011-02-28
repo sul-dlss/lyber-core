@@ -31,7 +31,7 @@ class DorService
       druid = $1
       return druid
     rescue Exception => e
-      LyberCore::Log.error("Unable to create object #{e.backtrace}")
+      LyberCore::Log.debug("Unable to create object #{e.backtrace}")
       raise e
     end  
   end
@@ -55,7 +55,7 @@ class DorService
       LyberCore::Log.debug("new druid = #{druid}")
       return druid
     rescue Exception => e
-      LyberCore::Log.error("Unable to create object")
+      LyberCore::Log.debug("Unable to create object")
       raise e, "Unable to create object "
     end
   end
@@ -122,10 +122,10 @@ class DorService
         LyberCore::Log.debug("Barcode does not yet exist in DOR: #{dor_id}") 
         return nil
       when Net::HTTPServerError
-        LyberCore::Log.error("Encountered HTTPServerError error when requesting #{url}: #{res.inspect}") 
+        LyberCore::Log.debug("Encountered HTTPServerError error when requesting #{url}: #{res.inspect}")
         raise "Encountered 500 error when requesting #{url}: #{res.inspect}"
       else
-        LyberCore::Log.error("Encountered unknown error when requesting #{url}: #{res.inspect}") 
+        LyberCore::Log.debug("Encountered unknown error when requesting #{url}: #{res.inspect}")
         raise "Encountered unknown error when requesting #{url}: #{res.inspect}"
       end
   end
@@ -179,10 +179,10 @@ class DorService
           LyberCore::Log.debug("Datastream not found at url #{url_string}") 
           return nil
         when Net::HTTPServerError
-          LyberCore::Log.error("Attempted to reach #{url_string} but failed")
+          LyberCore::Log.debug("Attempted to reach #{url_string} but failed")
           raise "Encountered 500 error when requesting #{url_string}: #{res.inspect}"
         else
-          LyberCore::Log.error("Encountered unknown error when requesting #{url}: #{res.inspect}")
+          LyberCore::Log.debug("Encountered unknown error when requesting #{url}: #{res.inspect}")
           raise "Encountered unknown error when requesting #{url}: #{res.inspect}"
         end
      rescue Exception => e
@@ -308,7 +308,7 @@ class DorService
             count = doc.root.at_xpath("//objects/@count").content.to_i
           rescue Exception => e
             msg = "Could not parse response from Workflow Service"
-            LyberCore::Log.error(msg + "\n#{res.body}")
+            LyberCore::Log.debug(msg + "\n#{res.body}")
             raise e, msg
           end
           
@@ -409,14 +409,14 @@ class DorService
       LyberCore::Log::debug("Got response: #{res.inspect}")
       case res
        when Net::HTTPSuccess
-         LyberCore::Log.error("#{workflow} - #{process} set to error for " + druid)
+         LyberCore::Log.info("#{workflow} - #{process} set to error for " + druid)
        else
-         LyberCore::Log.error(res.body)
+         LyberCore::Log.debug(res.body)
          raise res.error!, "Received error from the workflow service"
       end
     rescue Exception => e
       msg = "Unable to update workflow service at url #{url_string}"
-      LyberCore::Log.error(msg)
+      LyberCore::Log.debug(msg)
       raise e, msg
     end
   end
@@ -439,7 +439,7 @@ class DorService
             LyberCore::Log.debug("Successfully queried symphony for #{flexkey}")
             return res.body          
           else
-            LyberCore::Log.error("Encountered an error from symphony: #{res.body}")
+            LyberCore::Log.debug("Encountered an error from symphony: #{res.body}")
             raise res.error!
         end
       rescue Exception => e
@@ -469,10 +469,10 @@ class DorService
         when Net::HTTPSuccess
           return true
         when Net::HTTPServerError
-          LyberCore::Log.error("Attempted to set datastream #{url} but failed")
+          LyberCore::Log.debug("Attempted to set datastream #{url} but failed")
           raise "Encountered 500 error setting datastream #{url}: #{res.inspect}"
         else
-          LyberCore::Log.error("Encountered unknown error when setting datastream #{url}: #{res.inspect}")
+          LyberCore::Log.debug("Encountered unknown error when setting datastream #{url}: #{res.inspect}")
           raise "Encountered unknown error when setting datastream #{url}: #{res.inspect}"
       end
     rescue Exception => e
@@ -518,10 +518,10 @@ end
        when Net::HTTPSuccess
          return true
        when Net::HTTPServerError
-         LyberCore::Log.error("Attempted to add identity tags #{url} but failed")
+         LyberCore::Log.debug("Attempted to add identity tags #{url} but failed")
          raise "Encountered 500 error when adding identity tags #{url}: #{res.inspect}"
        else
-         LyberCore::Log.error("Encountered unknown error when adding identity tags #{url}: #{res.inspect}")
+         LyberCore::Log.debug("Encountered unknown error when adding identity tags #{url}: #{res.inspect}")
          raise "Encountered unknown error when adding identity tags #{url}: #{res.inspect}"
      end
    rescue Exception => e
