@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   # It will not add these as dependencies if you require lyber-core for other projects
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
-  s.add_development_dependency "pony"
+  s.add_development_dependency "lyberteam-devel", ">=0.1.1"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rcov"
   s.add_development_dependency "rdoc"
