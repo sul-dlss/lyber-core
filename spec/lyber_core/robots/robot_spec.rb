@@ -232,7 +232,7 @@ describe LyberCore::Robots::Robot do
     
         #Return the mock item the first time, return nil the second time to stop the while loop
         mock_queue.should_receive(:next_item).and_return(mock_item, nil)
-        mock_queue.should_receive(:print_stats)
+        #mock_queue.should_receive(:print_stats)
     
         #inside the while loop
         mock_item.should_receive(:set_success)
@@ -255,7 +255,7 @@ describe LyberCore::Robots::Robot do
 
         mock_queue = mock('queue')
         mock_queue.should_receive(:next_item).and_return(mock_item_bad, mock_item_good, nil)
-        mock_queue.should_receive(:print_stats)
+        # mock_queue.should_receive(:print_stats)
 
         robot = TestRobot.new(workflow_name, 'descriptive-metadata')
         robot.should_receive(:process_item).with(mock_item_bad).and_raise(my_error)
