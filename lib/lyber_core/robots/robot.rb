@@ -220,7 +220,7 @@ module LyberCore
         while work_item = queue.next_item do
           process_work_item(work_item)
         end
-        queue.print_stats()
+        # queue.print_stats() if (queue.item_count > 1)
       end
     
       def process_work_item(work_item)
