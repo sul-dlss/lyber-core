@@ -45,7 +45,7 @@ module LyberCore
         @@log.level = current_log_level
         @@log.formatter = current_formatter
       rescue Exception => e
-        raise e, "Couldn't initialize logfile #{new_logfile}: #{e.backtrace}"
+        raise e, "Couldn't initialize logfile #{new_logfile} because\n#{e.message}: #{e.backtrace.join(%{\n})}}"
       end
       
     end
@@ -60,7 +60,7 @@ module LyberCore
     #   Logger::DEBUG (0):  low-level information for developers
     def Log.set_level(loglevel)
      begin
-        if [0,1,2,3,4].contains? loglevel
+        if [0,1,2,3,4].include? loglevel
           @@log.level = loglevel
           @@log.debug "Setting LyberCore::Log.level to #{loglevel}"
         else
@@ -69,7 +69,7 @@ module LyberCore
           @@log.level = 0
         end
       rescue Exception => e
-        raise e, "Couldn't set log level: #{e.backtrace}"
+        raise e, "Couldn't set log level because\n#{e.message}: #{e.backtrace.join(%{\n})}"
       end
     end
     
