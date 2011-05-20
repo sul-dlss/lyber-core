@@ -4,10 +4,10 @@ require 'uri'
 require 'cgi'
 require 'rexml/document'
 
-include REXML
-
 class DorService
        
+  include REXML
+
     def DorService.get_https_connection(url)
       https = Net::HTTP.new(url.host, url.port)
       if(url.scheme == 'https')
