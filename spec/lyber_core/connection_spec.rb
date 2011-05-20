@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'net/https'
 
 require 'action_controller'
-require 'action_controller/test_process'
+require_one 'action_controller/test_process', 'action_controller/test_case'
 
 describe LyberCore::Connection do
   before(:all) do
