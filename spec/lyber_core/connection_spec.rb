@@ -60,11 +60,17 @@ describe LyberCore::Connection do
       Net::HTTP.should_receive(:new).exactly(3).times.and_return(@http)
       @http.should_receive(:start).exactly(3).times.and_raise(Timeout::Error)
 
+      with_warnings_suppressed do
+        RETRYABLE_SLEEP_VALUE = 0
+      end
       lambda{ LyberCore::Connection.post('https://some.edu/some/path', @xml)
         }.should raise_error(LyberCore::Exceptions::ServiceError)
+        with_warnings_suppressed do
+          RETRYABLE_SLEEP_VALUE = 300
+        end
     end
     
-    it "should throw an wxception if response to connect is an HTTP error" do
+    it "should throw an exception if response to connect is an HTTP error" do
       e = 'HTTP Server Error'
       res = Net::HTTPServerError.new("", "", "")
       res.should_receive(:error!).and_return(e)

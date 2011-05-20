@@ -4,6 +4,7 @@ require 'cgi'
 
 # Extend the Integer class to facilitate retries of code blocks if specified exception(s) occur
 # see: http://blog.josh-nesbitt.net/2010/02/08/writing-contingent-ruby-code-with-retryable/
+RETRYABLE_SLEEP_VALUE = 300
 class Integer
   def tries(options={}, &block)
     attempts          = self
@@ -12,7 +13,7 @@ class Integer
       # First attempt
       return yield
     rescue *exception_classes
-      sleep 300
+      sleep RETRYABLE_SLEEP_VALUE
       # 2nd to n-1 attempts
       retry if (attempts -= 1) > 1
     end
