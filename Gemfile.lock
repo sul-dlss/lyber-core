@@ -19,23 +19,18 @@ GEM
     actionpack (2.3.11)
       activesupport (= 2.3.11)
       rack (~> 1.1.0)
-    active-fedora (1.2.9)
-      activeresource (< 3.0.0)
-      activeresource (< 3.0.0)
+    active-fedora (2.2.0)
+      active-fedora
+      activeresource
+      equivalent-xml
+      facets
       mediashelf-loggable
       mime-types (>= 1.16)
-      mime-types (>= 1.16)
-      multipart-post
       multipart-post
       nokogiri
-      nokogiri
-      om (>= 1.0)
       om (>= 1.0)
       solr-ruby (>= 0.0.6)
-      solr-ruby (>= 0.0.6)
-      solrizer (>= 0.3.0)
-      solrizer (>= 0.3.0)
-      xml-simple (>= 1.0.12)
+      solrizer (> 1.0.0)
       xml-simple (>= 1.0.12)
     activeresource (2.3.11)
       activesupport (= 2.3.11)
@@ -44,6 +39,8 @@ GEM
       semver (~> 0.1.0)
     columnize (0.3.2)
     daemons (1.1.0)
+    equivalent-xml (0.2.6)
+      nokogiri (>= 1.4.3)
     eventmachine (0.12.10)
     facets (2.9.1)
     fakeweb (1.3.0)
@@ -60,19 +57,17 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mediashelf-loggable (0.4.0)
+    mediashelf-loggable (0.4.2)
     mime-types (1.16)
-    multipart-post (1.1.0)
+    multipart-post (1.1.1)
     nokogiri (1.4.3.1)
-    om (1.0.2)
-      facets
-      facets
-      nokogiri
+    om (1.2.4)
       nokogiri (>= 1.4.2)
+      om
     polyglot (0.3.1)
     pony (1.1)
       mail (> 2.0)
-    rack (1.1.1)
+    rack (1.1.2)
     rake (0.8.7)
     rcov (0.9.9)
     rdoc (3.5.3)
@@ -84,23 +79,28 @@ GEM
       linecache (>= 0.3)
     semver (0.1.0)
     solr-ruby (0.0.8)
-    solrizer (0.3.2)
+    solrizer (1.0.4)
+      daemons
+      mediashelf-loggable
       mediashelf-loggable
       nokogiri
       nokogiri
+      nokogiri
+      om (>= 1.0.0)
       om
-      solr-ruby
-    stomp (1.1.7)
+      stomp
+      xml-simple
+    stomp (1.1.8)
     stompserver (0.9.9)
       daemons (>= 1.0.2)
       eventmachine (>= 0.7.2)
       hoe (>= 1.1.1)
       hoe (>= 1.3.0)
-    systemu (1.2.0)
+    systemu (2.2.0)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     validatable (1.6.7)
-    xml-simple (1.0.14)
+    xml-simple (1.0.15)
     yard (0.6.4)
 
 PLATFORMS
