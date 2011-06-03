@@ -45,6 +45,7 @@ See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss
 == Releases
 - <b>0.9.8</b> Created branch for legacy work "0.9-legacy".  Robots can now be configured with fully qualified workflows for prerequisites
   eg <i>dor:googleScannedBookWF:register-object</i> 
+- <b>1.0.0</b> Factored all Dor::* classes and object models out of lyber-core and into a separate dor-services gem. WARNING: MAY BREAK COMPATIBILITY WITH PREVIOUS DOR-ENABLED CODE.
 - <b>0.9.7.4</b> Untangled a couple development dependencies; fixed issue where "include REXML" was polluting the Object namespace
 - <b>0.9.7.3</b> Logging enhancements
 - <b>0.9.7.2</b> IdentityMetadata bugfixes
