@@ -1,7 +1,5 @@
 require 'dlss_service'
-require 'dor/suri_service'
-require 'dor/workflow_service'
-require 'dor/base'
+require 'dor-services'
 require 'lyber_core/connection'
 require 'lyber_core/destroyer'
 require 'lyber_core/log'
