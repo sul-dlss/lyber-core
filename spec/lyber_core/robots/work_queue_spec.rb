@@ -45,39 +45,78 @@ describe LyberCore::Robots::WorkQueue do
      wq = LyberCore::Robots::WorkQueue.new(workflow, "descriptive-metadata")
      wq.batch_limit.should eql(5)
    end
+   
+   it "handles steps with two prequisites" do
+      workflow = stub("workflow")
+      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
+      workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
+      wq = LyberCore::Robots::WorkQueue.new(workflow, "cleanup")
+      wq.prerequisite.should =~ ["sdr-ingest-deposit", "shelve"]
+    end
+   
+   it "handles fully qualified workflow step names in the config file" do
+     workflow = stub("workflow")
+     workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
+     workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
+     wq = LyberCore::Robots::WorkQueue.new(workflow, "cleanup-qualified")
+     wq.prerequisite.should =~ ["sdr:sdrIngestWF:complete-deposit", "dor:googleScannedBookWF:shelve"]
+   end
   
   end
   
   context "enqueue_workstep_waiting" do
     
-    before(:each) do
-      @workflow = stub("workflow")
-      @workflow.stub(:repository).and_return("dor")
-      @workflow.stub(:workflow_id).and_return("googleScannedBookWF")
-      @workflow.stub(:completed).and_return("register-object")
-      @workflow.stub(:waiting).and_return("descriptive-metadata")
-      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
-      @workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
+    context "normal processing" do
+      before(:each) do
+        @workflow = stub("workflow")
+        @workflow.stub(:repository).and_return("dor")
+        @workflow.stub(:workflow_id).and_return("googleScannedBookWF")
+        @workflow.stub(:completed).and_return("register-object")
+        @workflow.stub(:waiting).and_return("descriptive-metadata")
+        workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
+        @workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
+      end
+
+      it "only grabs as many druids as it needs for a batch" do
+        queuefile = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/queue.xml")
+        (File.file? queuefile).should eql(true)
+        queue = IO.read(queuefile)
+        FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+          :body => queue)
+        wq = LyberCore::Robots::WorkQueue.new(@workflow, @workflow.waiting)
+        wq.enqueue_workstep_waiting
+        wq.druids.length.should eql(wq.batch_limit)
+        FakeWeb.clean_registry
+      end
+
+      it "enqueue_workstep_waiting catches and raises an EmptyQueue exception" do
+        FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+          :body => '<objects count="0" />')
+        wq = LyberCore::Robots::WorkQueue.new(@workflow, @workflow.waiting)
+        lambda { wq.enqueue_workstep_waiting }.should raise_exception(LyberCore::Exceptions::EmptyQueue)
+      end
     end
     
-    it "only grabs as many druids as it needs for a batch" do
-      queuefile = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/queue.xml")
-      (File.file? queuefile).should eql(true)
-      queue = IO.read(queuefile)
-      FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-        :body => queue)
-      wq = LyberCore::Robots::WorkQueue.new(@workflow, @workflow.waiting)
-      wq.enqueue_workstep_waiting
-      wq.druids.length.should eql(wq.batch_limit)
-      FakeWeb.clean_registry
+    context "fully qualified prequisites" do
+      it "calls the correct DorService to grab druids with fully qualified workflow names" do
+        ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures") unless defined? ROBOT_ROOT
+        require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
+        workflow_step = "cleanup-qualified"
+        
+        workflow = stub("workflow")
+        workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
+        workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
+        workflow.stub(:repository).and_return("dor")
+        workflow.stub(:workflow_id).and_return("googleScannedBookWF")
+        wq = LyberCore::Robots::WorkQueue.new(workflow, "cleanup-qualified")
+        
+        DorService.should_receive(:get_objects_for_qualified_workstep).with(wq.prerequisite, 'dor:googleScannedBookWF:cleanup-qualified')
+        DlssService.stub!(:get_some_druids_from_object_list).and_return("druid:123456")
+        
+        wq.enqueue_workstep_waiting
+      end
     end
-
-    it "enqueue_workstep_waiting catches and raises an EmptyQueue exception" do
-      FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
-        :body => '<objects count="0" />')
-      wq = LyberCore::Robots::WorkQueue.new(@workflow, @workflow.waiting)
-      lambda { wq.enqueue_workstep_waiting }.should raise_exception(LyberCore::Exceptions::EmptyQueue)
-    end
+    
     
   end
   
