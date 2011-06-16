@@ -98,22 +98,31 @@ describe LyberCore::Robots::WorkQueue do
     end
     
     context "fully qualified prequisites" do
-      it "calls the correct DorService to grab druids with fully qualified workflow names" do
+      before(:each) do
         ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures") unless defined? ROBOT_ROOT
         require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
-        workflow_step = "cleanup-qualified"
         
-        workflow = stub("workflow")
+        @workflow = stub("workflow")
         workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
-        workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
-        workflow.stub(:repository).and_return("dor")
-        workflow.stub(:workflow_id).and_return("googleScannedBookWF")
-        wq = LyberCore::Robots::WorkQueue.new(workflow, "cleanup-qualified")
-        
-        DorService.should_receive(:get_objects_for_qualified_workstep).with(wq.prerequisite, 'dor:googleScannedBookWF:cleanup-qualified')
+        @workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
+        @workflow.stub(:repository).and_return("dor")
+        @workflow.stub(:workflow_id).and_return("googleScannedBookWF")     
+      end
+      
+      it "calls the correct DorService to grab druids with fully qualified workflow names" do
+        @wq = LyberCore::Robots::WorkQueue.new(@workflow, "cleanup-qualified")
+        DorService.should_receive(:get_objects_for_qualified_workstep).with(@wq.prerequisite, 'dor:googleScannedBookWF:cleanup-qualified')
         DlssService.stub!(:get_some_druids_from_object_list).and_return("druid:123456")
         
-        wq.enqueue_workstep_waiting
+        @wq.enqueue_workstep_waiting
+      end
+      
+      it "calls the correct DorService to grab druids with fully qualified workflow names, only 1 completed step" do
+        @wq = LyberCore::Robots::WorkQueue.new(@workflow, "shelve-qualified")
+        DorService.should_receive(:get_objects_for_qualified_workstep).with('dor:googleScannedBookWF:process-content', 'dor:googleScannedBookWF:shelve-qualified')
+        DlssService.stub!(:get_some_druids_from_object_list).and_return("druid:123456")
+        
+        @wq.enqueue_workstep_waiting
       end
     end
     

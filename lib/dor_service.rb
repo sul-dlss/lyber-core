@@ -279,27 +279,25 @@ class DorService
   #     </objects>
   def DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
     LyberCore::Log.debug("DorService.get_objects_for_workstep(#{repository}, #{workflow}, #{completed}, #{waiting})")
-    begin  
-      if repository.nil? or workflow.nil? or completed.nil? or waiting.nil?
-        LyberCore::Log.fatal("Can't execute DorService.get_objects_for_workstep: missing info")
-      end
-      
-      unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
-        LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
-        raise "WORKFLOW_URI is not set"   
-      end
-      
-      uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}"
-      if(completed.class == Array)
-        raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
-        completed.each {|step| uri_string << "&completed=#{step}"}
-      else
-        uri_string << "&completed=#{completed}"
-      end
-      
-      return DorService.execute_workflow_xml_query(uri_string)
+ 
+    if repository.nil? or workflow.nil? or completed.nil? or waiting.nil?
+      LyberCore::Log.fatal("Can't execute DorService.get_objects_for_workstep: missing info")
+    end
     
-    end #begin
+    unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
+      LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
+      raise "WORKFLOW_URI is not set"   
+    end
+    
+    uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}"
+    if(completed.class == Array)
+      raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
+      completed.each {|step| uri_string << "&completed=#{step}"}
+    else
+      uri_string << "&completed=#{completed}"
+    end
+    
+    return DorService.execute_workflow_xml_query(uri_string)
   end
   
   # Returns string containing object list XML from a workflow DOR query using fully qualified workflow step names
@@ -309,7 +307,7 @@ class DorService
   #   If querying for two completed steps, pass in an Array of the two completed steps
   # @param [String] waiting the fully qualified name of the waiting step
   # @raise [LyberCore::Exceptions::EmptyQueue] When the query is successful, but no objects are found in that queue 
-  # @raise [Exception] For other problems like connection failures
+  # @raise [Exception] For other problems like connection failures or passing in non-qualified workflow names
   # @return [String] XML containing all the objects that match the specific query. It looks like:
   #     <objects>
   #       <object druid="dr:123" url="http://localhost:9999/jersey-spring/objects/dr:123%5c" />
@@ -317,34 +315,32 @@ class DorService
   #     </objects>
   def DorService.get_objects_for_qualified_workstep(completed, waiting)
     LyberCore::Log.debug("DorService.get_objects_for_qualified_workstep(#{completed}, #{waiting})")
-    begin  
-      if completed.nil? or waiting.nil?
-        LyberCore::Log.fatal("Can't execute DorService.get_objects_for_qualified_workstep: missing info")
-      end
-      
-      unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
-        LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
-        raise "WORKFLOW_URI is not set"   
-      end
-      
-      unless(waiting =~ /.+:.+:.+/)
-        raise "The waiting step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{waiting}"
-      end
-      uri_string = "#{WORKFLOW_URI}/workflow_queue?waiting=#{waiting}"
-      if(completed.class == Array)
-        raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
-        completed.each do |step|
-          raise "A completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{step}" unless(step =~ /.+:.+:.+/)
-          uri_string << "&completed=#{step}"
-        end
-      else
-        raise "Completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>.  Received #{completed}" unless(completed =~ /.+:.+:.+/)
-        uri_string << "&completed=#{completed}"
-      end
-      
-      return DorService.execute_workflow_xml_query(uri_string)
 
-    end 
+    if completed.nil? or waiting.nil?
+      LyberCore::Log.fatal("Can't execute DorService.get_objects_for_qualified_workstep: missing info")
+    end
+    
+    unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
+      LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
+      raise "WORKFLOW_URI is not set"   
+    end
+    
+    unless(waiting =~ /.+:.+:.+/)
+      raise "The waiting step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{waiting}"
+    end
+    uri_string = "#{WORKFLOW_URI}/workflow_queue?waiting=#{waiting}"
+    if(completed.class == Array)
+      raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
+      completed.each do |step|
+        raise "A completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{step}" unless(step =~ /.+:.+:.+/)
+        uri_string << "&completed=#{step}"
+      end
+    else
+      raise "Completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>.  Received #{completed}" unless(completed =~ /.+:.+:.+/)
+      uri_string << "&completed=#{completed}"
+    end
+    
+    return DorService.execute_workflow_xml_query(uri_string)
   end
   
   
