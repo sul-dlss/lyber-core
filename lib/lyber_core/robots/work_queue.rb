@@ -88,13 +88,26 @@ module LyberCore
         @druids = druid_array
         LyberCore::Log.debug("\n@druids = #{@druids}")
       end
+      
+      def fully_qualified_prerequisite?
+        if(@prerequisite.class == Array)
+          fully_qualified = @prerequisite.all? {|p| p =~ /.+:.+:.+/ }
+        else
+          fully_qualified = (@prerequisite =~ /.+:.+:.+/)
+        end
+        fully_qualified
+      end
 
       # Obtain the set of druids to be processed using a database query
       # to obtain the repository objects that are awaiting this step
       def enqueue_workstep_waiting()
         begin
           LyberCore::Log.debug("\nEnqueing workstep waiting...")
-          object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
+          if(fully_qualified_prerequisite?)
+            object_list_xml = DorService.get_objects_for_qualified_workstep(@prerequisite, "#{workflow.repository}:#{workflow.workflow_id}:#{@workflow_step}")
+          else
+            object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
+          end
           LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
           @druids = DlssService.get_some_druids_from_object_list(object_list_xml,self.batch_limit)
           LyberCore::Log.debug("\n@druids = #{@druids}")

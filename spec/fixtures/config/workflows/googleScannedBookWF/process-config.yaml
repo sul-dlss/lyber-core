@@ -36,9 +36,23 @@ shelve:
     prerequisite: process-content
     batch_limit: 1
     error_limit: 5
+    
+shelve-qualified:
+    prerequisite: dor:googleScannedBookWF:process-content
+    batch_limit: 1
+    error_limit: 5
 
 cleanup:
-    prerequisite: sdr-ingest-deposit, shelve
+    prerequisite:
+        - sdr-ingest-deposit
+        - shelve
+    batch_limit: 1
+    error_limit: 5
+
+cleanup-qualified:
+    prerequisite: 
+        - sdr:sdrIngestWF:complete-deposit
+        - dor:googleScannedBookWF:shelve
     batch_limit: 1
     error_limit: 5
     

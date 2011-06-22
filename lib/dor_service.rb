@@ -279,56 +279,71 @@ class DorService
   #     </objects>
   def DorService.get_objects_for_workstep(repository, workflow, completed, waiting)
     LyberCore::Log.debug("DorService.get_objects_for_workstep(#{repository}, #{workflow}, #{completed}, #{waiting})")
-    begin  
-      if repository.nil? or workflow.nil? or completed.nil? or waiting.nil?
-        LyberCore::Log.fatal("Can't execute DorService.get_objects_for_workstep: missing info")
-      end
-      
-      unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
-        LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
-        raise "WORKFLOW_URI is not set"   
-      end
-      
-      uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}"
-      if(completed.class == Array)
-        raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
-        completed.each {|step| uri_string << "&completed=#{step}"}
-      else
-        uri_string << "&completed=#{completed}"
-      end
-      LyberCore::Log.info("Attempting to connect to #{uri_string}")
-      url = URI.parse(uri_string)
-      req = Net::HTTP::Get.new(url.request_uri)
-      # res = DorService.get_https_connection(url).start {|http| http.request(req) }
-      res = LyberCore::Connection.send_request(url,req)
-      case res
-        when Net::HTTPSuccess
-          begin
-            doc = Nokogiri::XML(res.body)
-            count = doc.root.at_xpath("//objects/@count").content.to_i
-          rescue Exception => e
-            msg = "Could not parse response from Workflow Service"
-            LyberCore::Log.debug(msg + "\n#{res.body}")
-            raise e, msg
-          end
-          
-          if(count == 0)
-            raise LyberCore::Exceptions::EmptyQueue.new, "empty queue" 
-          else
-            return res.body
-          end
-        else
-          LyberCore::Log.fatal("Workflow queue not found for #{workflow} : #{waiting}")
-          LyberCore::Log.debug("I am attempting to connect to WORKFLOW_URI #{WORKFLOW_URI}")
-          LyberCore::Log.debug("repository: #{repository}")
-          LyberCore::Log.debug("workflow: #{workflow}")
-          LyberCore::Log.debug("completed: #{completed}")
-          LyberCore::Log.debug("waiting: #{waiting}")
-          LyberCore::Log.debug(res.inspect)
-          raise "Could not connect to url #{uri_string}"
-       end
-    end 
+ 
+    if repository.nil? or workflow.nil? or completed.nil? or waiting.nil?
+      LyberCore::Log.fatal("Can't execute DorService.get_objects_for_workstep: missing info")
+    end
+    
+    unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
+      LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
+      raise "WORKFLOW_URI is not set"   
+    end
+    
+    uri_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{repository}&workflow=#{workflow}&waiting=#{waiting}"
+    if(completed.class == Array)
+      raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
+      completed.each {|step| uri_string << "&completed=#{step}"}
+    else
+      uri_string << "&completed=#{completed}"
+    end
+    
+    return DorService.execute_workflow_xml_query(uri_string)
   end
+  
+  # Returns string containing object list XML from a workflow DOR query using fully qualified workflow step names
+  # eg <tt>dor:googleScannedBookWF:register-object</tt>
+  # 
+  # @param [String, Array] completed if only querying for one completed step, pass in a String of a fully qualified workflow step.
+  #   If querying for two completed steps, pass in an Array of the two completed steps
+  # @param [String] waiting the fully qualified name of the waiting step
+  # @raise [LyberCore::Exceptions::EmptyQueue] When the query is successful, but no objects are found in that queue 
+  # @raise [Exception] For other problems like connection failures or passing in non-qualified workflow names
+  # @return [String] XML containing all the objects that match the specific query. It looks like:
+  #     <objects>
+  #       <object druid="dr:123" url="http://localhost:9999/jersey-spring/objects/dr:123%5c" />
+  #       <object druid="dr:abc" url="http://localhost:9999/jersey-spring/objects/dr:abc%5c" />
+  #     </objects>
+  def DorService.get_objects_for_qualified_workstep(completed, waiting)
+    LyberCore::Log.debug("DorService.get_objects_for_qualified_workstep(#{completed}, #{waiting})")
+
+    if completed.nil? or waiting.nil?
+      LyberCore::Log.fatal("Can't execute DorService.get_objects_for_qualified_workstep: missing info")
+    end
+    
+    unless defined?(WORKFLOW_URI) and WORKFLOW_URI != nil
+      LyberCore::Log.fatal("WORKFLOW_URI is not set. ROBOT_ROOT = #{ROBOT_ROOT}")
+      raise "WORKFLOW_URI is not set"   
+    end
+    
+    unless(waiting =~ /.+:.+:.+/)
+      raise "The waiting step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{waiting}"
+    end
+    uri_string = "#{WORKFLOW_URI}/workflow_queue?waiting=#{waiting}"
+    if(completed.class == Array)
+      raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
+      completed.each do |step|
+        raise "A completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{step}" unless(step =~ /.+:.+:.+/)
+        uri_string << "&completed=#{step}"
+      end
+    else
+      raise "Completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>.  Received #{completed}" unless(completed =~ /.+:.+:.+/)
+      uri_string << "&completed=#{completed}"
+    end
+    
+    return DorService.execute_workflow_xml_query(uri_string)
+  end
+  
+  
   
   def DorService.log_and_raise_workflow_connection_problem(repository, workflow, completed, waiting, response)
     
@@ -450,6 +465,40 @@ class DorService
 
 
   private
+  
+  def DorService.execute_workflow_xml_query(uri_string)
+    LyberCore::Log.info("Attempting to connect to #{uri_string}")
+    url = URI.parse(uri_string)
+    req = Net::HTTP::Get.new(url.request_uri)
+    # res = DorService.get_https_connection(url).start {|http| http.request(req) }
+    res = LyberCore::Connection.send_request(url,req)
+    case res
+      when Net::HTTPSuccess
+        begin
+          doc = Nokogiri::XML(res.body)
+          count = doc.root.at_xpath("//objects/@count").content.to_i
+        rescue Exception => e
+          msg = "Could not parse response from Workflow Service"
+          LyberCore::Log.debug(msg + "\n#{res.body}")
+          raise e, msg
+        end
+        
+        if(count == 0)
+          raise LyberCore::Exceptions::EmptyQueue.new, "empty queue" 
+        else
+          return res.body
+        end
+      else
+        LyberCore::Log.fatal("Workflow queue not found for #{workflow} : #{waiting}")
+        LyberCore::Log.debug("I am attempting to connect to WORKFLOW_URI #{WORKFLOW_URI}")
+        LyberCore::Log.debug("repository: #{repository}")
+        LyberCore::Log.debug("workflow: #{workflow}")
+        LyberCore::Log.debug("completed: #{completed}")
+        LyberCore::Log.debug("waiting: #{waiting}")
+        LyberCore::Log.debug(res.inspect)
+        raise "Could not connect to url #{uri_string}"
+     end
+  end
   # druid, ds, url, content_type, method, parms
   def DorService.set_datastream(druid, ds_id, parms, method, content = {})
     begin  

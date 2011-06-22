@@ -81,6 +81,27 @@ describe DorService do
         lambda { DorService.get_objects_for_workstep(repository, workflow, ['1', '2', '3'], waiting) }.should raise_exception(RuntimeError, 'The workflow service can only handle queries with no more than 2 completed steps')
       end
     end
+  
+    context "a query using qualified workflow names for completed and waiting" do
+      it "creates the URI string with the two completed steps across repositories correctly" do
+        qualified_waiting = "#{repository}:#{workflow}:#{waiting}"
+        qualified_completed = "#{repository}:#{workflow}:#{completed}"
+        repo2 = "sdr"
+        workflow2 = "sdrIngestWF"
+        completed2="complete-deposit"
+        qualified_completed2 = "#{repo2}:#{workflow2}:#{completed2}"
+      
+        uri_str = "#{WORKFLOW_URI}/workflow_queue?waiting=#{qualified_waiting}&completed=#{qualified_completed}&completed=#{qualified_completed2}"
+        uri = URI.parse(uri_str)
+      
+        URI.should_receive(:parse).with(/workflow_queue\?waiting=#{qualified_waiting}&completed=#{qualified_completed}&completed=#{qualified_completed2}/).any_number_of_times.and_return(uri)
+    
+        FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+          :body => "<objects count=\"1\"><xml>some workflow</xml></objects>")
+    
+        DorService.get_objects_for_qualified_workstep([qualified_completed, qualified_completed2], qualified_waiting)
+      end
+    end
   end
   
   context "get empty workflow queue" do
