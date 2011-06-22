@@ -7,6 +7,7 @@ require 'spec/autorun'
 require 'rubygems'
 require 'lyber_core'
 require 'lyber_core/utils'
+require 'ruby-debug'
 
 Spec::Runner.configure do |config|
   

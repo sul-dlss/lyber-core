@@ -103,14 +103,20 @@ module LyberCore
       def enqueue_workstep_waiting()
         begin
           LyberCore::Log.debug("\nEnqueing workstep waiting...")
-          if(fully_qualified_prerequisite?)
-            object_list_xml = DorService.get_objects_for_qualified_workstep(@prerequisite, "#{workflow.repository}:#{workflow.workflow_id}:#{@workflow_step}")
-          else
-            object_list_xml = DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, @prerequisite, @workflow_step)
+          
+          prerequisites = Array(@prerequisite)
+          qualified = fully_qualified_prerequisite?
+          druid_lists = prerequisites.collect do |prerequisite|
+            object_list_xml = qualified ? 
+              DorService.get_objects_for_qualified_workstep(prerequisite, "#{workflow.repository}:#{workflow.workflow_id}:#{@workflow_step}") :
+              DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, prerequisite, @workflow_step)
+            LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
+            druid_list = DlssService.get_all_druids_from_object_list(object_list_xml)
+            LyberCore::Log.debug("\n@druids = #{@druids}")
+            druid_list
           end
-          LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
-          @druids = DlssService.get_some_druids_from_object_list(object_list_xml,self.batch_limit)
-          LyberCore::Log.debug("\n@druids = #{@druids}")
+          @druids = druid_lists.inject(druid_lists[0]) { |collector, list| collector & list }
+          @druids = @druids[0..(self.batch_limit-1)]
         rescue Exception => e
           raise e
         end
