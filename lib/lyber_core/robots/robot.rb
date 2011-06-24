@@ -291,7 +291,7 @@ module LyberCore
         
           # Parse the command line options and ignore anything not specified above
           begin
-            o.parse!
+            o.parse!(@opts[:argv] || ARGV)
           rescue OptionParser::InvalidOption => e
             LyberCore::Log.debug("e.inspect")
           rescue OptionParser::ParseError => e
