@@ -152,6 +152,10 @@ module LyberCore
         @item_count += 1
         return  work_item
       end
+      
+      def max_errors_reached?
+        @error_count >= @error_limit
+      end
 
       # Output the batch's timings and other statistics to the main log file
       def print_stats

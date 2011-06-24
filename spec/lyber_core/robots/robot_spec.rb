@@ -116,7 +116,7 @@ describe LyberCore::Robots::Robot do
         :body => "<objects count=\"0\" />")
       robot = TestRobot.new(workflow, waiting)
       robot.should_not_receive(:process_queue)
-      robot.start
+      robot.start.should == LyberCore::Robots::SLEEP
     end
     
   end    
@@ -204,22 +204,39 @@ describe LyberCore::Robots::Robot do
       workflow_name = "googleScannedBookWF"
   
       it "processes a batch of druids from the Workflow" do   
-        
+
         require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
-    
-        robot = TestRobot.new(workflow_name, "descriptive-metadata", :collection_name => 'publicDomain')
-        # puts robot.workflow.inspect
-        # puts robot.workflow.queue('descriptive-metadata')
-    
-        # mock_workflow = mock('workflow')
-        # mock_queue = mock('queue')
-        # robot = TestRobot.new('googleScannedBook', 'descriptive-metadata', :collection_name => 'publicDomain')
-        # LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
-        # mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
-        # ARGV.stub!(:size).and_return(0)
-        # mock_queue.should_receive(:enqueue_workstep_waiting)
-        # robot.should_receive(:process_queue).and_return(nil)
-        # robot.start
+
+        mock_workflow = mock('workflow')
+        mock_queue = mock('queue')
+        LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
+        mock_workflow.stub!(:repository).and_return('dor')
+        robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
+        
+        mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
+        ARGV.stub!(:size).and_return(0)
+        mock_queue.should_receive(:enqueue_workstep_waiting)
+        robot.should_receive(:process_queue)
+        mock_queue.should_receive(:max_errors_reached?).and_return(false)
+        robot.start.should == LyberCore::Robots::CONTINUE
+      end
+      
+      it "returns a status of HALT if the maximum number of errors was reached during processing" do   
+
+        require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
+
+        mock_workflow = mock('workflow')
+        mock_queue = mock('queue')
+        LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
+        mock_workflow.stub!(:repository).and_return('dor')
+        robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
+        
+        mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
+        ARGV.stub!(:size).and_return(0)
+        mock_queue.should_receive(:enqueue_workstep_waiting)
+        robot.should_receive(:process_queue)
+        mock_queue.should_receive(:max_errors_reached?).and_return(true)
+        robot.start.should == LyberCore::Robots::HALT
       end
     
       it "processes a queue of objects" do

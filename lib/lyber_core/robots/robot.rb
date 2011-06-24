@@ -5,6 +5,10 @@
 
 module LyberCore
   module Robots
+    CONTINUE = 0
+    SLEEP = 1
+    HALT = 2
+    
     require 'optparse'
     require 'ostruct'
 
@@ -86,6 +90,9 @@ module LyberCore
         LyberCore::Log.debug("Running as standalone...")
         queue = establish_queue()
         process_queue(queue)
+        return false if(queue.max_errors_reached?)
+          
+        true
       end
       
       def start_master(stomp)
@@ -170,10 +177,16 @@ module LyberCore
           # Run as slave when master is done
           start_slave(stomp)
         else
-          start_standalone()
+          did_not_halt = start_standalone()
+          if(did_not_halt)
+            return LyberCore::Robots::CONTINUE
+          else
+            return LyberCore::Robots::HALT
+          end
         end
         rescue LyberCore::Exceptions::EmptyQueue
           LyberCore::Log.info("Empty queue -- no objects to process")
+          return LyberCore::Robots::SLEEP
         rescue Exception => e
           LyberCore::Log.exception(e)
       end
@@ -220,7 +233,6 @@ module LyberCore
         while work_item = queue.next_item do
           process_work_item(work_item)
         end
-        # queue.print_stats() if (queue.item_count > 1)
       end
     
       def process_work_item(work_item)
