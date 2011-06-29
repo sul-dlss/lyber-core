@@ -43,6 +43,7 @@ Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
 See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>0.9.9</b> Can create a workflow without creating a datastream in Fedora.  See Dor::WorkflowService#create_workflow
 - <b>0.9.8</b> Created branch for legacy work "0.9-legacy".  Robots can now be configured with fully qualified workflows for prerequisites
   eg <i>dor:googleScannedBookWF:register-object</i> 
 - <b>0.9.7.4</b> Untangled a couple development dependencies; fixed issue where "include REXML" was polluting the Object namespace
