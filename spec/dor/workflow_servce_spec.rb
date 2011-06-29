@@ -58,9 +58,16 @@ describe Dor::WorkflowService do
       Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF', XML)
     end
     
+    it "can create workflow without a creating a datastream in Fedora" do
+      res = Net::HTTPSuccess.new("", "", "")
+      
+      LyberCore::Connection.should_receive(:put).with(@wf_full_uri + "?create-ds=false", @wf_xml).and_yield(res)
+      Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF', XML, :create_ds => false)
+    end
+    
     
   end
-  
+    
   describe "#update_workflow_status" do
     before(:each) do
       @process_uri = '' << @wf_full_uri << '/reader-approval'

@@ -9,7 +9,7 @@ module Dor
   module WorkflowService
   
   # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
-  # it will replace the old workflow with wf_xml passed to this method.     
+  # it will replace the old workflow with wf_xml passed to this method.  You have the option of creating a datastream or not.     
   # Returns true on success.  Caller must handle any exceptions
   #
   # == Parameters
@@ -17,12 +17,16 @@ module Dor
   # - <b>druid</b> - The id of the object
   # - <b>workflow_name</b> - The name of the workflow you want to create
   # - <b>wf_xml</b> - The xml that represents the workflow
+  # - <B>opts</b> - Options Hash where you can set
+  #       :create_ds - If true, a workflow datastream will be created in Fedora.  Set to false if you do not want a datastream to be created
+  #   If you do not pass in an <b>opts</b> Hash, then :create_ds is set to true by default
   # 
-  def WorkflowService.create_workflow(repo, druid, workflow_name, wf_xml)
+  def WorkflowService.create_workflow(repo, druid, workflow_name, wf_xml, opts = {:create_ds => true})
     return true unless(Dor::CREATE_WORKFLOW)
     
     full_uri = ''
     full_uri << Dor::WF_URI << '/' << repo << '/objects/' << druid << '/workflows/' << workflow_name
+    full_uri << "?create-ds=false" unless(opts[:create_ds])
     
     # On success, an empty body is sent   
     LyberCore::Connection.put(full_uri, wf_xml){|response| true}
