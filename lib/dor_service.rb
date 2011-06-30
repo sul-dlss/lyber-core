@@ -329,17 +329,14 @@ class DorService
       raise "The waiting step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{waiting}"
     end
     uri_string = "#{WORKFLOW_URI}/workflow_queue?waiting=#{waiting}"
-    if(completed.class == Array)
-      raise "The workflow service can only handle queries with no more than 2 completed steps" if completed.size > 2
-      completed.each do |step|
-        raise "A completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{step}" unless(step =~ /.+:.+:.+/)
-        uri_string << "&completed=#{step}"
-      end
-    else
-      raise "Completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>.  Received #{completed}" unless(completed =~ /.+:.+:.+/)
-      uri_string << "&completed=#{completed}"
-    end
     
+    completed_steps = Array(completed)
+    raise "The workflow service can only handle queries with no more than 2 completed steps" if completed_steps.size > 2
+    completed_steps.each do |step|
+      raise "A completed step was not fully qualified or of the form: <repository>:<workflow>:<stepname>. Received #{step}" unless(step =~ /.+:.+:.+/)
+      uri_string << "&completed=#{step}"
+    end
+
     return DorService.execute_workflow_xml_query(uri_string)
   end
   

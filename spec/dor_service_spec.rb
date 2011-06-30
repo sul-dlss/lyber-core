@@ -101,6 +101,22 @@ describe DorService do
     
         DorService.get_objects_for_qualified_workstep([qualified_completed, qualified_completed2], qualified_waiting)
       end
+      
+      it "creates the URI string with only one completed step passed in as a String" do
+        qualified_waiting = "#{repository}:#{workflow}:#{waiting}"
+        qualified_completed = "#{repository}:#{workflow}:#{completed}"
+        repo2 = "sdr"
+      
+        uri_str = "#{WORKFLOW_URI}/workflow_queue?waiting=#{qualified_waiting}&completed=#{qualified_completed}"
+        uri = URI.parse(uri_str)
+      
+        URI.should_receive(:parse).with(/workflow_queue\?waiting=#{qualified_waiting}&completed=#{qualified_completed}/).any_number_of_times.and_return(uri)
+    
+        FakeWeb.register_uri(:get, %r|lyberservices-dev\.stanford\.edu/|,
+          :body => "<objects count=\"1\"><xml>some workflow</xml></objects>")
+    
+        DorService.get_objects_for_qualified_workstep(qualified_completed, qualified_waiting)
+      end
     end
   end
   
