@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   # Runtime dependencies
   s.add_dependency "actionpack"  # Debatable as to whether we need to declare this
   s.add_dependency "active-fedora", ">=1.2.6"
+  s.add_dependency "daemons"
   s.add_dependency "dor-services", ">=0.3.0"
   s.add_dependency "bagit", ">=0.1.0"
   s.add_dependency "nokogiri", "=1.4.3.1"
