@@ -1,10 +1,11 @@
 PATH
   remote: .
   specs:
-    lyber-core (1.1.2)
+    lyber-core (1.2)
       actionpack
       active-fedora (>= 1.2.6)
       bagit (>= 0.1.0)
+      daemons
       dor-services (>= 0.3.0)
       nokogiri (= 1.4.3.1)
       solr-ruby (>= 0.0.8)
