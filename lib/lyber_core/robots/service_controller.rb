@@ -1,5 +1,6 @@
 require 'daemons'
 require 'logger'
+require 'fileutils'
 
 module LyberCore
   module Robots
@@ -17,6 +18,7 @@ module LyberCore
         @working_dir = opts[:working_dir] || ENV['ROBOT_ROOT'] || Dir.pwd
         @pid_dir = opts[:pid_dir] || File.join(@working_dir, 'pid')
         @pid_dir = File.expand_path(@pid_dir)
+        FileUtils.mkdir(@pid_dir) unless(File.directory? @pid_dir)
         @argv = (opts[:argv] || []).dup
         @logger.debug "Initializing application group."
         @logger.debug "Writing pids to #{@pid_dir}"
