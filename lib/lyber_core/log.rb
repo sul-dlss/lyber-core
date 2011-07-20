@@ -108,7 +108,8 @@ module LyberCore
     end
 
     def Log.exception_message(e)
-      msg = e.inspect + "\n" + e.backtrace.join("\n")
+      msg = e.inspect.split($/).join('; ') + "\n"
+      msg << e.backtrace.join("\n") if(e.backtrace)
     end
     
   end
