@@ -43,6 +43,7 @@ Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
 See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>1.2.1</b> Clean up logging of exceptions in LyberCore::Log
 - <b>1.2</b> Robots can now run as daemons via the LyberCore::Robots::ServiceController
 - <b>1.1.2</b> Can pass an array of "command line" arguments to the Robot constructor
 - <b>1.1.1</b> Robot#start now returns LyberCore::Robots::CONTINUE if it did work without error, LyberCore::Robots::SLEEP if it did no work,

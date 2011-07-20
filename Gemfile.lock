@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lyber-core (1.2)
+    lyber-core (1.2.1)
       actionpack
       active-fedora (>= 1.2.6)
       bagit (>= 0.1.0)
