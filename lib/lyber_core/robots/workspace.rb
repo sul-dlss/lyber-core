@@ -2,7 +2,7 @@ require 'fileutils'
 module LyberCore
   module Robots
     class Workspace
-
+      
       attr_reader :workflow_name
       attr_reader :collection_name
       attr_reader :workspace_base
@@ -20,7 +20,7 @@ module LyberCore
       def set_workspace_home
         begin
           if not (workspace_home = ENV['WORKSPACE_HOME'] )
-            workspace_home = WORKSPACE_HOME
+            workspace_home = Dor::Config.robots.workspace
           end
         rescue NameError => e
           LyberCore::Log.fatal("WORKSPACE_HOME is undefined. Do you need to set it in your config file?")

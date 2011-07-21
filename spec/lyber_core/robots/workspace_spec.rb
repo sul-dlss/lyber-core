@@ -15,7 +15,7 @@ describe LyberCore::Robots::Workspace do
   end
   
   it "knows the value of WORKSPACE_HOME" do
-    WORKSPACE_HOME.should eql(File.expand_path(File.dirname(__FILE__) + '/../../fixtures/workspace_home'))
+    Dor::Config.robots.workspace.should eql(File.expand_path(File.dirname(__FILE__) + '/../../fixtures/workspace_home'))
   end
   
   it "has a workflow" do
@@ -24,17 +24,17 @@ describe LyberCore::Robots::Workspace do
   
   it "can set workspace_home" do
     wh = @workspace.set_workspace_home
-    wh.should eql(WORKSPACE_HOME)
+    wh.should eql(Dor::Config.robots.workspace)
   end
   
   it "constructs a workspace_base without a collection name" do
-    @workspace.workspace_base.should eql("#{WORKSPACE_HOME}/#{@workflow_name}")
+    @workspace.workspace_base.should eql("#{Dor::Config.robots.workspace}/#{@workflow_name}")
   end
   
   it "constructs a workspace_base with a collection name" do
     collection_name = "my_collection"
     ws = LyberCore::Robots::Workspace.new(@workflow_name, collection_name)
-    ws.workspace_base.should eql("#{WORKSPACE_HOME}/#{@workflow_name}/#{collection_name}")
+    ws.workspace_base.should eql("#{Dor::Config.robots.workspace}/#{@workflow_name}/#{collection_name}")
   end
   
   it "constructs a filepath for the original GRIN download" do

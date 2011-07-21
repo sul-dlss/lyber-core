@@ -194,7 +194,7 @@ describe LyberCore::Robots::Robot do
     it "can be invoked with a workspace" do
       workflow_name = "googleScannedBookWF"
       robot = TestRobot.new(workflow_name, "google-download", :workspace => true)
-      robot.workspace.workspace_base.should eql("#{WORKSPACE_HOME}/#{workflow_name}")
+      robot.workspace.workspace_base.should eql("#{Dor::Config.robots.workspace}/#{workflow_name}")
     end
     
   end

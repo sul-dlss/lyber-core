@@ -5,6 +5,7 @@
 
 module LyberCore
   module Robots
+    
     CONTINUE = 0
     SLEEP = 1
     HALT = 2
@@ -15,6 +16,7 @@ module LyberCore
     # ===== Usage
     # User defined robots should derive from this class and override the #process_item method
     class Robot
+      
       attr_accessor :workflow_name
       attr_accessor :workflow_step
       
@@ -62,7 +64,7 @@ module LyberCore
       # If a robot is invoked with a :workspace => true option, its @workspace
       # should be set from the value in 
       def set_workspace
-        if(@opts[:workspace])
+        if(Dor::Config.robots.workspace)
           @workspace = LyberCore::Robots::Workspace.new(@workflow_name, @collection_name)
           LyberCore::Log.debug("workspace = #{workspace.inspect}")
         end
