@@ -22,16 +22,9 @@ module LyberCore
   
   def get_druid_list
     begin
-      druid_list = []
-      url_string = "#{WORKFLOW_URI}/workflow_queue?repository=#{@repository}&workflow=#{@workflow}&completed=#{@registration_robot}"
-      LyberCore::Log.info("Fetching druids from #{url_string}")
-      doc = Nokogiri::XML(open(url_string))
-      doc.xpath("//objects/object/@id").each do |id|
-        druid_list << id.to_s
-      end
-      return druid_list
+      Dor::WorkflowService.get_objects_for_workstep @registration_robot, '', @repository, @workflow
     rescue Exception => e
-      raise e, "Couldn't fetch druid list from #{url_string}"
+      raise e, "Couldn't fetch druid list"
     end
   end
     

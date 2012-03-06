@@ -1,4 +1,4 @@
-require 'dor_service'
+# require 'dor_service'
 require "xml_models/identity_metadata/identity_metadata"
 require "xml_models/identity_metadata/dublin_core"
 
@@ -12,8 +12,8 @@ module LyberCore
       attr_reader :work_queue
       # The primary id for the object being processed
       attr_accessor :druid
-      # An object used to hold unmarshalled XML from the identityMetadata datastream
-      attr_accessor :identity_metadata
+      # The object's identifiers
+      attr_reader :identifiers
       # Timings for this workitem's processing
       attr_reader :start_time
       attr_reader :end_time
@@ -23,55 +23,28 @@ module LyberCore
       def initialize(work_queue)
         @work_queue = work_queue
         @start_time = Time.new
-      end
-
-      # Inject an IdentityMetadata object (currently used for unit testing only)
-      def identity_metadata=(identity_metadata)
-        @identity_metadata = identity_metadata
-      end
-    
-      #save the IdentityMetadata object to identityMetadata datastream
-      def identity_metadata_save
-        unless DorService.get_datastream(@druid, 'identityMetadata')
-          DorService.add_datastream(@druid, 'identityMetadata', 'identityMetadata', self.identity_metadata.to_xml)
-        else
-          DorService.update_datastream(@druid, 'identityMetadata', self.identity_metadata.to_xml, content_type='application/xml', versionable = false)
-        end #unless
-      end #identity_metadata_save
-
-      # Return the IdentityMetadata object bound to identityMetadata datastream XML
-      def identity_metadata
-        if (@identity_metadata == nil)
-          if (@druid == nil)
-            @identity_metadata = IdentityMetadata.new
-          else
-            idmd_str = DorService.get_datastream(@druid, 'identityMetadata')
-            @identity_metadata = IdentityMetadata.from_xml(idmd_str)
-          end
-        end
-        return @identity_metadata
+        @identifiers = Hash.new { |h,k| h[k] = [] }
       end
 
       # Return the identifier value for the specified identier name
       def identifier(key)
-        return self.identity_metadata.get_identifier_value(key)
+        return @identifiers[key]
       end
 
       # Add a new name,value pair to the set of identifiers
       def identifier_add(key, value)
-        self.identity_metadata.add_identifier(key, value)
+        @identifiers[key] << value
       end
 
       # Return an array of strings where each entry consists of name:value
       def id_pairs
-        self.identity_metadata.get_id_pairs
+        @identifiers.collect { |k,vs| vs.collect { |v| "#{k}:#{v}" } }.flatten
       end
 
       # Return the druid for the work item if it exists, else the first identifier value
       def item_id
         return @druid if @druid
-        pairs = self.identity_metadata.get_id_pairs
-        return pairs[0] if (pairs.size > 0)
+        return id_pairs[0]
       end
 
       # Record a non-error status for the workstep operation
@@ -103,7 +76,7 @@ module LyberCore
         end
         LyberCore::Log.exception(item_error)
         if (@druid)
-          DorService.update_workflow_error_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, item_error.message)
+          Dor::WorkflowService.update_workflow_error_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, item_error.message)
         end
       end
       

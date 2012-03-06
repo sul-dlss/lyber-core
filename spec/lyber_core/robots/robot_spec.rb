@@ -61,8 +61,8 @@ describe LyberCore::Robots::Robot do
 
   context "logging" do
     
-    require 'dor_service'
-    require 'dlss_service'
+    # require 'dor_service'
+    # require 'dlss_service'
     require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
     
     wf_name = "sdrIngestWF"

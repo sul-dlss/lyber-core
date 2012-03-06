@@ -25,12 +25,12 @@ describe LyberCore::Destroyer do
       @dfo.registration_robot.should eql("register-object")
     end
   
-    it "knows its WORKFLOW_URI" do
-      WORKFLOW_URI.should eql("http://lyberservices-dev.stanford.edu/workflow")
+    it "knows its workflow URL" do
+      Dor::Config.workflow.url.should eql("http://lyberservices-dev.stanford.edu/workflow")
     end
 
     it "can get all the druids for a workflow" do
-      @dfo.druid_list.length.should eql(11)
+      @dfo.druid_list.should =~ %w(druid:kv369fp5449 druid:ch639ch2025 druid:nr812fr7912 druid:qj817sf0765 druid:jx368wq5745 druid:gv079bw9958 druid:sz826gb8674 druid:mg674rv7413 druid:tv840tf8420 druid:dx718jt7616 druid:kw310kp8493)
     end
     
   end

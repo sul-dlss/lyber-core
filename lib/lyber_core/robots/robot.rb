@@ -75,11 +75,11 @@ module LyberCore
       # to run okay before we actually start things.
       def create_workflow
         
-        unless defined?(WORKFLOW_URI)
-          LyberCore::Log.fatal "FATAL: WORKFLOW_URI is not defined"
+        unless Dor::Config.lookup!('workflow.url').present?
+          LyberCore::Log.fatal "FATAL: Dor::Config.workflow.url is not defined"
           LyberCore::Log.fatal "Usually this is a value like 'http://lyberservices-dev.stanford.edu/workflow'"
           LyberCore::Log.fatal "Usually you load it by setting ROBOT_ENVIRONMENT when you invoke your robot"
-          raise "WORKFLOW_URI is not set! Do you need to set your ROBOT_ENVIRONMENT value?"
+          raise "Dor::Config.workflow.url is not set! Do you need to set your ROBOT_ENVIRONMENT value?"
         end
         LyberCore::Log.debug("About to instatiate a Workflow object
             -- LyberCore::Robots::Workflow.new(#{@workflow_name},#{collection_name}")
@@ -191,6 +191,7 @@ module LyberCore
           return LyberCore::Robots::SLEEP
         rescue Exception => e
           LyberCore::Log.exception(e)
+          raise
       end
 
       # Generate a queue of work items based from file, druid, or service

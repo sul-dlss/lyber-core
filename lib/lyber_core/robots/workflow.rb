@@ -10,6 +10,7 @@ module LyberCore
       attr_reader :collection_name
       attr_reader :collection_config_dir
       
+      
 
       # @param [String] workflow_name name of the workflow
       # @param [Hash] options a hash of optional arguments

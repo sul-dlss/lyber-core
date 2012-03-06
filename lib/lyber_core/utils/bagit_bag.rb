@@ -1,7 +1,6 @@
 require 'find'
 require 'fileutils'
 require 'bagit'     # http://github.com/flazz/bagit
-require 'dor_service'
 
 module LyberCore
   module Utils

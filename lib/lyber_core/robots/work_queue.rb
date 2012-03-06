@@ -1,5 +1,5 @@
-require 'dor_service'
-require 'dlss_service'
+# require 'dor_service'
+# require 'dlss_service'
 require 'yaml'
 
 module LyberCore
@@ -89,34 +89,17 @@ module LyberCore
         LyberCore::Log.debug("\n@druids = #{@druids}")
       end
       
-      def fully_qualified_prerequisite?
-        if(@prerequisite.class == Array)
-          fully_qualified = @prerequisite.all? {|p| p =~ /.+:.+:.+/ }
-        else
-          fully_qualified = (@prerequisite =~ /.+:.+:.+/)
-        end
-        fully_qualified
-      end
-
       # Obtain the set of druids to be processed using a database query
       # to obtain the repository objects that are awaiting this step
       def enqueue_workstep_waiting()
         begin
           LyberCore::Log.debug("\nEnqueing workstep waiting...")
-          
-          prerequisites = Array(@prerequisite)
-          qualified = fully_qualified_prerequisite?
-          druid_lists = prerequisites.collect do |prerequisite|
-            object_list_xml = qualified ? 
-              DorService.get_objects_for_qualified_workstep(prerequisite, "#{workflow.repository}:#{workflow.workflow_id}:#{@workflow_step}") :
-              DorService.get_objects_for_workstep(workflow.repository, workflow.workflow_id, prerequisite, @workflow_step)
-            LyberCore::Log.debug("\nobject_list_xml = #{object_list_xml}")
-            druid_list = DlssService.get_all_druids_from_object_list(object_list_xml)
-            LyberCore::Log.debug("\n@druids = #{@druids}")
-            druid_list
-          end
-          @druids = druid_lists.inject(druid_lists[0]) { |collector, list| collector & list }
+          @druids = Dor::WorkflowService.get_objects_for_workstep(@prerequisite, @workflow_step, workflow.repository, workflow.workflow_id)
           @druids = @druids[0..(self.batch_limit-1)]
+          if @druids.length == 0
+            raise LyberCore::Exceptions::EmptyQueue, "empty queue"
+          end
+          LyberCore::Log.debug("\n@druids = #{@druids.inspect}")
         rescue Exception => e
           raise e
         end

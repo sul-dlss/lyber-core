@@ -17,7 +17,6 @@ describe LyberCore::Log do
     invalid_logfile = "/zzxx/fakelog.log"
     with_warnings_suppressed do
       ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../fixtures")
-      WORKFLOW_URI = 'http://lyberservices-dev.stanford.edu/workflow'
     end
 
     it "has a default value for logfile" do

@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "lyber-core"
-  s.version     = "1.3.0"
+  s.version     = "2.0.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene","Michael Klein"]
   s.email       = ["wmene@stanford.edu"]
@@ -17,13 +17,10 @@ Gem::Specification.new do |s|
   
   # Runtime dependencies
   s.add_dependency "actionpack"  # Debatable as to whether we need to declare this
-  s.add_dependency "active-fedora", ">=1.2.6"
   s.add_dependency "daemons"
-  s.add_dependency "dor-services", ">=0.3.0"
+  s.add_dependency "dor-services", ">=3.1.0"
   s.add_dependency "bagit", ">=0.1.0"
-  s.add_dependency "nokogiri", "=1.4.3.1"
-  s.add_dependency "solr-ruby", ">=0.0.8"
-  s.add_dependency "solrizer", ">= 0.3.1"   # There was a bug in 0.3.0, we need at least the version after
+  s.add_dependency "nokogiri", ">=1.4.3.3"
   s.add_dependency "stomp"
   s.add_dependency "systemu", ">= 1.2.0"
   s.add_dependency "validatable"
