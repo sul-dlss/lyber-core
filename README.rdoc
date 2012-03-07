@@ -32,7 +32,7 @@ This will give you:
   LyberCore::Utils::FileUtilities
 
 If you do not want all 3, you can require the individual classes.  I.E. if you only want the bagit utils, then require:
-  require 'lyber_core/utils/bagit_bat'
+  require 'lyber_core/utils/bagit_bag'
 
 The BagitBag class requires the bagit gem
   http://github.com/flazz/bagit
@@ -43,6 +43,7 @@ Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
 See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>2.0</b> Moved what was left of DorService (namely get_objects_for_workstep()) to dor-services' Dor::WorkflowService. Removed IdentityMetadata and DublinCore XML models. Factored out all remaining global constants. Removed unnecessary dependencies.
 - <b>1.3</b> Started to use Dor::Config for workspace configuration
 - <b>1.2.1</b> Clean up logging of exceptions in LyberCore::Log
 - <b>1.2</b> Robots can now run as daemons via the LyberCore::Robots::ServiceController
