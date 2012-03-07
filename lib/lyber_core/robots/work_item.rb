@@ -1,8 +1,3 @@
-# require 'dor_service'
-require "xml_models/identity_metadata/identity_metadata"
-require "xml_models/identity_metadata/dublin_core"
-
-
 # Represents a single object being processed as part of a workflow queue
 module LyberCore
   module Robots
