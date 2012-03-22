@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lyber-core (2.0.2)
+    lyber-core (2.0.3)
       actionpack
       bagit (>= 0.1.0)
       daemons

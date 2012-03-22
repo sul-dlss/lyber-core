@@ -49,15 +49,15 @@ module LyberCore
                     loop { 
                       case robot.start 
                       when LyberCore::Robots::SLEEP
-                        logger.info "SLEEP condition reached in #{process_name}. Sleeping for #{@sleep_time} seconds."
+                        @logger.info "SLEEP condition reached in #{process_name}. Sleeping for #{@sleep_time} seconds."
                         sleep(@sleep_time)
                       when LyberCore::Robots::HALT
-                        logger.error "HALT condition reached in #{process_name}. Shutting down."
+                        @logger.error "HALT condition reached in #{process_name}. Shutting down."
                         break
                       end
                     }
                   ensure
-                    logger.info "Shutting down."
+                    @logger.info "Shutting down."
                   end
                 end
               }
