@@ -40,11 +40,11 @@ module LyberCore
               raw_module_name = workflow.split('WF').first
               module_name = raw_module_name[0].chr.upcase << raw_module_name.slice(1, raw_module_name.size - 1)
               robot_klass = Module.const_get(module_name).const_get(robot_name.split(/-/).collect { |w| w.capitalize }.join(''))
-              log_state = marshal_logger(@logger)
+              @files_to_reopen = ObjectSpace.each_object(File).select { |f| not f.closed? }
               robot_proc = lambda {
                 Dir.chdir(@working_dir) do
                   begin
-                    logger = restore_logger(log_state)
+                    @files_to_reopen.each { |f| f.reopen(f.path).sync = true rescue true }
                     robot = robot_klass.new(:argv => @argv.dup)
                     loop { 
                       case robot.start 
@@ -157,18 +157,6 @@ module LyberCore
           self.find_applications_by_pidfiles(@pid_dir)
         }
       end
-      
-      def marshal_logger(l)
-        log_device = l.instance_variable_get('@logdev')
-        { :dev => log_device, :file => log_device.filename, :level => l.level }
-      end
-      
-      def restore_logger(params)
-        result = Logger.new(params[:file] || params[:log_device])
-        result.level = params[:level]
-        return result
-      end
-  
     end
   end
 end
