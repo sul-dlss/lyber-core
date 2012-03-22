@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "lyber-core"
-  s.version     = "2.0.3"
+  s.version     = "2.0.4"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene","Michael Klein"]
   s.email       = ["wmene@stanford.edu"]
