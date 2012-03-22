@@ -5,7 +5,7 @@ PATH
       actionpack
       bagit (>= 0.1.0)
       daemons
-      dor-services (~> 3.0)
+      dor-services (~> 3.2)
       nokogiri (~> 1.5.0)
       stomp
       systemu (>= 1.2.0)

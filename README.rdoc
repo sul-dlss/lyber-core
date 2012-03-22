@@ -43,6 +43,7 @@ Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
 See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>2.0.3</b> Reopen all open files after forking
 - <b>2.0.2</b> Ease up dor-services verson restriction
 - <b>2.0.1</b> Dependency update
 - <b>2.0</b> Moved what was left of DorService (namely get_objects_for_workstep()) to dor-services' Dor::WorkflowService. Removed IdentityMetadata and DublinCore XML models. Factored out all remaining global constants. Removed unnecessary dependencies.
