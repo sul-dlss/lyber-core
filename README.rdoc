@@ -43,6 +43,7 @@ Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
 See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>2.1.0</b> Require dor-services-gem >= 3.4.2 so that robots can start
 - <b>2.0.4</b> Fix instance variable typo in 2.0.3
 - <b>2.0.3</b> Reopen all open files after forking - DO NOT USE
 - <b>2.0.2</b> Ease up dor-services verson restriction
