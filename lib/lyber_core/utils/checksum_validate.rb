@@ -1,5 +1,5 @@
 require 'nokogiri'
-require 'active_support'
+require 'active_support/core_ext'
 
 module LyberCore
   module Utils
