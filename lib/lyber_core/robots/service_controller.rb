@@ -22,6 +22,7 @@ module LyberCore
         @argv = (opts[:argv] || []).dup
         @logger.debug "Initializing application group."
         @logger.debug "Writing pids to #{@pid_dir}"
+        @max_robot_retries = opts[:max_robot_retries] || 5
         super('robot_service_controller', :dir_mode => :normal, :dir => @pid_dir, :multiple => true, :backtrace => true)
       end
 
@@ -41,26 +42,7 @@ module LyberCore
               module_name = raw_module_name[0].chr.upcase << raw_module_name.slice(1, raw_module_name.size - 1)
               robot_klass = Module.const_get(module_name).const_get(robot_name.split(/-/).collect { |w| w.capitalize }.join(''))
               @files_to_reopen = ObjectSpace.each_object(File).select { |f| not f.closed? }
-              robot_proc = lambda {
-                Dir.chdir(@working_dir) do
-                  begin
-                    @files_to_reopen.each { |f| f.reopen(f.path).sync = true rescue true }
-                    robot = robot_klass.new(:argv => @argv.dup)
-                    loop { 
-                      case robot.start 
-                      when LyberCore::Robots::SLEEP
-                        @logger.info "SLEEP condition reached in #{process_name}. Sleeping for #{@sleep_time} seconds."
-                        sleep(@sleep_time)
-                      when LyberCore::Robots::HALT
-                        @logger.error "HALT condition reached in #{process_name}. Shutting down."
-                        break
-                      end
-                    }
-                  ensure
-                    @logger.info "Shutting down."
-                  end
-                end
-              }
+              robot_proc = lambda { robot_proc_loop(robot_klass, process_name) }
               new_app = self.new_application({:mode => :proc, :proc => robot_proc, :dir_mode => :normal, :log_output => true, :log_dir => @pid_dir})
               new_app.start
               new_app
@@ -77,6 +59,50 @@ module LyberCore
           @logger.warn "Robot #{process_name} [#{app.pid.pid}] is already running"
         end
         return result
+      end
+      
+      # Starts the robot in a loop.  It will sleep when the robot finishies normally, or break out of the loop if the robot halts from too many errors.
+      # If starting the robot throws an exception, it will sleep and try again @sleep_time seconds later.  
+      # If it fails to start after @max_robot_retries attempts, it will shut down completely.
+      def robot_proc_loop(robot_klass, process_name)
+        Dir.chdir(@working_dir) do
+          begin
+            @files_to_reopen.each { |f| f.reopen(f.path).sync = true rescue true }
+            robot = robot_klass.new(:argv => @argv.dup)
+            @attempts = 1
+            loop {
+              begin 
+                case robot.start 
+                when LyberCore::Robots::SLEEP
+                  @logger.info "SLEEP condition reached in #{process_name}. Sleeping for #{@sleep_time} seconds."
+                  @attempts = 1
+                  sleep(@sleep_time)
+                when LyberCore::Robots::HALT
+                  @logger.error "HALT condition reached in #{process_name}. Shutting down."
+                  break
+                end
+              rescue SystemExit => se
+                 @logger.info("SystemExit received.")
+                 raise se
+              rescue Exception => e
+                # Problem starting the robot, usually workflow related
+                @logger.warn "Exception thrown trying to start #{process_name}:\n#{e.inspect}\n#{e.backtrace.join("\n")}"
+                
+                if(@attempts < @max_robot_retries)
+                  @attempts += 1
+                  @logger.warn "Will try #{process_name} start attempt# #{@attempts} in #{@sleep_time} seconds"
+                  sleep(@sleep_time)
+                else
+                  @logger.error "!!!!!!!! #{@attempts} failed attempts trying to start #{process_name} !!!!!!!!!!!!"
+                  break
+                end
+              end
+            }
+          ensure
+            @logger.info "Shutting down."
+          end
+        end
+        
       end
 
       def stop(workflow, robot_name)
