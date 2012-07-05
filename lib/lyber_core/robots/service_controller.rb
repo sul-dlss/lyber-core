@@ -64,6 +64,8 @@ module LyberCore
       # Starts the robot in a loop.  It will sleep when the robot finishies normally, or break out of the loop if the robot halts from too many errors.
       # If starting the robot throws an exception, it will sleep and try again @sleep_time seconds later.  
       # If it fails to start after @max_robot_retries attempts, it will shut down completely.
+      # @param [String] robot_klass class of the robot to be instantiated
+      # @param [String] process_name name of the robot process, usually workflow_name:robot_name
       def robot_proc_loop(robot_klass, process_name)
         Dir.chdir(@working_dir) do
           begin
