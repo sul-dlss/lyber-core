@@ -284,6 +284,19 @@ describe LyberCore::Robots::Robot do
   
     context "messaging" do
 
+      before :all do
+        FakeWeb.allow_net_connect = false
+      end
+      
+      before :each do
+        FakeWeb.register_uri(:put, %r|lyberservices-dev\.stanford\.edu/|, :body => "<objects count=\"0\" />")
+      end
+    
+      after :all do
+        FakeWeb.clean_registry
+        FakeWeb.allow_net_connect = true
+      end
+    
       it "should post druids to the queue in master mode" do
         mock_stomp = mock('stomp')
         mock_stomp.should_receive(:begin).twice
