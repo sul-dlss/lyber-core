@@ -49,7 +49,7 @@ module LyberCore
         @elapsed_time = @end_time - @start_time
         LyberCore::Log.info("#{item_id} #{status} in #{@elapsed_time} seconds")
         if (@druid)
-          Dor::WorkflowService.update_workflow_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, status, @elapsed_time)
+          Dor::WorkflowService.update_workflow_status(@work_queue.workflow.repository, @druid, @work_queue.workflow.workflow_id, @work_queue.workflow_step, status, :elapsed => @elapsed_time)
         end
       end
 

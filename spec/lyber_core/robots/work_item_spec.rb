@@ -10,15 +10,18 @@ describe LyberCore::Robots::WorkItem do
 
   before(:each) do
     @work_item = LyberCore::Robots::WorkItem.new(@work_queue)
+    
+    @mock_resource = mock('RestClient::Resource')
+    @mock_resource.stub!(:[]).and_return(@mock_resource)
+    RestClient::Resource.stub!(:new).and_return(@mock_resource)
   end
   
   describe "#set_status" do
 
     it "should set a named status when told to" do
-      pending # The @work_queue mock needs to be fleshed out more for this to work
-#      @work_item.druid = "changeme:boosh"
-#      DorService.should_receive(:update_workflow_status).with(anything(), "changeme:boosh", anything(), anything(), 'testing', anything()).and_return(true)
-#      @work_item.set_status('testing')
+      @work_item.druid = "changeme:boosh"
+       @mock_resource.should_receive(:put)
+       @work_item.set_success
     end
   end #set_status
   
@@ -26,10 +29,9 @@ describe LyberCore::Robots::WorkItem do
   describe "#set_success" do
 
     it "should set the success when told to" do    
-      pending # The @work_queue mock needs to be fleshed out more for this to work
-#      @work_item.druid = "changeme:boosh"
-#      DorService.should_receive(:update_workflow_status).with(anything(), "changeme:boosh", anything(), anything(), 'completed', anything()).and_return(true)
-#      @work_item.set_success
+     @work_item.druid = "changeme:boosh"
+     @mock_resource.should_receive(:put)
+     @work_item.set_success
     end 
 
   end #set_success
@@ -44,7 +46,7 @@ describe LyberCore::Robots::WorkItem do
       @workflow.should_receive(:repository).and_return("dor")
       @workflow.should_receive(:workflow_id).and_return("googleScannedBookWF")
       @work_queue.stub(:workflow).and_return(@workflow)
-      Dor::WorkflowService.should_receive(:update_workflow_error_status).and_return(true)
+      @mock_resource.should_receive(:put)
       @work_item.druid = "changeme:boosh"
     end
 
