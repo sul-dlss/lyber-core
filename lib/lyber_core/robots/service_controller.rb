@@ -6,7 +6,7 @@ module LyberCore
   module Robots
     class ServiceController < Daemons::ApplicationGroup
       attr_reader :logger
-      
+
       def initialize(opts = {})
         if opts[:logger]
           @logger = opts[:logger]
@@ -14,7 +14,7 @@ module LyberCore
           @logger = Logger.new($stdout)
           @logger.level = opts[:log_level] || Logger::WARN
         end
-        @sleep_time = opts[:sleep_time] || (15*60)
+        @sleep_time = opts[:sleep_time] || (60)  # 1 Minute default sleep time
         @working_dir = opts[:working_dir] || ENV['ROBOT_ROOT'] || Dir.pwd
         @pid_dir = opts[:pid_dir] || File.join(@working_dir, 'pid')
         @pid_dir = File.expand_path(@pid_dir)
@@ -29,7 +29,7 @@ module LyberCore
       def qname(workflow, robot_name)
         [workflow,robot_name].join(':')
       end
-      
+
       def start(workflow, robot_name)
         result = false
         app = find_app(workflow, robot_name).first
@@ -48,7 +48,7 @@ module LyberCore
               new_app
             end
           end
-          
+
           if app.running?
             @logger.info "#{process_name} [#{app.pid.pid}] started."
             result = true
@@ -60,9 +60,9 @@ module LyberCore
         end
         return result
       end
-      
+
       # Starts the robot in a loop.  It will sleep when the robot finishies normally, or break out of the loop if the robot halts from too many errors.
-      # If starting the robot throws an exception, it will sleep and try again @sleep_time seconds later.  
+      # If starting the robot throws an exception, it will sleep and try again @sleep_time seconds later.
       # If it fails to start after @max_robot_retries attempts, it will shut down completely.
       # @param [String] robot_klass class of the robot to be instantiated
       # @param [String] process_name name of the robot process, usually workflow_name:robot_name
@@ -73,8 +73,8 @@ module LyberCore
             robot = robot_klass.new(:argv => @argv.dup)
             @attempts = 1
             loop {
-              begin 
-                case robot.start 
+              begin
+                case robot.start
                 when LyberCore::Robots::SLEEP
                   @logger.info "SLEEP condition reached in #{process_name}. Sleeping for #{@sleep_time} seconds."
                   @attempts = 1
@@ -89,7 +89,7 @@ module LyberCore
               rescue Exception => e
                 # Problem starting the robot, usually workflow related
                 @logger.warn "Exception thrown trying to start #{process_name}:\n#{e.inspect}\n#{e.backtrace.join("\n")}"
-                
+
                 if(@attempts < @max_robot_retries)
                   @attempts += 1
                   @logger.warn "Will try #{process_name} start attempt# #{@attempts} in #{@sleep_time} seconds"
@@ -104,7 +104,7 @@ module LyberCore
             @logger.info "Shutting down."
           end
         end
-        
+
       end
 
       def stop(workflow, robot_name)
@@ -132,14 +132,14 @@ module LyberCore
         end
         result
       end
-  
+
       def status(workflow, robot_name)
         apps = find_app(workflow, robot_name)
         apps.collect do |app|
           { :pid => app.pid.pid, :status => app.running? ? :running : :stopped }
         end
       end
-  
+
       def status_message(workflow, robot_name)
         app_status = status(workflow, robot_name)
         process_name = qname(workflow,robot_name)
@@ -156,7 +156,7 @@ module LyberCore
           end
         end
       end
-  
+
 #      private
       def with_app_name(name)
         old_name, @app_name = @app_name, name
@@ -166,7 +166,7 @@ module LyberCore
           @app_name = old_name
         end
       end
-      
+
       def capture_stdout
         old_io = $stdout
         begin
@@ -179,7 +179,7 @@ module LyberCore
           $stdout = old_io
         end
       end
-  
+
       def find_app(workflow, robot_name)
         with_app_name(qname(workflow,robot_name)) {
           self.find_applications_by_pidfiles(@pid_dir)

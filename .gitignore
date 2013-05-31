@@ -24,3 +24,7 @@ spec/fixtures/log
 
 ## PROJECT::SPECIFIC
 .yardoc
+.rvmrc
+.ruby-version
+.ruby-gemset
+
