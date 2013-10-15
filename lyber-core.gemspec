@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene","Michael Klein"]
   s.email       = ["wmene@stanford.edu"]
-  s.homepage    = "http://github.com/wmene/lyber-core"
+  s.homepage    = "http://github.com/sul-dlss/lyber-core"
   s.summary     = "Core services used by the SULAIR Digital Library"
   s.description = "Contains classes to make http connections with a client-cert, use Jhove, and call Suri\n" +
                     "Also contains core classes to build robots"
