@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency "daemons"
   s.add_dependency "dor-services", ">=3.9.0"
   s.add_dependency "bagit", ">=0.1.0"
-  s.add_dependency "nokogiri", "~>1.5.0"
+  s.add_dependency "nokogiri"
   s.add_dependency "stomp"
   s.add_dependency "systemu", ">= 1.2.0"
   s.add_dependency "validatable"
