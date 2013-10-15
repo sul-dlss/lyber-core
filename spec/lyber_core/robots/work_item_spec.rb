@@ -1,19 +1,15 @@
-require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
-require 'lyber_core'
+require 'spec_helper'
 
 
 describe LyberCore::Robots::WorkItem do
 
-  before(:all) do 
-    @work_queue = mock("WorkQueue", :null_object => true)
-  end #before(:all)
-
   before(:each) do
+    @work_queue = double("WorkQueue").as_null_object
     @work_item = LyberCore::Robots::WorkItem.new(@work_queue)
     
-    @mock_resource = mock('RestClient::Resource')
-    @mock_resource.stub!(:[]).and_return(@mock_resource)
-    RestClient::Resource.stub!(:new).and_return(@mock_resource)
+    @mock_resource = double('RestClient::Resource')
+    @mock_resource.stub(:[]).and_return(@mock_resource)
+    RestClient::Resource.stub(:new).and_return(@mock_resource)
   end
   
   describe "#set_status" do
@@ -42,7 +38,7 @@ describe LyberCore::Robots::WorkItem do
       @work_queue.should_receive(:error_count).and_return(0)
       @work_queue.should_receive(:error_count=)
       @work_queue.should_receive(:workflow_step).and_return("fake-workflow-step")
-      @workflow = mock("workflow")
+      @workflow = double("workflow")
       @workflow.should_receive(:repository).and_return("dor")
       @workflow.should_receive(:workflow_id).and_return("googleScannedBookWF")
       @work_queue.stub(:workflow).and_return(@workflow)

@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
+require 'spec_helper'
 
 describe LyberCore::Utils::FileUtilities do
 
@@ -63,7 +63,7 @@ describe LyberCore::Utils::FileUtilities do
       targz = "targzfile"
       destination_dir = "destdir"
       unpack_cmd = "tar -xzf mydir/targzfile"
-      mock_array = mock("array")
+      mock_array = double("array")
       dir_save = Dir.pwd
       FileUtils.should_receive(:mkdir_p).with(destination_dir)
       Dir.should_receive(:chdir).with(destination_dir)

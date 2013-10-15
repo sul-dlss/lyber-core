@@ -1,15 +1,14 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'spec'
-require 'spec/autorun'
-
 require 'rubygems'
+
+require 'rspec'
+
 require 'lyber_core'
 require 'lyber_core/utils'
-require 'ruby-debug'
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   
 end
 
@@ -34,13 +33,5 @@ module Kernel
   end
 end
 
-def class_exists?(class_name)
-  klass = Module.const_get(class_name)
-  return klass.is_a?(Class)
-rescue NameError
-  return false
-end
-
 
 Rails = Object.new unless defined? Rails
-# Rails = Object.new unless(class_exists? 'Rails')

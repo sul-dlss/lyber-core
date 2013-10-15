@@ -1,5 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
-require 'lyber_core'
+require 'spec_helper'
 require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")
 require 'fakeweb'
 
@@ -24,7 +23,7 @@ describe LyberCore::Robots::WorkQueue do
    end
    
    it "loads a config file" do
-     workflow = stub("workflow")
+     workflow = double("workflow")
      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
      workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
      wq = LyberCore::Robots::WorkQueue.new(workflow, "descriptive-metadata")
@@ -32,14 +31,14 @@ describe LyberCore::Robots::WorkQueue do
    end
    
    it "raises a helpful error if it can't find the config file" do
-     workflow = stub("workflow")
+     workflow = double("workflow")
      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixddddtures/config/workflowz/" + workflow_name)
      workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
      lambda { LyberCore::Robots::WorkQueue.new(workflow, "descriptive-metadata") }.should raise_exception(/Can't open process-config file/)        
    end
    
    it "knows how many items to process in a batch" do
-     workflow = stub("workflow")
+     workflow = double("workflow")
      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
      workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
      wq = LyberCore::Robots::WorkQueue.new(workflow, "descriptive-metadata")
@@ -47,7 +46,7 @@ describe LyberCore::Robots::WorkQueue do
    end
    
    it "handles steps with two prequisites" do
-      workflow = stub("workflow")
+      workflow = double("workflow")
       workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
       workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
       wq = LyberCore::Robots::WorkQueue.new(workflow, "cleanup")
@@ -55,7 +54,7 @@ describe LyberCore::Robots::WorkQueue do
     end
    
    it "handles fully qualified workflow step names in the config file" do
-     workflow = stub("workflow")
+     workflow = double("workflow")
      workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
      workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
      wq = LyberCore::Robots::WorkQueue.new(workflow, "cleanup-qualified")
@@ -68,7 +67,7 @@ describe LyberCore::Robots::WorkQueue do
     
     context "normal processing" do
       before(:each) do
-        @workflow = stub("workflow")
+        @workflow = double("workflow")
         @workflow.stub(:repository).and_return("dor")
         @workflow.stub(:workflow_id).and_return("googleScannedBookWF")
         @workflow.stub(:completed).and_return("register-object")
@@ -102,7 +101,7 @@ describe LyberCore::Robots::WorkQueue do
         ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/../../fixtures") unless defined? ROBOT_ROOT
         require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
         
-        @workflow = stub("workflow")
+        @workflow = double("workflow")
         workflow_config_dir = File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/workflows/" + workflow_name)
         @workflow.stub(:workflow_config_dir).and_return(workflow_config_dir)
         @workflow.stub(:repository).and_return("dor")

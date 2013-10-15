@@ -1,5 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
-require 'lyber_core'
+require 'spec_helper'
 require 'fakeweb'
 require File.expand_path(File.dirname(__FILE__) + "/test_robot.rb")  
 
@@ -129,16 +128,16 @@ describe LyberCore::Robots::Robot do
     end
     
     it "can accept a single druid for processing" do
-      mock_workflow = mock('workflow')
-      mock_queue = mock('queue')
+      mock_workflow = double('workflow')
+      mock_queue = double('queue')
       ARGV << "--druid=sdrtwo:blah"
       robot = TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
       robot.get_druid_list[0].should eql("sdrtwo:blah")
     end
     
     it "can accept a file of druids for processing" do
-      mock_workflow = mock('workflow')
-      mock_queue = mock('queue')
+      mock_workflow = double('workflow')
+      mock_queue = double('queue')
       ARGV << "--file=fakefile"
       robot = TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
       robot.options.file.should eql("fakefile")
@@ -147,8 +146,8 @@ describe LyberCore::Robots::Robot do
     # Cucumber passes "--format pretty" as an argument, which can make the robots fail unless
     # we check for it. 
     it "shouldn't fail when run by cucumber" do
-      mock_workflow = mock('workflow')
-      mock_queue = mock('queue')
+      mock_workflow = double('workflow')
+      mock_queue = double('queue')
       ARGV << "--format pretty"
       lambda { TestRobot.new(@workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain') }.should_not raise_exception()
     end
@@ -207,14 +206,14 @@ describe LyberCore::Robots::Robot do
 
         require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
 
-        mock_workflow = mock('workflow')
-        mock_queue = mock('queue')
+        mock_workflow = double('workflow')
+        mock_queue = double('queue')
         LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
-        mock_workflow.stub!(:repository).and_return('dor')
+        mock_workflow.stub(:repository).and_return('dor')
         robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
         
         mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
-        ARGV.stub!(:size).and_return(0)
+        ARGV.stub(:size).and_return(0)
         mock_queue.should_receive(:enqueue_workstep_waiting)
         robot.should_receive(:process_queue)
         mock_queue.should_receive(:max_errors_reached?).and_return(false)
@@ -225,14 +224,14 @@ describe LyberCore::Robots::Robot do
 
         require File.expand_path(File.dirname(__FILE__) + "/../../fixtures/config/environments/test.rb")  
 
-        mock_workflow = mock('workflow')
-        mock_queue = mock('queue')
+        mock_workflow = double('workflow')
+        mock_queue = double('queue')
         LyberCore::Robots::Workflow.should_receive(:new).and_return(mock_workflow)
-        mock_workflow.stub!(:repository).and_return('dor')
+        mock_workflow.stub(:repository).and_return('dor')
         robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
         
         mock_workflow.should_receive(:queue).with('descriptive-metadata').and_return(mock_queue)
-        ARGV.stub!(:size).and_return(0)
+        ARGV.stub(:size).and_return(0)
         mock_queue.should_receive(:enqueue_workstep_waiting)
         robot.should_receive(:process_queue)
         mock_queue.should_receive(:max_errors_reached?).and_return(true)
@@ -241,10 +240,10 @@ describe LyberCore::Robots::Robot do
     
       it "processes a queue of objects" do
     
-        mock_queue = mock('queue')
-        mock_item = mock('item')
-        mock_mdutils = mock('mdutils')
-        mock_dorservice = mock('dorservice')
+        mock_queue = double('queue')
+        mock_item = double('item')
+        mock_mdutils = double('mdutils')
+        mock_dorservice = double('dorservice')
         robot = TestRobot.new(workflow_name, 'descriptive-metadata', :collection_name => 'publicDomain')
     
         #Return the mock item the first time, return nil the second time to stop the while loop
@@ -263,14 +262,14 @@ describe LyberCore::Robots::Robot do
       it "keeps going even if it encounters an error in one of the objects" do
         druid = 'druid:xy123'
         my_error = Errno::EACCES.new("my error")
-        mock_item_bad = mock('baditem')
+        mock_item_bad = double('baditem')
         #mock_item_bad.should_receive(:druid).and_return(druid)
         mock_item_bad.should_receive(:set_error).with(my_error).and_return(true)
 
-        mock_item_good = mock('gooditem')
+        mock_item_good = double('gooditem')
         mock_item_good.should_receive(:set_success).and_return(true)
 
-        mock_queue = mock('queue')
+        mock_queue = double('queue')
         mock_queue.should_receive(:next_item).and_return(mock_item_bad, mock_item_good, nil)
         # mock_queue.should_receive(:print_stats)
 
@@ -298,24 +297,24 @@ describe LyberCore::Robots::Robot do
       end
     
       it "should post druids to the queue in master mode" do
-        mock_stomp = mock('stomp')
+        mock_stomp = double('stomp')
         mock_stomp.should_receive(:begin).twice
         mock_stomp.should_receive(:publish).twice.and_return(true)
         mock_stomp.should_receive(:commit).twice
         
-        mock_queue = mock('queue')
+        mock_queue = double('queue')
 
-        mock_item = mock('item')
-        mock_item.should_receive(:druid).any_number_of_times.and_return("foo:bar")
+        mock_item = double('item')
+        mock_item.stub(:druid => "foo:bar")
         mock_item.should_receive(:set_status).with('queued').and_return(true)
 
-        mock_item2 = mock('item2')
-        mock_item2.should_receive(:druid).any_number_of_times.and_return("foo:baz")
+        mock_item2 = double('item2')
+        mock_item2.stub(:druid => "foo:baz")
         mock_item2.should_receive(:set_status).with('queued').and_return(true)
         
         mock_queue.should_receive(:next_item).and_return(mock_item, mock_item2, nil)
         robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
-        robot.stub!(:establish_queue).and_return(mock_queue)
+        robot.stub(:establish_queue).and_return(mock_queue)
         robot.start_master(mock_stomp)
       end
       
@@ -326,35 +325,35 @@ describe LyberCore::Robots::Robot do
           sleep(MSG_BROKER_TIMEOUT+2)
         end
 
-        mock_item = mock('item')
-        mock_item.should_receive(:druid).any_number_of_times.and_return("foo:bar")
+        mock_item = double('item')
+        mock_item.stub(:druid => "foo:bar")
 
-        mock_queue = mock('queue')
+        mock_queue = double('queue')
         mock_queue.should_receive(:next_item).and_return(mock_item)
         
         robot = TestRobot.new('googleScannedBookWF', 'descriptive-metadata')
-        robot.stub!(:establish_queue).and_return(mock_queue)
+        robot.stub(:establish_queue).and_return(mock_queue)
         expect { robot.start_master(mock_stomp) }.to raise_error(LyberCore::Exceptions::FatalError)
       end
       
       it "should read druids from the queue and process them in slave mode and time out" do
-        mock_message1 = mock('message1')
-        mock_message1.should_receive(:command).any_number_of_times.and_return('MESSAGE')
+        mock_message1 = double('message1')
+        mock_message1.stub(:command => 'MESSAGE')
         mock_message1.should_receive(:headers).and_return({'message-id'=>'message1'})
-        mock_message1.should_receive(:body).any_number_of_times.and_return('foo:bar')
+        mock_message1.stub(:body => 'foo:bar')
 
-        mock_message2 = mock('message2')
-        mock_message2.should_receive(:command).any_number_of_times.and_return('MESSAGE')
+        mock_message2 = double('message2')
+        mock_message2.stub(:command => 'MESSAGE')
         mock_message2.should_receive(:headers).and_return({'message-id'=>'message2'})
-        mock_message2.should_receive(:body).any_number_of_times.and_return('foo:baz')
+        mock_message2.stub(:body => 'foo:baz')
 
         # Message 3 should never be received by the client unless the timeout fails
         # We set it up anyway so that a timeout failure is reported as a timeout failure
         # and not as a NoMethodError
-        mock_message3 = mock('message3')
-        mock_message3.should_receive(:command).any_number_of_times.and_return('MESSAGE')
+        mock_message3 = double('message3')
+        mock_message3.stub(:command => 'MESSAGE')
         mock_message3.should_receive(:headers).at_most(1).times.and_return({'message-id'=>'message3'})
-        mock_message3.should_receive(:body).any_number_of_times.and_return('foo:quux')
+        mock_message3.stub(:body => 'foo:quux')
 
         mock_stomp = double('stomp')
         messages = [[0, mock_message1], [0, mock_message2], [MSG_BROKER_TIMEOUT+2, mock_message3]]
