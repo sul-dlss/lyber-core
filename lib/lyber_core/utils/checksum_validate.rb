@@ -16,7 +16,7 @@ module LyberCore
 
       def self.md5_hash_from_md5sum(md5sum)
         checksum_hash = {}
-        md5sum.each do |line|
+        md5sum.each_line do |line|
           line.chomp!
           digest,filename = line.split(/[ *]{2}/)
           checksum_hash[filename] = digest.downcase
