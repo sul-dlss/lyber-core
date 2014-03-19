@@ -1,15 +1,15 @@
 
 module LyberCore
-  
+
   class LyberCore::Log
     require 'logger'
-        
+
     # Default values
-    DEFAULT_LOGFILE = "/tmp/lybercore_log.log"
+    DEFAULT_LOGFILE = "/tmp/lybercore_log.log" # TODO change to STDOUT?
     DEFAULT_LOG_LEVEL = Logger::INFO
-    DEFAULT_FORMATTER = proc{|s,t,p,m|"%5s [%s] (%s) %s :: %s\n" % [s, 
+    DEFAULT_FORMATTER = proc{|s,t,p,m|"%5s [%s] (%s) %s :: %s\n" % [s,
                        t.strftime("%Y-%m-%d %H:%M:%S"), $$, p, m]}
-        
+
     # Initial state
     @@logfile = DEFAULT_LOGFILE
     @@log ||= Logger.new(@@logfile)
@@ -17,25 +17,25 @@ module LyberCore
     # $stderr.reopen(@@logfile)
     @@log.level = DEFAULT_LOG_LEVEL
     @@log.formatter = DEFAULT_FORMATTER
-    
+
     # Restore LyberCore::Log to its default state
     def Log.restore_defaults
       @@log.level = DEFAULT_LOG_LEVEL
       Log.set_logfile(DEFAULT_LOGFILE)
       @@log.formatter = DEFAULT_FORMATTER
     end
-      
+
     # The current location of the logfile
     def Log.logfile
       return @@logfile
     end
-    
 
-    
-    # Accepts a filename as an argument, and checks to see whether that file can be 
+
+
+    # Accepts a filename as an argument, and checks to see whether that file can be
     # opened for writing. If it can be opened, it closes the existing Logger object
     # and re-opens it with the new logfile location. It raises an exception if it
-    # cannot write to the specified logfile. 
+    # cannot write to the specified logfile.
     def Log.set_logfile(new_logfile)
       begin
         current_log_level = @@log.level
@@ -47,12 +47,12 @@ module LyberCore
       rescue Exception => e
         raise e, "Couldn't initialize logfile #{new_logfile} because\n#{e.message}: #{e.backtrace.join(%{\n})}}"
       end
-      
+
     end
-    
-    # Set the log level. 
-    # See http://ruby-doc.org/core/classes/Logger.html for more info. 
-    # Possible values are: 
+
+    # Set the log level.
+    # See http://ruby-doc.org/core/classes/Logger.html for more info.
+    # Possible values are:
     #   Logger::FATAL (4):  an unhandleable error that results in a program crash
     #   Logger::ERROR (3):  a handleable error condition
     #   Logger::WARN (2): a warning
@@ -72,28 +72,28 @@ module LyberCore
         raise e, "Couldn't set log level because\n#{e.message}: #{e.backtrace.join(%{\n})}"
       end
     end
-    
+
     # Return the current log level
     def Log.level
       @@log.level
     end
-    
+
     def Log.fatal(msg)
       @@log.add(Logger::FATAL) { msg }
     end
-    
+
     def Log.error(msg)
       @@log.add(Logger::ERROR) { msg }
     end
-    
+
     def Log.warn(msg)
       @@log.add(Logger::WARN) { msg }
     end
-    
+
     def Log.info(msg)
       @@log.add(Logger::INFO) { msg }
     end
-    
+
     def Log.debug(msg)
       @@log.add(Logger::DEBUG) { msg }
     end
@@ -111,8 +111,8 @@ module LyberCore
       msg = e.inspect.split($/).join('; ') + "\n"
       msg << e.backtrace.join("\n") if(e.backtrace)
     end
-    
+
   end
-  
-  
+
+
 end

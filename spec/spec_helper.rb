@@ -7,9 +7,10 @@ require 'rspec'
 
 require 'lyber_core'
 require 'lyber_core/utils'
+require 'pry'
 
 RSpec.configure do |config|
-  
+
 end
 
 module Kernel
@@ -22,7 +23,7 @@ module Kernel
     end
     raise LoadError, "could not load any of the following -- #{args.join(', ')}"
   end
-  
+
   # Suppresses warnings within a given block.
   def with_warnings_suppressed
     saved_verbosity = $-v
@@ -35,3 +36,15 @@ end
 
 
 Rails = Object.new unless defined? Rails
+
+# capture stdout so that we can assert expectations on it
+require 'stringio'
+
+def capture_stdout(&blk)
+  old = $stdout
+  $stdout = fake = StringIO.new
+  blk.call
+  fake.string
+ensure
+  $stdout = old
+end

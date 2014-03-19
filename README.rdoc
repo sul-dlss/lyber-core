@@ -1,83 +1,17 @@
 = lyber_core
 
-Require the following:
-  require 'lyber_core'
-
-Constants that need to be defined with sample values:
-
-If using WorkflowService:
-  Dor::WF_URI = 'http://lyberservices-dev.stanford.edu/workflow'
-  Dor::CREATE_WORKFLOW = true
-
-If using SuriService:
-  Dor::MINT_SURI_IDS = true
-  Dor::SURI_URL = 'http://some.suri.host:8080'
-  Dor::ID_NAMESPACE = 'druid'
-  Dor::SURI_USER = 'suriuser'
-  Dor::SURI_PASSWORD = 'suripword'
-
-If connecting to https servers:
-  LyberCore::CERT_FILE = File.dirname(__FILE__) + '/../certs/dummy.crt'
-  LyberCore::KEY_FILE = File.dirname(__FILE__) + '/../certs/dummy.key'
-  LyberCore::KEY_PASS = 'dummy'
-
-== lyber_core/utils
-
-If using Utilities, require the following:
-  require 'lyber_core/utils'
-
-This will give you:
-  LyberCore::Utils::BagitBag
-  LyberCore::Utils::ChecksumValidate
-  LyberCore::Utils::FileUtilities
-
-If you do not want all 3, you can require the individual classes.  I.E. if you only want the bagit utils, then require:
-  require 'lyber_core/utils/bagit_bag'
-
-The BagitBag class requires the bagit gem
-  http://github.com/flazz/bagit
-
-== Build and release procedure
-Modify the version number in lyber-core.gemspec, then push your commits to AFS.  DO NOT TAG!
-Run: 'rake dlss_release' to tag, build, and publish the lyber-core gem
-See the Rakefile and the LyberCore::DlssRelease task in lib/lyber_core/rake/dlss_release.rb for more details
 
 == Releases
+- <b>3.0</b> Robot overhaul.  Use resque for job management and bluepill for process management
 - <b>2.1.1</b> Relax dor-services-gem version requirement
-- <b>2.1.0</b> Require dor-services-gem >= 3.4.2 so that robots can start
-- <b>2.0.4</b> Fix instance variable typo in 2.0.3
-- <b>2.0.3</b> Reopen all open files after forking - DO NOT USE
-- <b>2.0.2</b> Ease up dor-services verson restriction
-- <b>2.0.1</b> Dependency update
 - <b>2.0</b> Moved what was left of DorService (namely get_objects_for_workstep()) to dor-services' Dor::WorkflowService. Removed IdentityMetadata and DublinCore XML models. Factored out all remaining global constants. Removed unnecessary dependencies.
 - <b>1.3</b> Started to use Dor::Config for workspace configuration
-- <b>1.2.1</b> Clean up logging of exceptions in LyberCore::Log
-- <b>1.2</b> Robots can now run as daemons via the LyberCore::Robots::ServiceController
-- <b>1.1.2</b> Can pass an array of "command line" arguments to the Robot constructor
-- <b>1.1.1</b> Robot#start now returns LyberCore::Robots::CONTINUE if it did work without error, LyberCore::Robots::SLEEP if it did no work,
-  and LyberCore::Robots::HALT if it reached its error limit while working on its queue
-- <b>1.1.0</b> Allow Robots::WorkQueue to resolve an arbitrary number of prerequisites
 - <b>1.0.0</b> Factored all Dor::* classes and object models out of lyber-core and into a separate dor-services gem. WARNING: MAY BREAK COMPATIBILITY WITH PREVIOUS DOR-ENABLED CODE.
 - <b>0.9.8</b> Created branch for legacy work "0.9-legacy".  Robots can now be configured with fully qualified workflows for prerequisites
-  eg <i>dor:googleScannedBookWF:register-object</i> 
-- <b>0.9.7.4</b> Untangled a couple development dependencies; fixed issue where "include REXML" was polluting the Object namespace
-- <b>0.9.7.3</b> Logging enhancements
-- <b>0.9.7.2</b> IdentityMetadata bugfixes
-- <b>0.9.7.1</b> Enhanced exception handling 
-- <b>0.9.7</b> ActiveMQ message-based robot parallelization as described here: https://consul.stanford.edu/x/tQjdBw . Removal of ROXML models. 
-- <b>0.9.6.3</b> Better error reporting for LyberCore::Utils::FileUtilities.execute, which means when a system command fails we have a better idea of why. 
-- <b>0.9.6.2</b> Handles new response from workflow service when there are no objects in the queue: <objects count="0"\>
-- <b>0.9.6</b> DorService.get_objects_for_workstep can handle one or two completed steps.  Trimmed-down gem dependencies now defined in lyber-core.gemspec. 'rake dlss_release' will tag, build and publish gem
-- <b>0.9.5.5</b> Robots now log to ROBOT_ROOT/log/robot_name.log unless specified in constructor
-- <b>0.9.5.4</b> Custom exception classes, more checking of error conditions
-- <b>0.9.5.3</b> More robust testing, minor bug fixes, compatible with active_fedora 1.2.6
-- <b>0.9.5</b> Significantly refactored to provide central logging and many more debugging statements. 
-- <b>0.9.4</b> First version that requires Ruby 1.8.7.  Built with bundler and rvm
-- <b>0.9.3.9</b> Last version compatible with Ruby 1.8.6.  Stored in source control as the 'facets-282' branch.  
-- <b>0.9.3</b> Compatibility with bagit 1.0.0.  Bump to active-fedora 1.1.13
+  eg <i>dor:googleScannedBookWF:register-object</i>
 - <b>0.9.2</b> Workflow bug fixes.  Last version that supports active-fedora 1.0.7
 - We recommend that you <b>DO NOT USE</b> any version older than these
 
 == Copyright
 
-Copyright (c) 2010 Stanford University Library. See LICENSE for details.
+Copyright (c) 2014 Stanford University Library. See LICENSE for details.

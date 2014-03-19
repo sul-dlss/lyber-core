@@ -5,3 +5,7 @@ source "http://sul-gems.stanford.edu"
 gemspec
 
 gem 'dor-services', ">= 4.0"
+
+group :development do
+  gem "pry-debugger", '0.2.2', :platform => :ruby_19
+end
