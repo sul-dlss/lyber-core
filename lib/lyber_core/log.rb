@@ -100,11 +100,7 @@ module LyberCore
 
     def Log.exception(e)
       msg = Log.exception_message(e)
-      if e.is_a?(LyberCore::Exceptions::FatalError)
-        Log.fatal(msg)
-      else
-        Log.error(msg)
-      end
+      Log.error(msg)
     end
 
     def Log.exception_message(e)
