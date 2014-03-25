@@ -1,8 +1,8 @@
 require 'lyber_core'
 
 class TestRobot < LyberCore::Robots::Robot
-  def initialize(druid)
-    super('dor', 'testWF', 'test-step', druid)
+  def initialize
+    super('dor', 'testWF', 'test-step')
   end
 
   def process_item

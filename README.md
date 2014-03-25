@@ -4,20 +4,20 @@
 
 Create a class that derives from `LyberCore::Robots::Robot`
 
-* The initializer will receive `druid`.  Call `super` with the repository, workflow name, step name and `druid`
+* In the intializeer, call `super` with the repository, workflow name, step name
 * Your class `process_item` method will perform the actual work.  The `@druid` instance variable will contain the druid for the job
 
 ```ruby
 module Accession
   class Shelve < LyberCore::Robots::Robot
 
-    def initialize(druid)
-      super('dor', 'accessionWF', 'shelve', druid)
+    def initialize
+      super('dor', 'accessionWF', 'shelve')
     end
 
     def process_item
       obj = Dor::Item.find(@druid)
-      LyberCore::Log.info "#{obj.datastreams.keys}"
+      obj.shelve
     end
 
   end
