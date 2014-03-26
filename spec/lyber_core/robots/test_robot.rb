@@ -5,7 +5,7 @@ class TestRobot < LyberCore::Robots::Robot
     super('dor', 'testWF', 'test-step')
   end
 
-  def process_item
+  def perform(druid)
     LyberCore::Log.info 'work done!'
   end
 end
