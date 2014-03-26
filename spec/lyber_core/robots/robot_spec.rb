@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative 'test_robot'
 
-describe LyberCore::Robots::Robot do
+describe LyberCore::Robot do
 
   describe "#perform" do
     let(:druid) { 'druid:test1234' }

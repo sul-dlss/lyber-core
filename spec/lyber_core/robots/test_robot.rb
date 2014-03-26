@@ -1,6 +1,8 @@
 require 'lyber_core'
 
-class TestRobot < LyberCore::Robots::Robot
+class TestRobot
+  include LyberCore::Robot
+
   def initialize
     super('dor', 'testWF', 'test-step')
   end

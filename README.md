@@ -2,14 +2,15 @@
 
 ## Robot Creation
 
-Create a class that derives from `LyberCore::Robots::Robot`
+Create a class that mixes in `LyberCore::Robot`
 
-* In the intializeer, call `super` with the repository, workflow name, step name
+* In the intializer, call `super` with the repository, workflow name, step name
 * Your class `#perform` method will perform the actual work, with `druid` passed in as the one and only argument
 
 ```ruby
 module Accession
-  class Shelve < LyberCore::Robots::Robot
+  class Shelve
+    include LyberCore::Robot
 
     def initialize
       super('dor', 'accessionWF', 'shelve')
