@@ -29,8 +29,9 @@ module LyberCore
     # Calls the #perform method, then sets workflow to 'completed' or 'error' depending on success
     def work(druid)
       LyberCore::Log.set_logfile($stdout)                     # let process manager(bluepill) handle logging
-      start = Time.now
+      # TODO check workflow status of item, output warning if item is not 'queued'
       LyberCore::Log.info "Processing #{@druid}"
+      start = Time.now
       self.perform druid                                      # implemented in the mixed in robot class
       # TODO check return value of #process_item if @check_if_processed == true ( have a self.processed? method that gets set in #process_item)
       #   if true returned, update step to completed
@@ -40,7 +41,7 @@ module LyberCore
       LyberCore::Log.info "Finished #{druid} in #{elapsed}s"  # or use some other profiling/timing
     rescue => e
       LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
-      Dor::WorkflowService.update_workflow_error_status @repo, druid, @workflow_name, @step_name, e.message + "\n" + e.backtrace.join("\n")
+      Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message
       raise  # or just swallow the error?  need a tab in UI to handle failed queue in more detail
     end
 
