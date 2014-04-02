@@ -8,19 +8,25 @@ Create a class that mixes in `LyberCore::Robot`
 * Your class `#perform` method will perform the actual work, with `druid` passed in as the one and only argument
 
 ```ruby
-module Accession
-  class Shelve
-    include LyberCore::Robot
+module Robots
+  module DorRepo
+    module Accession
 
-    def initialize
-      super('dor', 'accessionWF', 'shelve')
+      class Shelve
+        include LyberCore::Robot
+
+        def initialize
+          super('dor', 'accessionWF', 'shelve')
+        end
+
+        def perform druid
+          obj = Dor::Item.find(druid)
+          obj.shelve
+        end
+
+      end
+
     end
-
-    def perform druid
-      obj = Dor::Item.find(druid)
-      obj.shelve
-    end
-
   end
 end
 ```
@@ -55,7 +61,7 @@ $ QUEUE=accessionWF_shelve rake environment resque:work
 
 ```ruby
 require 'resque'
-Resque.enqueue_to('accessionWF_shelve'.to_sym, Accession::Shelve, 'druid:aa123bb4567')
+Resque.enqueue_to('accessionWF_shelve'.to_sym, Robot::DorRepo::Accession::Shelve, 'druid:aa123bb4567')
 ```
 
 
