@@ -12,7 +12,6 @@ Gem::Specification.new do |s|
   s.summary     = "Core services used by the SULAIR Digital Library"
   s.description = "Contains classes to make http connections with a client-cert, use Jhove, and call Suri\n" +
                     "Also contains core classes to build robots"
-  s.executables = ['lc-gen-robot-scripts']
 
   s.required_rubygems_version = ">= 1.3.6"
 
