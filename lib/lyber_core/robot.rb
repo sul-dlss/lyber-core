@@ -45,11 +45,11 @@ module LyberCore
       #   if true returned, update step to completed
       #   otherwise, the robot did something like set the step to 'waiting' with a note
 
-      Dor::WorkflowService.update_workflow_status @repo, druid, @workflow_name, @step_name, 'completed', :elapsed => elapsed
+      Dor::WorkflowService.update_workflow_status @repo, druid, @workflow_name, @step_name, 'completed', :elapsed => elapsed, :note => Socket.gethostname
       LyberCore::Log.info "Finished #{druid} in #{elapsed}s"
     rescue => e
       LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
-      Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message
+      Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :note => Socket.gethostname
     end
 
   private
