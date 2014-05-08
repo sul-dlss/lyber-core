@@ -49,7 +49,7 @@ module LyberCore
       LyberCore::Log.info "Finished #{druid} in #{elapsed}s"
     rescue => e
       LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
-      Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :error_txt => Socket.gethostname
+      Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :error_text => Socket.gethostname
     end
 
   private

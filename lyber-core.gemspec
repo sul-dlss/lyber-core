@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "lyber-core"
-  s.version     = "3.2.1"
+  s.version     = "3.2.2"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene","Michael Klein"]
   s.email       = ["wmene@stanford.edu"]
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   # Runtime dependencies
-
+  s.add_dependency 'dor-workflow-service', '~> 1.6', '>= 1.6.3'
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
   # It will not add these as dependencies if you require lyber-core for other projects
   s.add_development_dependency "fakeweb"

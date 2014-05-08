@@ -22,7 +22,7 @@ describe LyberCore::Robot do
 
     it "updates workflow to 'error' if there was a problem with the work" do
       expect(Dor::WorkflowService).to receive(:get_workflow_status).with('dor', druid, wf_name, step_name).and_return('queued')
-      expect(Dor::WorkflowService).to receive(:update_workflow_error_status).with('dor', druid, wf_name, step_name, /work error/, :error_txt => Socket.gethostname)
+      expect(Dor::WorkflowService).to receive(:update_workflow_error_status).with('dor', druid, wf_name, step_name, /work error/, :error_text => Socket.gethostname)
       allow_any_instance_of(TestRobot).to receive(:perform).and_raise('work error')
       logged = capture_stdout do
         TestRobot.perform druid
