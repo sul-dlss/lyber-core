@@ -42,7 +42,7 @@ See the [boot.rb file from the Common-Accessioning robot suite](https://github.c
 
 #### Example Rakefile modifications
 ```ruby
-require 'resque/tasks'
+require 'robot-controller/tasks'
 ...
 task :environment do
   require_relative 'config/boot'
@@ -54,7 +54,7 @@ end
 * Use rake to start your robot, specifying the Resque queue as the environment variable `QUEUE`
 
 ```
-$ QUEUE=accessionWF_shelve rake environment resque:work
+$ QUEUE=accessionWF_shelve rake environment workers
 ```
 
 ## Enqueing a Job
