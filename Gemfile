@@ -1,5 +1,4 @@
-source "http://rubygems.org"
-source "http://sul-gems.stanford.edu"
+source "https://rubygems.org"
 
 # Dependencies are defined in lyber-core.gemspec
 gemspec
