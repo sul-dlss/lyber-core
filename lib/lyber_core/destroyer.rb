@@ -22,7 +22,7 @@ module LyberCore
   
   def get_druid_list
     begin
-      Dor::WorkflowService.get_objects_for_workstep @registration_robot, '', @repository, @workflow
+      Dor::WorkflowService.get_objects_for_workstep @registration_robot, '', @workflow, default_repository: @repository
     rescue Exception => e
       raise e, "Couldn't fetch druid list"
     end

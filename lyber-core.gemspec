@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   # Runtime dependencies
-  s.add_dependency 'dor-workflow-service', '~> 1.6', '>= 1.6.3'
+  s.add_dependency 'dor-workflow-service', '~> 1.7'
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
   # It will not add these as dependencies if you require lyber-core for other projects
   s.add_development_dependency "fakeweb"
