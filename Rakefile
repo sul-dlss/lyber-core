@@ -1,9 +1,16 @@
 require 'rubygems'
 require 'rake'
+begin
+  require 'bundler/setup'
+rescue LoadError
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+end
 
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
 require 'rspec/core/rake_task'
+
+Bundler::GemHelper.install_tasks
 
 
 desc "Run specs"
@@ -15,9 +22,3 @@ task :clean do
 end
 
 task :default => [:spec]
-
-# To release the gem to the DLSS gemserver, run 'rake dlss_release'
-require 'dlss/rake/dlss_release'
-Dlss::Release.new
-
-
