@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "stompserver"
   s.add_development_dependency "yard"
 
-  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md) + Dir.glob('bin/*')
+  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md)
   s.bindir       = 'bin'
   s.require_path = 'lib'
 end
