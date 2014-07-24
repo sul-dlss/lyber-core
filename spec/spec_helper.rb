@@ -5,7 +5,6 @@ require 'bundler/setup'
 require 'rspec'
 require 'dor-services'
 require 'lyber_core'
-require 'pry'
 
 RSpec.configure do |config|
 
