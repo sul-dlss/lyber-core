@@ -1,4 +1,5 @@
 require 'benchmark'
+require 'active_support/core_ext' # camelcase
 
 module LyberCore
   module Robot
@@ -17,6 +18,29 @@ module LyberCore
         klazz = self.name.split('::').inject(Object) {|o,c| o.const_get c}
         bot = klazz.new
         bot.work druid
+      end
+      
+      # Converts a given step to the Robot class name
+      # Examples:
+      #
+      # - `dor:assemblyWF:jp2-create` into `Robots::DorRepo::Assembly::Jp2Create`
+      # - `dor:gisAssemblyWF:start-assembly-workflow` into `Robots::DorRepo::GisAssembly::StartAssemblyWorkflow`
+      # - `dor:etdSubmitWF:binder-transfer` into `Robots:DorRepo::EtdSubmit::BinderTransfer`
+      #
+      # @param [String] step. fully qualified step name, e.g., `dor:accessionWF:descriptive-metadata`
+      # @param [Hash] opts
+      # @option :repo_suffix defaults to `Repo`
+      # @return [String] The class name for the robot, e.g., `Robots::DorRepo::Accession:DescriptiveMetadata`
+      def step_to_classname step, opts = {}
+        # generate the robot job class name
+        opts[:repo_suffix] ||= 'Repo'
+        r, w, s = step.split(/:/, 3)
+        return [
+          'Robots',
+          r.camelcase + opts[:repo_suffix], # 'Dor' conflicts with dor-services
+          w.sub('WF', '').camelcase,
+          s.gsub('-', '_').camelcase
+        ].join('::')
       end
     end
 
