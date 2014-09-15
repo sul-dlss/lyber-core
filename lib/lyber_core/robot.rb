@@ -72,9 +72,10 @@ module LyberCore
 
       Dor::WorkflowService.update_workflow_status @repo, druid, @workflow_name, @step_name, 'completed', :elapsed => elapsed, :note => Socket.gethostname
       LyberCore::Log.info "Finished #{druid} in #{sprintf("%0.4f",elapsed)}s"
-    rescue => e
+    rescue Exception => e 
       LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
       Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :error_text => Socket.gethostname
+      raise e unless e.is_a?(StandardError)
     end
 
   private
