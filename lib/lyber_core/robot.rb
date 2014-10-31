@@ -60,7 +60,7 @@ module LyberCore
     # Calls the #perform method, then sets workflow to 'completed' or 'error' depending on success
     def work(druid)
       LyberCore::Log.set_logfile($stdout)                     # let process manager(bluepill) handle logging
-      LyberCore::Log.info "Processing #{druid}"
+      LyberCore::Log.info "#{druid} processing"
       return if @check_queued_status && !item_queued?(druid)
 
       elapsed = Benchmark.realtime do
@@ -71,7 +71,7 @@ module LyberCore
       #   otherwise, the robot did something like set the step to 'waiting' with a note
 
       Dor::WorkflowService.update_workflow_status @repo, druid, @workflow_name, @step_name, 'completed', :elapsed => elapsed, :note => Socket.gethostname
-      LyberCore::Log.info "Finished #{druid} in #{sprintf("%0.4f",elapsed)}s"
+      LyberCore::Log.info "#{druid} completed in #{sprintf("%0.4f",elapsed)}s"
     rescue Exception => e 
       LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
       Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :error_text => Socket.gethostname

@@ -16,7 +16,7 @@ describe LyberCore::Robot do
       logged = capture_stdout do
         TestRobot.perform druid
       end
-      expect(logged).to match /Processing #{druid}/
+      expect(logged).to match /#{druid} processing/
       expect(logged).to match /work done\!/
     end
 
