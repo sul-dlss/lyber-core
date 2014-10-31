@@ -4,9 +4,10 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "lyber-core"
-  s.version     = "3.2.4"
+  s.version     = "3.2.5"
+  s.licenses    = ['Apache-2.0']
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene","Michael Klein"]
+  s.authors     = ["Alpana Pande","Bess Sadler","Chris Fitzpatrick","Douglas Kim","Richard Anderson","Willy Mene","Michael Klein", "Darren Weber"]
   s.email       = ["wmene@stanford.edu"]
   s.homepage    = "http://github.com/sul-dlss/lyber-core"
   s.summary     = "Core services used by the SULAIR Digital Library"
