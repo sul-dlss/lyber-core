@@ -27,5 +27,5 @@ spec/fixtures/log
 .rvmrc
 .ruby-version
 .ruby-gemset
-
+*.gem
 Gemfile.lock
