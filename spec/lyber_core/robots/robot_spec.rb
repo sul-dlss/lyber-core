@@ -12,7 +12,7 @@ describe LyberCore::Robot do
       expect(Dor::WorkflowService).to receive(:get_workflow_status).with('dor', druid, wf_name, step_name).and_return('queued')
       expect(Dor::WorkflowService).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'completed',
                                                                               :elapsed => an_instance_of(Float),
-                                                                              :note => Socket.gethostname)
+                                                                              :note => Socket.gethostname, :current_status=>"queued")
       logged = capture_stdout do
         TestRobot.perform druid
       end
@@ -35,7 +35,8 @@ describe LyberCore::Robot do
       expect(Dor::WorkflowService).to receive(:get_workflow_status).with('dor', druid, wf_name, step_name).and_return('queued')
       expect(Dor::WorkflowService).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'completed',
                                                                               :elapsed => an_instance_of(Float),
-                                                                              :note => Socket.gethostname)
+                                                                              :note => Socket.gethostname, 
+                                                                              :current_status=>"queued")
       logged = capture_stdout do
         TestRobot.perform druid
       end
