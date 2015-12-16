@@ -21,6 +21,7 @@ pkg
 coverage.data
 log
 spec/fixtures/log
+workflow_service.log*
 
 ## PROJECT::SPECIFIC
 .yardoc
