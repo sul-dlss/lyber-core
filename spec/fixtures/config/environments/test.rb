@@ -3,8 +3,10 @@ ENV['RSPEC'] = "true"
 Dor::Config.configure do
   fedora do
     url 'https://fedoraAdmin:fedoraAdmin@dor-dev.stanford.edu/fedora'
+  end
+  ssl do
     cert_file File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.crt')
-    key_file File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.key')
+    key_file  File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.key')
     key_pass 'lsdev'
   end
 
@@ -17,7 +19,7 @@ Dor::Config.configure do
   sedora do
     "http://fedoraAdmin:fedoraAdmin@sdr-fedora-dev.stanford.edu/fedora"
     cert_file File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.crt')
-    key_file File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.key')
+    key_file  File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.key')
     key_pass 'lsdev'
     
     deposit_dir File.expand_path(File.dirname(__FILE__)) << '/../../sdr2_example_objects'
