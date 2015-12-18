@@ -1,0 +1,10 @@
+sudo: false
+language: ruby
+cache: bundler
+notifications:
+  email: false
+
+rvm:
+  - 2.2.1
+  - 2.1.2
+
