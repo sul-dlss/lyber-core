@@ -18,6 +18,9 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
   s.add_dependency 'dor-workflow-service', '~> 1.7'
+  s.add_dependency 'dor-services', '~> 5.3'
+  s.add_dependency 'addressable', '!= 2.3.6'  # Bug with rdf gem and addressable 2.3.6
+
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
   # It will not add these as dependencies if you require lyber-core for other projects
   s.add_development_dependency "fakeweb"
