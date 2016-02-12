@@ -304,7 +304,7 @@ Style/SpaceAfterComma:
 
 # Offense count: 3
 # Cop supports --auto-correct.
-Style/SpaceAfterControlKeyword:
+Style/SpaceAroundKeyword:
   Exclude:
     - 'Rakefile'
     - 'lib/lyber_core/log.rb'
