@@ -66,6 +66,7 @@ Resque.enqueue_to('accessionWF_shelve'.to_sym, Robot::DorRepo::Accession::Shelve
 
 
 ## Releases
+* **4.0** Remove unused classes and dependencies
 * **3.0** Robot overhaul.  Use `resque` for job management and `bluepill` for process management
 * **2.1.1** Relax dor-services-gem version requirement
 * **2.0** Moved what was left of DorService (namely get_objects_for_workstep()) to dor-services' Dor::WorkflowService. Removed IdentityMetadata and DublinCore XML models. Factored out all remaining global constants. Removed unnecessary dependencies.
