@@ -1,5 +1,5 @@
 require 'benchmark'
-require 'active_support/core_ext' # camelcase
+require 'active_support/core_ext/string/inflections' # camelcase
 
 module LyberCore
   module Robot
