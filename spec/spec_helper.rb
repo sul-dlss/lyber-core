@@ -3,8 +3,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'bundler/setup'
 require 'rspec'
-require 'dor-services'
 require 'lyber_core'
+require 'dor-workflow-service'
 
 RSpec.configure do |config|
 
