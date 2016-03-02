@@ -46,6 +46,7 @@ module LyberCore
     end
 
     attr_accessor :check_queued_status
+    attr_reader :workflow_service
 
     def initialize(repo, workflow_name, step_name, opts = {})
       Signal.trap("QUIT") { puts "#{Process.pid} ignoring SIGQUIT" } # SIGQUIT ignored to let the robot finish
@@ -53,6 +54,7 @@ module LyberCore
       @workflow_name = workflow_name
       @step_name = step_name
       @check_queued_status = opts.fetch(:check_queued_status, true)
+      @workflow_service = opts.fetch(:workflow_service, Dor::WorkflowService)
       # create option to check return value of process_item
       # @check_if_processed = opts.fetch(:check_if_processed, false)
     end
@@ -72,21 +74,22 @@ module LyberCore
       #   otherwise, the robot did something like set the step to 'waiting' with a note
 
       # update the workflow status from 'queued' to 'completed' -- errors out if current status is not queued
-      Dor::WorkflowService.update_workflow_status @repo, druid, @workflow_name, @step_name, 'completed', :elapsed => elapsed, :note => Socket.gethostname, :current_status => 'queued'
+      workflow_service.update_workflow_status @repo, druid, @workflow_name, @step_name, 'completed', :elapsed => elapsed, :note => Socket.gethostname, :current_status => 'queued'
       LyberCore::Log.info "Finished #{druid} in #{sprintf("%0.4f",elapsed)}s"
     rescue => e
       begin
         LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
-        Dor::WorkflowService.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :error_text => Socket.gethostname
+        workflow_service.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :error_text => Socket.gethostname
       rescue => e2
         LyberCore::Log.error "Cannot set #{druid} to status='error'\n" + e2.message + "\n" + e2.backtrace.join("\n")
         raise e2 # send exception to Resque failed queue
       end
     end
 
-  private
+    private
+
     def item_queued?(druid)
-      status = Dor::WorkflowService.get_workflow_status(@repo, druid, @workflow_name, @step_name)
+      status = workflow_service.get_workflow_status(@repo, druid, @workflow_name, @step_name)
       if(status =~ /queued/i)
         return true
       else
