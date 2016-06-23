@@ -21,7 +21,7 @@ module LyberCore
       end
     end
 
-    
+
     # Converts a given step to the Robot class name
     # Examples:
     #
@@ -54,7 +54,7 @@ module LyberCore
       @workflow_name = workflow_name
       @step_name = step_name
       @check_queued_status = opts.fetch(:check_queued_status, true)
-      @workflow_service = opts.fetch(:workflow_service, Dor::WorkflowService)
+      @workflow_service = opts.fetch(:workflow_service, Dor::Config.workflow.client)
       # create option to check return value of process_item
       # @check_if_processed = opts.fetch(:check_if_processed, false)
     end
