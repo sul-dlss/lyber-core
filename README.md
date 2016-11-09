@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sul-dlss/lyber-core.svg?branch=master)](https://travis-ci.org/sul-dlss/lyber-core) | [![Coverage Status](https://coveralls.io/repos/github/sul-dlss/lyber-core/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/lyber-core?branch=master)
+
 # lyber_core
 
 ## Robot Creation
@@ -79,4 +81,4 @@ Resque.enqueue_to('accessionWF_shelve'.to_sym, Robot::DorRepo::Accession::Shelve
 
 ## Copyright
 
-Copyright (c) 2014 Stanford University Library. See LICENSE for details.
+Copyright (c) 2014-16 Stanford University Library. See LICENSE for details.

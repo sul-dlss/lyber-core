@@ -1,13 +1,23 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'simplecov'
+require 'coveralls'
+Coveralls.wear!
 
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+])
+SimpleCov.start do
+  add_filter 'spec/'
+end
 require 'bundler/setup'
 require 'rspec'
 require 'lyber_core'
 require 'dor-workflow-service'
 
 RSpec.configure do |config|
-
+  config.order = 'random'
 end
 
 module Kernel
