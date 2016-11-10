@@ -1,6 +1,6 @@
 require 'lyber_core'
 
-class TestRobotWithSkip
+class TestRobotWithNote
   include LyberCore::Robot
 
   def initialize
@@ -9,6 +9,6 @@ class TestRobotWithSkip
 
   def perform(druid)
     LyberCore::Log.info 'work done!'
-    return LyberCore::Robot::ReturnState.new(status: 'skipped')
+    return LyberCore::Robot::ReturnState.new(note: 'some note to pass back to workflow')
   end
 end

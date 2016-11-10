@@ -1,6 +1,6 @@
 require 'lyber_core'
 
-class TestRobotWithSkip
+class TestRobotWithConstantState
   include LyberCore::Robot
 
   def initialize
@@ -9,6 +9,6 @@ class TestRobotWithSkip
 
   def perform(druid)
     LyberCore::Log.info 'work done!'
-    return LyberCore::Robot::ReturnState.new(status: 'skipped')
+    return LyberCore::Robot::ReturnState.SKIPPED
   end
 end

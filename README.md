@@ -33,7 +33,8 @@ module Robots
 end
 ```
 
-By default, the druid will be set to the completed state, but you can optionally have it set to skipped by creating a ReturnState object as shown below
+By default, the druid will be set to the completed state, but you can optionally have it set to skipped by creating a ReturnState object as shown below.
+You can also return custom notes in this way
 ```ruby
 module Robots
   module DorRepo
@@ -50,10 +51,13 @@ module Robots
           obj = Dor::Item.find(druid)
           if some_logic_here_to_determine_if_shelving_occurs
             obj.shelve
-            return LyberCore::Robot::ReturnState.new('completed') # set the final state to completed
+            return LyberCore::Robot::ReturnState.COMPLETED # set the final state to completed
+#           return LyberCore::Robot::ReturnState.new(state: 'completed', note: 'some custom note to pass back to workflow') # set the final state to completed with a custom note
+
           else
             # just return skipped if we did nothing
-            return LyberCore::Robot::ReturnState.new('skipped') # set the final state to skipped
+            return LyberCore::Robot::ReturnState.SKIPPED # set the final state to skipped
+#           return LyberCore::Robot::ReturnState.new(state: 'skipped', note: 'some custom note to pass back to workflow') # set the final state to skipped with a custom note
           end
         end
 
