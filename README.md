@@ -6,7 +6,7 @@
 
 Create a class that mixes in `LyberCore::Robot`
 
-* In the intializer, call `super` with the repository, workflow name, step name
+* In the initializer, call `super` with the repository, workflow name, step name
 * Your class `#perform` method will perform the actual work, with `druid` passed in as the one and only argument
 
 ```ruby
@@ -24,6 +24,37 @@ module Robots
         def perform druid
           obj = Dor::Item.find(druid)
           obj.shelve
+        end
+
+      end
+
+    end
+  end
+end
+```
+
+By default, the druid will be set to the completed state, but you can optionally have it set to skipped by creating a ReturnState object as shown below
+```ruby
+module Robots
+  module DorRepo
+    module Accession
+
+      class Shelve
+        include LyberCore::Robot
+
+        def initialize
+          super('dor', 'accessionWF', 'shelve')
+        end
+
+        def perform druid
+          obj = Dor::Item.find(druid)
+          if some_logic_here_to_determine_if_shelving_occurs
+            obj.shelve
+            return LyberCore::Robot::ReturnState.new('completed') # set the final state to completed
+          else
+            # just return skipped if we did nothing
+            return LyberCore::Robot::ReturnState.new('skipped') # set the final state to skipped
+          end
         end
 
       end

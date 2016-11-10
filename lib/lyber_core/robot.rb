@@ -55,8 +55,6 @@ module LyberCore
       @step_name = step_name
       @check_queued_status = opts.fetch(:check_queued_status, true)
       @workflow_service = opts.fetch(:workflow_service, Dor::WorkflowService)
-      # create option to check return value of process_item
-      # @check_if_processed = opts.fetch(:check_if_processed, false)
     end
 
     # Sets up logging, timing and error handling of the job
@@ -66,16 +64,19 @@ module LyberCore
       LyberCore::Log.info "#{druid} processing"
       return if @check_queued_status && !item_queued?(druid)
 
+      result = nil
       elapsed = Benchmark.realtime do
-        self.perform druid                                    # implemented in the mixed-in robot class
+        result = self.perform druid                                    # implemented in the mixed-in robot class
       end
-      # TODO check return value of #process_item if @check_if_processed == true ( have a self.processed? method that gets set in #process_item)
-      #   if true returned, update step to completed
-      #   otherwise, the robot did something like set the step to 'waiting' with a note
 
-      # update the workflow status from 'queued' to 'completed' -- errors out if current status is not queued
-      workflow_service.update_workflow_status @repo, druid, @workflow_name, @step_name, 'completed', :elapsed => elapsed, :note => Socket.gethostname, :current_status => 'queued'
+      # the final workflow state is determined by the return value of the perform step, if it is a ReturnState object, use the defined status, otherwise default to completed
+      workflow_state = (result.class == LyberCore::Robot::ReturnState) ? result.status : 'completed'
+      
+      # update the workflow status from 'queued' to the state returned by perform (or 'completed' as the default) 
+      # NOTE errors out if current status is not queued
+      workflow_service.update_workflow_status @repo, druid, @workflow_name, @step_name, workflow_state, :elapsed => elapsed, :note => Socket.gethostname, :current_status => 'queued'
       LyberCore::Log.info "Finished #{druid} in #{sprintf("%0.4f",elapsed)}s"
+
     rescue => e
       begin
         LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
