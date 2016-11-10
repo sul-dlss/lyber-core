@@ -1,10 +1,12 @@
+[![Build Status](https://travis-ci.org/sul-dlss/lyber-core.svg?branch=master)](https://travis-ci.org/sul-dlss/lyber-core) | [![Coverage Status](https://coveralls.io/repos/github/sul-dlss/lyber-core/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/lyber-core?branch=master)
+
 # lyber_core
 
 ## Robot Creation
 
 Create a class that mixes in `LyberCore::Robot`
 
-* In the intializer, call `super` with the repository, workflow name, step name
+* In the initializer, call `super` with the repository, workflow name, step name
 * Your class `#perform` method will perform the actual work, with `druid` passed in as the one and only argument
 
 ```ruby
@@ -22,6 +24,41 @@ module Robots
         def perform druid
           obj = Dor::Item.find(druid)
           obj.shelve
+        end
+
+      end
+
+    end
+  end
+end
+```
+
+By default, the druid will be set to the completed state, but you can optionally have it set to skipped by creating a ReturnState object as shown below.
+You can also return custom notes in this way
+```ruby
+module Robots
+  module DorRepo
+    module Accession
+
+      class Shelve
+        include LyberCore::Robot
+
+        def initialize
+          super('dor', 'accessionWF', 'shelve')
+        end
+
+        def perform druid
+          obj = Dor::Item.find(druid)
+          if some_logic_here_to_determine_if_shelving_occurs
+            obj.shelve
+            return LyberCore::Robot::ReturnState.COMPLETED # set the final state to completed
+#           return LyberCore::Robot::ReturnState.new(state: 'completed', note: 'some custom note to pass back to workflow') # set the final state to completed with a custom note
+
+          else
+            # just return skipped if we did nothing
+            return LyberCore::Robot::ReturnState.SKIPPED # set the final state to skipped
+#           return LyberCore::Robot::ReturnState.new(state: 'skipped', note: 'some custom note to pass back to workflow') # set the final state to skipped with a custom note
+          end
         end
 
       end
@@ -79,4 +116,4 @@ Resque.enqueue_to('accessionWF_shelve'.to_sym, Robot::DorRepo::Accession::Shelve
 
 ## Copyright
 
-Copyright (c) 2014 Stanford University Library. See LICENSE for details.
+Copyright (c) 2014-16 Stanford University Library. See LICENSE for details.
