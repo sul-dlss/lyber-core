@@ -82,9 +82,8 @@ module LyberCore
         workflow_state = 'completed'  
       end
       
-      # update the workflow status from 'queued' to the state returned by perform (or 'completed' as the default) 
-      # NOTE errors out if current status is not queued
-      workflow_service.update_workflow_status @repo, druid, @workflow_name, @step_name, workflow_state, :elapsed => elapsed, :note => note, :current_status => 'queued'
+      # update the workflow status from its current state to the state returned by perform (or 'completed' as the default) 
+      workflow_service.update_workflow_status @repo, druid, @workflow_name, @step_name, workflow_state, :elapsed => elapsed, :note => note
       LyberCore::Log.info "Finished #{druid} in #{sprintf("%0.4f",elapsed)}s"
 
     rescue => e
