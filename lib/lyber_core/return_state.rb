@@ -7,7 +7,7 @@ module LyberCore
       
       attr_reader :status
       attr_accessor :note
-      ALLOWED_RETURN_STATES = %w{completed skipped}
+      ALLOWED_RETURN_STATES = %w{completed skipped waiting}
       DEFAULT_RETURN_STATE  = 'completed'
       
       def self.SKIPPED
@@ -17,7 +17,11 @@ module LyberCore
       def self.COMPLETED
         self.new(status: 'completed')
       end
-      
+
+      def self.WAITING
+        self.new(status: 'waiting')
+      end
+
       def initialize(params = {})
         self.status = params[:status] || DEFAULT_RETURN_STATE
         self.note = params[:note] || ""
