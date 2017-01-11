@@ -41,6 +41,8 @@ describe LyberCore::Robot::ReturnState do
     expect(return_state.status).to eq 'skipped'
     return_state=LyberCore::Robot::ReturnState.COMPLETED
     expect(return_state.status).to eq 'completed'
+    return_state=LyberCore::Robot::ReturnState.WAITING
+    expect(return_state.status).to eq 'waiting'
   end
   
   it "should not allow an invalid state to be set" do
