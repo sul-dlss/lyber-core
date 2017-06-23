@@ -1,4 +1,6 @@
 require 'benchmark'
+require 'active_support'
+require 'active_support/core_ext'
 require 'active_support/core_ext/string/inflections' # camelcase
 
 module LyberCore
