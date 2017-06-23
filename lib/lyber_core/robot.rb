@@ -1,4 +1,5 @@
 require 'benchmark'
+require 'active_support'
 require 'active_support/core_ext' # camelcase
 
 module LyberCore
