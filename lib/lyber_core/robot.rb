@@ -89,6 +89,7 @@ module LyberCore
       LyberCore::Log.info "Finished #{druid} in #{sprintf("%0.4f",elapsed)}s"
 
     rescue => e
+      Honeybadger.notify(e) if defined? Honeybadger
       begin
         LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
         workflow_service.update_workflow_error_status @repo, druid , @workflow_name, @step_name, e.message, :error_text => Socket.gethostname
