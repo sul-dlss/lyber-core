@@ -16,9 +16,7 @@ module LyberCore
       # Called by job-manager on derived-class
       # Instantiate the Robot and call #work with the passed in druid
       def perform(druid)
-        # Get the name of the derived-class that was invoked
-        klazz = self.name.split('::').inject(Object) {|o,c| o.const_get c}
-        bot = klazz.new
+        bot = self.new
         bot.work druid
       end
     end
