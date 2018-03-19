@@ -1,4 +1,4 @@
-ENV['RSPEC'] = "true"
+ENV['RSPEC'] = 'true'
 
 Dor::Config.configure do
   fedora do
@@ -9,21 +9,21 @@ Dor::Config.configure do
   end
 
   solrizer.url 'http://127.0.0.1:8983/solr/test'
-  
+
   robots do
     workspace File.expand_path(File.dirname(__FILE__) + '/../../workspace_home')
   end
 
   sedora do
-    "http://fedoraAdmin:fedoraAdmin@sdr-fedora-dev.stanford.edu/fedora"
+    'http://fedoraAdmin:fedoraAdmin@sdr-fedora-dev.stanford.edu/fedora'
     cert_file File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.crt')
     key_file File.expand_path(File.dirname(__FILE__) + '/../../../certs/ls-dev.key')
     key_pass 'lsdev'
-    
-    deposit_dir File.expand_path(File.dirname(__FILE__)) << '/../../sdr2_example_objects'
-    example_objects File.expand_path(File.dirname(__FILE__)) << '/../../sdr2_example_objects'
+
+    deposit_dir __dir__ << '/../../sdr2_example_objects'
+    example_objects __dir__ << '/../../sdr2_example_objects'
   end
-  
+
   workflow.url 'http://lyberservices-dev.stanford.edu/workflow'
 end
 

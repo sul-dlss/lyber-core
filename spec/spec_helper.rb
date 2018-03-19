@@ -5,9 +5,9 @@ require 'coveralls'
 Coveralls.wear!
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter
-])
+                                                                 SimpleCov::Formatter::HTMLFormatter,
+                                                                 Coveralls::SimpleCov::Formatter
+                                                               ])
 SimpleCov.start do
   add_filter 'spec/'
 end
@@ -41,16 +41,15 @@ module Kernel
   end
 end
 
-
 Rails = Object.new unless defined? Rails
 
 # capture stdout so that we can assert expectations on it
 require 'stringio'
 
-def capture_stdout(&blk)
+def capture_stdout
   old = $stdout
   $stdout = fake = StringIO.new
-  blk.call
+  yield
   fake.string
 ensure
   $stdout = old
