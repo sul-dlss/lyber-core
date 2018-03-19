@@ -21,11 +21,6 @@ Lint/RescueException:
   Exclude:
     - 'lib/lyber_core/log.rb'
 
-# Offense count: 3
-Lint/UselessAssignment:
-  Exclude:
-    - 'spec/lyber_core/log_spec.rb'
-
 # Offense count: 1
 # Configuration parameters: CheckForMethodsWithNoSideEffects.
 Lint/Void:

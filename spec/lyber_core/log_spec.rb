@@ -7,9 +7,6 @@ describe LyberCore::Log do
       LyberCore::Log.restore_defaults
     end
 
-    wf_name = 'sdrIngestWF'
-    wf_step = 'populate-metadata'
-    collection = 'baz'
     valid_logfile = '/tmp/fakelog.log'
     invalid_logfile = '/zzxx/fakelog.log'
     with_warnings_suppressed do
