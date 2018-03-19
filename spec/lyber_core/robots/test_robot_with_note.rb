@@ -7,8 +7,8 @@ class TestRobotWithNote
     super('dor', 'testWF', 'test-step')
   end
 
-  def perform(druid)
+  def perform(_druid)
     LyberCore::Log.info 'work done!'
-    return LyberCore::Robot::ReturnState.new(note: 'some note to pass back to workflow')
+    LyberCore::Robot::ReturnState.new(note: 'some note to pass back to workflow')
   end
 end

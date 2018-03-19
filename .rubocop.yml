@@ -1,12 +1,16 @@
 inherit_from: .rubocop_todo.yml
 
 # rspec expect{...} is conventional
-Style/SpaceBeforeBlockBraces:
+Layout/SpaceBeforeBlockBraces:
   Exclude:
     - 'spec/**/*_spec.rb'
 
-Style/EmptyLineBetweenDefs:
+Layout/EmptyLineBetweenDefs:
   AllowAdjacentOneLineDefs: true
+
+# Configuration parameters: SupportedStyles.
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
 
 # Configuration parameters: AllowURI, URISchemes.
 Metrics/LineLength:

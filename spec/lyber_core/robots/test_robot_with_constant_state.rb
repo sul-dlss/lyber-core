@@ -7,8 +7,8 @@ class TestRobotWithConstantState
     super('dor', 'testWF', 'test-step')
   end
 
-  def perform(druid)
+  def perform(_druid)
     LyberCore::Log.info 'work done!'
-    return LyberCore::Robot::ReturnState.SKIPPED
+    LyberCore::Robot::ReturnState.SKIPPED
   end
 end

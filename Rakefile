@@ -12,13 +12,12 @@ require 'rspec/core/rake_task'
 
 Bundler::GemHelper.install_tasks
 
-
-desc "Run specs"
+desc 'Run specs'
 RSpec::Core::RakeTask.new(:spec)
 
 task :clean do
   puts 'Cleaning old coverage.data'
-  FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
+  FileUtils.rm('coverage.data') if File.exist? 'coverage.data'
 end
 
-task :default => [:spec]
+task default: [:spec]

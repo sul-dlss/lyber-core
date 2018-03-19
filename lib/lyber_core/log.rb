@@ -1,14 +1,13 @@
-
 module LyberCore
-
   class LyberCore::Log
     require 'logger'
 
     # Default values
-    DEFAULT_LOGFILE = "/tmp/lybercore_log.log" # TODO change to STDOUT?
+    DEFAULT_LOGFILE = '/tmp/lybercore_log.log'.freeze # TODO change to STDOUT?
     DEFAULT_LOG_LEVEL = Logger::INFO
-    DEFAULT_FORMATTER = proc{|s,t,p,m|"%5s [%s] (%s) %s :: %s\n" % [s,
-                       t.strftime("%Y-%m-%d %H:%M:%S"), $$, p, m]}
+    DEFAULT_FORMATTER = proc do |s, t, p, m|
+      "%5s [%s] (%s) %s :: %s\n" % [s, t.strftime('%Y-%m-%d %H:%M:%S'), $$, p, m]
+    end
 
     # Initial state
     @@logfile = DEFAULT_LOGFILE
@@ -27,27 +26,22 @@ module LyberCore
 
     # The current location of the logfile
     def Log.logfile
-      return @@logfile
+      @@logfile
     end
-
-
 
     # Accepts a filename as an argument, and checks to see whether that file can be
     # opened for writing. If it can be opened, it closes the existing Logger object
     # and re-opens it with the new logfile location. It raises an exception if it
     # cannot write to the specified logfile.
     def Log.set_logfile(new_logfile)
-      begin
-        current_log_level = @@log.level
-        current_formatter = @@log.formatter
-        @@log = Logger.new(new_logfile)
-        @@logfile = new_logfile
-        @@log.level = current_log_level
-        @@log.formatter = current_formatter
-      rescue Exception => e
-        raise e, "Couldn't initialize logfile #{new_logfile} because\n#{e.message}: #{e.backtrace.join(%{\n})}}"
-      end
-
+      current_log_level = @@log.level
+      current_formatter = @@log.formatter
+      @@log = Logger.new(new_logfile)
+      @@logfile = new_logfile
+      @@log.level = current_log_level
+      @@log.formatter = current_formatter
+    rescue Exception => e
+      raise e, "Couldn't initialize logfile #{new_logfile} because\n#{e.message}: #{e.backtrace.join(%(\n))}}"
     end
 
     # Set the log level.
@@ -59,18 +53,16 @@ module LyberCore
     #   Logger::INFO (1): generic (useful) information about system operation
     #   Logger::DEBUG (0):  low-level information for developers
     def Log.set_level(loglevel)
-     begin
-        if [0,1,2,3,4].include? loglevel
-          @@log.level = loglevel
-          @@log.debug "Setting LyberCore::Log.level to #{loglevel}"
-        else
-          @@log.warn "I received an invalid option for log level. I expected a number between 0 and 4 but I got #{loglevel}"
-          @@log.warn "I'm setting the loglevel to 0 (debug) because you seem to be having trouble."
-          @@log.level = 0
-        end
-      rescue Exception => e
-        raise e, "Couldn't set log level because\n#{e.message}: #{e.backtrace.join(%{\n})}"
+      if [0, 1, 2, 3, 4].include? loglevel
+        @@log.level = loglevel
+        @@log.debug "Setting LyberCore::Log.level to #{loglevel}"
+      else
+        @@log.warn "I received an invalid option for log level. I expected a number between 0 and 4 but I got #{loglevel}"
+        @@log.warn "I'm setting the loglevel to 0 (debug) because you seem to be having trouble."
+        @@log.level = 0
       end
+    rescue Exception => e
+      raise e, "Couldn't set log level because\n#{e.message}: #{e.backtrace.join(%(\n))}"
     end
 
     # Return the current log level
@@ -105,10 +97,7 @@ module LyberCore
 
     def Log.exception_message(e)
       msg = e.inspect.split($/).join('; ') + "\n"
-      msg << e.backtrace.join("\n") if(e.backtrace)
+      msg << e.backtrace.join("\n") if e.backtrace
     end
-
   end
-
-
 end
