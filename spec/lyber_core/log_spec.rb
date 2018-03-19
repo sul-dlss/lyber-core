@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'lyber_core'
 
 describe LyberCore::Log do

@@ -1,4 +1,3 @@
-require 'spec_helper'
 require_relative 'test_robot'
 require_relative 'test_robot_with_skip'
 require_relative 'test_robot_with_note'
