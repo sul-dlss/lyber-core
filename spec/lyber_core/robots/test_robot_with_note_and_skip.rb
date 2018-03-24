@@ -1,5 +1,3 @@
-require 'lyber_core'
-
 class TestRobotWithNoteAndSkip
   include LyberCore::Robot
 

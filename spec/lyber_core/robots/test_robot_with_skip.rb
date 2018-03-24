@@ -1,5 +1,3 @@
-require 'lyber_core'
-
 class TestRobotWithSkip
   include LyberCore::Robot
 
