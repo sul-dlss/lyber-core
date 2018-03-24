@@ -1,49 +1,9 @@
-describe LyberCore::Robot do
+describe 'robot "bases"' do
   let(:druid) { 'druid:test1234' }
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
-  let(:test_robot) do
-    Class.new do
-      include LyberCore::Robot
-      def initialize
-        super('dor', 'testWF', 'test-step')
-      end
 
-      def perform(_druid)
-        LyberCore::Log.info 'work done!'
-      end
-    end
-  end
-  let(:test_robot_with_skip) do
-    Class.new(test_robot) do
-      def perform(_druid)
-        super && LyberCore::Robot::ReturnState.new(status: 'skipped')
-      end
-    end
-  end
-  let(:test_robot_with_note) do
-    Class.new(test_robot) do
-      def perform(_druid)
-        super && LyberCore::Robot::ReturnState.new(note: 'some note to pass back to workflow')
-      end
-    end
-  end
-  let(:test_robot_with_note_and_skip) do
-    Class.new(test_robot) do
-      def perform(_druid)
-        super && LyberCore::Robot::ReturnState.new(status: 'skipped', note: 'some note to pass back to workflow')
-      end
-    end
-  end
-  let(:test_robot_with_constant_state) do
-    Class.new(test_robot) do
-      def perform(_druid)
-        super && LyberCore::Robot::ReturnState.SKIPPED
-      end
-    end
-  end
-
-  describe '#perform' do
+  shared_examples '#perform' do
     let(:test_class) { test_robot } # default
     let(:logged) { capture_stdout { test_class.perform druid } }
     before do
@@ -58,7 +18,13 @@ describe LyberCore::Robot do
     end
 
     context 'correct state returned' do
-      let(:test_class) { test_robot_with_skip }
+      let(:test_class) do
+        Class.new(test_robot) do
+          def perform(_druid)
+            super && LyberCore::Robot::ReturnState.new(status: 'skipped')
+          end
+        end
+      end
       it "updates workflow to 'skipped'" do
         expect(Dor::WorkflowService).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'skipped',
                                                                               elapsed: Float,
@@ -68,7 +34,13 @@ describe LyberCore::Robot do
     end
 
     context 'when correct state and a note returned' do
-      let(:test_class) { test_robot_with_note }
+      let(:test_class) do
+        Class.new(test_robot) do
+          def perform(_druid)
+            super && LyberCore::Robot::ReturnState.new(note: 'some note to pass back to workflow')
+          end
+        end
+      end
       it "updates workflow to 'completed' and sets a custom note" do
         expect(Dor::WorkflowService).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'completed',
                                                                               elapsed: Float,
@@ -78,7 +50,13 @@ describe LyberCore::Robot do
     end
 
     context 'when skipped state and a note returned' do
-      let(:test_class) { test_robot_with_note_and_skip }
+      let(:test_class) do
+        Class.new(test_robot) do
+          def perform(_druid)
+            super && LyberCore::Robot::ReturnState.new(status: 'skipped', note: 'some note to pass back to workflow')
+          end
+        end
+      end
       it "updates workflow to 'skipped' and sets a custom note" do
         expect(Dor::WorkflowService).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'skipped',
                                                                               elapsed: Float,
@@ -87,8 +65,14 @@ describe LyberCore::Robot do
       end
     end
 
-    describe 'using a ReturnState constant' do
-      let(:test_class) { test_robot_with_constant_state }
+    context 'using a ReturnState constant' do
+      let(:test_class) do
+        Class.new(test_robot) do
+          def perform(_druid)
+            super && LyberCore::Robot::ReturnState.SKIPPED
+          end
+        end
+      end
       it "updates workflow to 'skipped'" do
         expect(Dor::WorkflowService).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'skipped',
                                                                               elapsed: Float,
@@ -114,5 +98,36 @@ describe LyberCore::Robot do
       expect(Dor::WorkflowService).to receive(:get_workflow_status).with('dor', druid, wf_name, step_name).and_return('completed')
       expect(logged).to match /Item is not queued.*completed/
     end
+  end
+
+  describe LyberCore::Robot do
+    let(:test_robot) do
+      Class.new do
+        include LyberCore::Robot
+        def initialize
+          super('dor', 'testWF', 'test-step')
+        end
+
+        def perform(_druid)
+          LyberCore::Log.info 'work done!'
+        end
+      end
+    end
+    it_behaves_like '#perform'
+  end
+
+  describe LyberCore::Base do
+    let(:test_robot) do
+      Class.new(LyberCore::Base) do
+        def self.worker
+          new('dor', 'testWF', 'test-step')
+        end
+
+        def perform(_druid)
+          logger.info 'work done!'
+        end
+      end
+    end
+    it_behaves_like '#perform'
   end
 end
