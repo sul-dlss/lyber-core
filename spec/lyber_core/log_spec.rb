@@ -1,5 +1,3 @@
-require 'lyber_core'
-
 describe LyberCore::Log do
   describe 'initial state' do
     before :each do

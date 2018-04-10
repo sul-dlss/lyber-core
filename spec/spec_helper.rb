@@ -8,49 +8,12 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
                                                                  SimpleCov::Formatter::HTMLFormatter,
                                                                  Coveralls::SimpleCov::Formatter
                                                                ])
-SimpleCov.start do
-  add_filter 'spec/'
-end
+SimpleCov.start { add_filter 'spec/' }
+
 require 'bundler/setup'
 require 'rspec'
 require 'lyber_core'
-require 'dor-workflow-service'
-
-RSpec.configure do |config|
-  config.order = 'random'
-end
-
-module Kernel
-  def require_one(*args)
-    args.each do |mod|
-      begin
-        return require(mod)
-      rescue LoadError
-      end
-    end
-    raise LoadError, "could not load any of the following -- #{args.join(', ')}"
-  end
-
-  # Suppresses warnings within a given block.
-  def with_warnings_suppressed
-    saved_verbosity = $-v
-    $-v = nil
-    yield
-  ensure
-    $-v = saved_verbosity
-  end
-end
 
 Rails = Object.new unless defined? Rails
 
-# capture stdout so that we can assert expectations on it
-require 'stringio'
-
-def capture_stdout
-  old = $stdout
-  $stdout = fake = StringIO.new
-  yield
-  fake.string
-ensure
-  $stdout = old
-end
+Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
