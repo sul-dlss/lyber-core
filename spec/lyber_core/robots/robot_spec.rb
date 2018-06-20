@@ -96,7 +96,7 @@ describe 'robot "bases"' do
 
     it "skips jobs when workflow status is not 'queued' for this object and step" do
       expect(Dor::WorkflowService).to receive(:get_workflow_status).with('dor', druid, wf_name, step_name).and_return('completed')
-      expect(logged).to match /Item is not queued.*completed/
+      expect(logged).to match /Item druid\:.* is not queued.*completed/m
     end
   end
 
