@@ -115,19 +115,4 @@ describe 'robot "bases"' do
     end
     it_behaves_like '#perform'
   end
-
-  describe LyberCore::Base do
-    let(:test_robot) do
-      Class.new(LyberCore::Base) do
-        def self.worker
-          new('dor', 'testWF', 'test-step')
-        end
-
-        def perform(_druid)
-          logger.info 'work done!'
-        end
-      end
-    end
-    it_behaves_like '#perform'
-  end
 end
