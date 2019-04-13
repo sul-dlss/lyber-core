@@ -96,7 +96,7 @@ module LyberCore
   private
 
     def item_queued?(druid)
-      status = workflow_service.get_workflow_status(@repo, druid, @workflow_name, @step_name)
+      status = workflow_service.workflow_status(@repo, druid, @workflow_name, @step_name)
       return true if status =~ /queued/i
       LyberCore::Log.warn "Item #{druid} is not queued, but has status of '#{status}'. Will skip processing"
       false
