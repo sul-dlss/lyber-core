@@ -51,7 +51,7 @@ module LyberCore
       @workflow_name = workflow_name
       @step_name = step_name
       @check_queued_status = opts.fetch(:check_queued_status, true)
-      @workflow_service = opts.fetch(:workflow_service, Dor::WorkflowService)
+      @workflow_service = opts.fetch(:workflow_service) { Dor::Config.workflow.client }
     end
 
     # Sets up logging, timing and error handling of the job
@@ -78,7 +78,6 @@ module LyberCore
       else
         workflow_state = 'completed'
       end
-
       # update the workflow status from its current state to the state returned by perform (or 'completed' as the default)
       workflow_service.update_workflow_status(@repo, druid, @workflow_name, @step_name, workflow_state, elapsed: elapsed, note: note)
       LyberCore::Log.info "Finished #{druid} in #{sprintf('%0.4f', elapsed)}s"
