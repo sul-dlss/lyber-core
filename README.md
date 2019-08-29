@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/sul-dlss/lyber-core.svg?branch=master)](https://travis-ci.org/sul-dlss/lyber-core) | [![Coverage Status](https://coveralls.io/repos/github/sul-dlss/lyber-core/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/lyber-core?branch=master)
+[![Build Status](https://travis-ci.org/sul-dlss/lyber-core.svg?branch=master)](https://travis-ci.org/sul-dlss/lyber-core)
+[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/lyber-core/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/lyber-core?branch=master)
+[![Gem Version](https://badge.fury.io/rb/lyber-core.svg)](https://badge.fury.io/rb/lyber-core)
 
 # lyber_core
 
