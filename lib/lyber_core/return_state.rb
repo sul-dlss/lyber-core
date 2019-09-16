@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # this object defines the allowed states robots can optionally return upon completion
 # if the return value of the "perform" step is an object of this type and the status value is set an allowed value,
 #  it will be used to set the final workflow state for that druid
@@ -7,7 +9,7 @@ module LyberCore
       attr_reader :status
       attr_accessor :note
       ALLOWED_RETURN_STATES = %w[completed skipped waiting].freeze
-      DEFAULT_RETURN_STATE  = 'completed'.freeze
+      DEFAULT_RETURN_STATE  = 'completed'
 
       def self.SKIPPED
         new(status: 'skipped')
@@ -29,6 +31,7 @@ module LyberCore
       def status=(value)
         state = value.to_s.downcase
         raise 'invalid return state' unless ALLOWED_RETURN_STATES.include? state
+
         @status = state
       end
     end

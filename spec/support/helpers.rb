@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stringio'
 
 # capture stdout so that we can assert expectations on it
