@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module LyberCore
   class LyberCore::Log
     require 'logger'
 
     # Default values
-    DEFAULT_LOGFILE = '/tmp/lybercore_log.log'.freeze # TODO change to STDOUT?
+    DEFAULT_LOGFILE = '/tmp/lybercore_log.log' # TODO: change to STDOUT?
     DEFAULT_LOG_LEVEL = Logger::INFO
     DEFAULT_FORMATTER = proc do |s, t, p, m|
       "%5s [%s] (%s) %s :: %s\n" % [s, t.strftime('%Y-%m-%d %H:%M:%S'), $$, p, m]

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'benchmark'
 require 'active_support'
 require 'active_support/core_ext'
@@ -86,9 +88,9 @@ module LyberCore
       begin
         LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
         workflow_service.update_workflow_error_status(@repo, druid, @workflow_name, @step_name, e.message, error_text: Socket.gethostname)
-      rescue StandardError => e2
-        LyberCore::Log.error "Cannot set #{druid} to status='error'\n" + e2.message + "\n" + e2.backtrace.join("\n")
-        raise e2 # send exception to Resque failed queue
+      rescue StandardError => e
+        LyberCore::Log.error "Cannot set #{druid} to status='error'\n" + e.message + "\n" + e.backtrace.join("\n")
+        raise e # send exception to Resque failed queue
       end
     end
 
@@ -97,6 +99,7 @@ module LyberCore
     def item_queued?(druid)
       status = workflow_service.workflow_status(@repo, druid, @workflow_name, @step_name)
       return true if status =~ /queued/i
+
       LyberCore::Log.warn "Item #{druid} is not queued, but has status of '#{status}'. Will skip processing"
       false
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV['RSPEC'] = 'true'
 
 Dor::Config.configure do

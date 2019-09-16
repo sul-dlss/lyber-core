@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'Generate RDoc'
 task doc: ['doc:generate']
 

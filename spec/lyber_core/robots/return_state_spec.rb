@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe LyberCore::Robot::ReturnState do
   it 'should set the completed state by default' do
     return_state = LyberCore::Robot::ReturnState.new
