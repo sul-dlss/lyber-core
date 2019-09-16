@@ -6,7 +6,7 @@ RSpec.describe 'robot "bases"' do
   let(:druid) { 'druid:test1234' }
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, update_workflow_status: true) }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, update_status: true) }
 
   shared_examples '#perform' do
     let(:test_class) { test_robot } # default
@@ -17,10 +17,14 @@ RSpec.describe 'robot "bases"' do
     end
 
     it "updates workflow to 'completed' if work processes without error" do
-      expect(workflow_client).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'completed',
-                                                                       elapsed: Float,
-                                                                       note: Socket.gethostname)
       expect(logged).to match(/#{druid} processing/).and match(/work done\!/)
+
+      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                    workflow: wf_name,
+                                                                    process: step_name,
+                                                                    status: 'completed',
+                                                                    elapsed: Float,
+                                                                    note: Socket.gethostname)
     end
 
     context 'correct state returned' do
@@ -31,11 +35,16 @@ RSpec.describe 'robot "bases"' do
           end
         end
       end
+
       it "updates workflow to 'skipped'" do
-        expect(workflow_client).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'skipped',
-                                                                         elapsed: Float,
-                                                                         note: Socket.gethostname)
         expect(logged).to match(/#{druid} processing/).and match(/work done\!/)
+
+        expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                      workflow: wf_name,
+                                                                      process: step_name,
+                                                                      status: 'skipped',
+                                                                      elapsed: Float,
+                                                                      note: Socket.gethostname)
       end
     end
 
@@ -47,11 +56,16 @@ RSpec.describe 'robot "bases"' do
           end
         end
       end
+
       it "updates workflow to 'completed' and sets a custom note" do
-        expect(workflow_client).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'completed',
-                                                                         elapsed: Float,
-                                                                         note: 'some note to pass back to workflow')
         expect(logged).to match(/#{druid} processing/).and match(/work done\!/)
+
+        expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                      workflow: wf_name,
+                                                                      process: step_name,
+                                                                      status: 'completed',
+                                                                      elapsed: Float,
+                                                                      note: 'some note to pass back to workflow')
       end
     end
 
@@ -63,11 +77,16 @@ RSpec.describe 'robot "bases"' do
           end
         end
       end
+
       it "updates workflow to 'skipped' and sets a custom note" do
-        expect(workflow_client).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'skipped',
-                                                                         elapsed: Float,
-                                                                         note: 'some note to pass back to workflow')
         expect(logged).to match(/#{druid} processing/).and match(/work done\!/)
+
+        expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                      workflow: wf_name,
+                                                                      process: step_name,
+                                                                      status: 'skipped',
+                                                                      elapsed: Float,
+                                                                      note: 'some note to pass back to workflow')
       end
     end
 
@@ -79,11 +98,16 @@ RSpec.describe 'robot "bases"' do
           end
         end
       end
+
       it "updates workflow to 'skipped'" do
-        expect(workflow_client).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'skipped',
-                                                                         elapsed: Float,
-                                                                         note: Socket.gethostname)
         expect(logged).to match(/#{druid} processing/).and match(/work done\!/)
+
+        expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                      workflow: wf_name,
+                                                                      process: step_name,
+                                                                      status: 'skipped',
+                                                                      elapsed: Float,
+                                                                      note: Socket.gethostname)
       end
     end
 
@@ -94,10 +118,14 @@ RSpec.describe 'robot "bases"' do
     end
 
     it "processes jobs when workflow status is 'queued' for this object and step" do
-      expect(workflow_client).to receive(:update_workflow_status).with('dor', druid, wf_name, step_name, 'completed',
-                                                                       elapsed: Float,
-                                                                       note: Socket.gethostname)
       expect(logged).to match /work done\!/
+
+      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                    workflow: wf_name,
+                                                                    process: step_name,
+                                                                    status: 'completed',
+                                                                    elapsed: Float,
+                                                                    note: Socket.gethostname)
     end
 
     it "skips jobs when workflow status is not 'queued' for this object and step" do
