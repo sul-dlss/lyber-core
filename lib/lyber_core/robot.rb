@@ -81,7 +81,7 @@ module LyberCore
         workflow_state = 'completed'
       end
       # update the workflow status from its current state to the state returned by perform (or 'completed' as the default)
-      workflow_service.update_workflow_status(@repo, druid, @workflow_name, @step_name, workflow_state, elapsed: elapsed, note: note)
+      workflow_service.update_status(druid: druid, workflow: @workflow_name, process: @step_name, status: workflow_state, elapsed: elapsed, note: note)
       LyberCore::Log.info "Finished #{druid} in #{sprintf('%0.4f', elapsed)}s"
     rescue StandardError => e
       Honeybadger.notify(e) if defined? Honeybadger
