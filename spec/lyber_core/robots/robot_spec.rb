@@ -6,7 +6,9 @@ RSpec.describe 'robot "bases"' do
   let(:druid) { 'druid:test1234' }
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, update_status: true) }
+  let(:workflow_client) do
+    instance_double(Dor::Workflow::Client, update_status: true, update_error_status: true)
+  end
 
   shared_examples '#perform' do
     let(:test_class) { test_robot } # default
@@ -112,7 +114,7 @@ RSpec.describe 'robot "bases"' do
     end
 
     it "updates workflow to 'error' if there was a problem with the work" do
-      expect(workflow_client).to receive(:update_workflow_error_status).with('dor', druid, wf_name, step_name, /work error/, error_text: Socket.gethostname)
+      expect(workflow_client).to receive(:update_error_status).with(druid: druid, workflow: wf_name, process: step_name, error_msg: /work error/, error_text: Socket.gethostname)
       allow_any_instance_of(test_robot).to receive(:perform).and_raise('work error') # exception swallowed by Robot exception handler
       expect(logged).to match /work error/
     end
