@@ -87,7 +87,7 @@ module LyberCore
       Honeybadger.notify(e) if defined? Honeybadger
       begin
         LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
-        workflow_service.update_workflow_error_status(@repo, druid, @workflow_name, @step_name, e.message, error_text: Socket.gethostname)
+        workflow_service.update_error_status(druid: druid, workflow: @workflow_name, process: @step_name, error_msg: e.message, error_text: Socket.gethostname)
       rescue StandardError => e
         LyberCore::Log.error "Cannot set #{druid} to status='error'\n" + e.message + "\n" + e.backtrace.join("\n")
         raise e # send exception to Resque failed queue
