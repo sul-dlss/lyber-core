@@ -59,6 +59,8 @@ module LyberCore
     # Sets up logging, timing and error handling of the job
     # Calls the #perform method, then sets workflow to 'completed' or 'error' depending on success
     def work(druid)
+      Honeybadger.context(druid: druid, step_name: @step_name, workflow_name: @workflow_name) if defined? Honeybadger
+
       LyberCore::Log.set_logfile($stdout) # let process manager(bluepill) handle logging
       LyberCore::Log.info "#{druid} processing"
       return if @check_queued_status && !item_queued?(druid)
