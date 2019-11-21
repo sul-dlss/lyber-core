@@ -1,3 +1,4 @@
+
 # frozen_string_literal: true
 
 require 'spec_helper'
@@ -15,7 +16,7 @@ RSpec.describe 'robot "bases"' do
     let(:logged) { capture_stdout { test_class.perform druid } }
     before do
       allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
-      allow(workflow_client).to receive(:workflow_status).with('dor', druid, wf_name, step_name).and_return('queued')
+      allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('queued')
     end
 
     it "updates workflow to 'completed' if work processes without error" do
@@ -131,7 +132,7 @@ RSpec.describe 'robot "bases"' do
     end
 
     it "skips jobs when workflow status is not 'queued' for this object and step" do
-      expect(workflow_client).to receive(:workflow_status).with('dor', druid, wf_name, step_name).and_return('completed')
+      expect(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('completed')
       expect(logged).to match /Item druid\:.* is not queued.*completed/m
     end
   end
