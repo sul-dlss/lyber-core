@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 require 'spec_helper'
@@ -13,7 +12,7 @@ RSpec.describe 'robot "bases"' do
 
   shared_examples '#perform' do
     let(:test_class) { test_robot } # default
-    let(:logged) { capture_stdout { test_class.perform druid } }
+    let(:logged) { capture_stdout { test_class.perform druid } } # Note that this is what invokes the robot
     before do
       allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
       allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('queued')
@@ -58,6 +57,16 @@ RSpec.describe 'robot "bases"' do
             super && LyberCore::Robot::ReturnState.new(note: 'some note to pass back to workflow')
           end
         end
+      end
+
+      it "updates workflow to 'started'" do
+        logged # This invokes the robot.
+        expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                      workflow: wf_name,
+                                                                      process: step_name,
+                                                                      status: 'started',
+                                                                      elapsed: 1.0,
+                                                                      note: Socket.gethostname)
       end
 
       it "updates workflow to 'completed' and sets a custom note" do

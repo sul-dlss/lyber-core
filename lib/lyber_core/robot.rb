@@ -65,13 +65,17 @@ module LyberCore
       LyberCore::Log.info "#{druid} processing"
       return if @check_queued_status && !item_queued?(druid)
 
+      # this is the default note to pass back to workflow service, but it can be overriden by a robot that uses the Lybercore::Robot::ReturnState object to return a status
+      note = Socket.gethostname
+
+      # update the workflow status to indicate that started
+      puts('setting to start')
+      workflow_service.update_status(druid: druid, workflow: @workflow_name, process: @step_name, status: 'started', elapsed: 1.0, note: note)
+
       result = nil
       elapsed = Benchmark.realtime do
         result = perform druid # implemented in the mixed-in robot class
       end
-
-      # this is the default note to pass back to workflow service, but it can be overriden by a robot that uses the Lybercore::Robot::ReturnState object to return a status
-      note = Socket.gethostname
 
       # the final workflow state is determined by the return value of the perform step, if it is a ReturnState object,
       # we will use the defined status, otherwise default to completed
