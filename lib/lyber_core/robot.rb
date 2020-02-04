@@ -105,8 +105,9 @@ module LyberCore
     def item_queued?(druid)
       status = workflow_service.workflow_status(druid: druid, workflow: @workflow_name, process: @step_name)
       return true if status =~ /queued/i
-
-      LyberCore::Log.warn "Item #{druid} is not queued, but has status of '#{status}'. Will skip processing"
+      msg = "Item #{druid} is not queued for #{@step_name} (#{@workflow_name}), but has status of '#{status}'. Will skip processing"
+      Honeybadger.notify(msg) if defined? Honeybadger
+      LyberCore::Log.warn msg
       false
     end
   end
