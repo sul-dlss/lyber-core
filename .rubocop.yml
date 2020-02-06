@@ -13,5 +13,5 @@ Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
 # Configuration parameters: AllowURI, URISchemes.
-Metrics/LineLength:
-  Max: 200
+Layout/LineLength:
+  Max: 177
