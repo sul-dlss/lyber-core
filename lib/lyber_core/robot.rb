@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 require 'benchmark'
-require 'active_support'
-require 'active_support/core_ext'
-require 'active_support/core_ext/string/inflections' # camelcase
 
 module LyberCore
   module Robot
@@ -21,56 +18,38 @@ module LyberCore
       end
     end
 
-    # Converts a given step to the Robot class name
-    # Examples:
-    #
-    # - `dor:assemblyWF:jp2-create` into `Robots::DorRepo::Assembly::Jp2Create`
-    # - `dor:gisAssemblyWF:start-assembly-workflow` into `Robots::DorRepo::GisAssembly::StartAssemblyWorkflow`
-    # - `dor:etdSubmitWF:binder-transfer` into `Robots:DorRepo::EtdSubmit::BinderTransfer`
-    #
-    # @param [String] step. fully qualified step name, e.g., `dor:accessionWF:descriptive-metadata`
-    # @param [Hash] opts
-    # @option :repo_suffix defaults to `Repo`
-    # @return [String] The class name for the robot, e.g., `Robots::DorRepo::Accession:DescriptiveMetadata`
-    def self.step_to_classname(step, opts = {})
-      # generate the robot job class name
-      opts[:repo_suffix] ||= 'Repo'
-      r, w, s = step.split(/:/, 3)
-      [
-        'Robots',
-        r.camelcase + opts[:repo_suffix], # 'Dor' conflicts with dor-services
-        w.sub('WF', '').camelcase,
-        s.tr('-', '_').camelcase
-      ].join('::')
-    end
-
     attr_accessor :check_queued_status
-    attr_reader :workflow_service
+    attr_reader :workflow_service, :workflow_name, :process
 
-    def initialize(repo, workflow_name, step_name, opts = {})
+    def initialize(workflow_name, process, workflow_service:, check_queued_status: true)
       Signal.trap('QUIT') { puts "#{Process.pid} ignoring SIGQUIT" } # SIGQUIT ignored to let the robot finish
-      @repo = repo
       @workflow_name = workflow_name
-      @step_name = step_name
-      @check_queued_status = opts.fetch(:check_queued_status, true)
-      @workflow_service = opts.fetch(:workflow_service) { Dor::Config.workflow.client }
+      @process = process
+      @check_queued_status = check_queued_status
+      @workflow_service = workflow_service
     end
 
     # Sets up logging, timing and error handling of the job
     # Calls the #perform method, then sets workflow to 'completed' or 'error' depending on success
     def work(druid)
-      Honeybadger.context(druid: druid, step_name: @step_name, workflow_name: @workflow_name) if defined? Honeybadger
+      Honeybadger.context(druid: druid, process: process, workflow_name: workflow_name) if defined? Honeybadger
 
       LyberCore::Log.set_logfile($stdout) # let process manager(bluepill) handle logging
       LyberCore::Log.info "#{druid} processing"
-      return if @check_queued_status && !item_queued?(druid)
+      return if check_queued_status && !item_queued?(druid)
 
-      # this is the default note to pass back to workflow service, but it can be overriden by a robot that uses the Lybercore::Robot::ReturnState object to return a status
+      # this is the default note to pass back to workflow service,
+      # but it can be overriden by a robot that uses the Lybercore::Robot::ReturnState
+      # object to return a status
       note = Socket.gethostname
 
       # update the workflow status to indicate that started
-      puts('setting to start')
-      workflow_service.update_status(druid: druid, workflow: @workflow_name, process: @step_name, status: 'started', elapsed: 1.0, note: note)
+      workflow_service.update_status(druid: druid,
+                                     workflow: workflow_name,
+                                     process: process,
+                                     status: 'started',
+                                     elapsed: 1.0,
+                                     note: note)
 
       result = nil
       elapsed = Benchmark.realtime do
@@ -87,15 +66,24 @@ module LyberCore
         workflow_state = 'completed'
       end
       # update the workflow status from its current state to the state returned by perform (or 'completed' as the default)
-      workflow_service.update_status(druid: druid, workflow: @workflow_name, process: @step_name, status: workflow_state, elapsed: elapsed, note: note)
+      workflow_service.update_status(druid: druid,
+                                     workflow: workflow_name,
+                                     process: process,
+                                     status: workflow_state,
+                                     elapsed: elapsed,
+                                     note: note)
       LyberCore::Log.info "Finished #{druid} in #{sprintf('%0.4f', elapsed)}s"
     rescue StandardError => e
       Honeybadger.notify(e) if defined? Honeybadger
       begin
         LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
-        workflow_service.update_error_status(druid: druid, workflow: @workflow_name, process: @step_name, error_msg: e.message, error_text: Socket.gethostname)
+        workflow_service.update_error_status(druid: druid,
+                                             workflow: workflow_name,
+                                             process: process,
+                                             error_msg: e.message,
+                                             error_text: Socket.gethostname)
       rescue StandardError => e
-        LyberCore::Log.error "Cannot set #{druid} to status='error'\n" + e.message + "\n" + e.backtrace.join("\n")
+        LyberCore::Log.error "Cannot set #{druid} to status='error'\n#{e.message}\n#{e.backtrace.join("\n")}"
         raise e # send exception to Resque failed queue
       end
     end
@@ -103,10 +91,11 @@ module LyberCore
   private
 
     def item_queued?(druid)
-      status = workflow_service.workflow_status(druid: druid, workflow: @workflow_name, process: @step_name)
+      status = workflow_service.workflow_status(druid: druid,
+                                                workflow: workflow_name,
+                                                process: process)
       return true if status =~ /queued/i
-
-      msg = "Item #{druid} is not queued for #{@step_name} (#{@workflow_name}), but has status of '#{status}'. Will skip processing"
+      msg = "Item #{druid} is not queued for #{process} (#{workflow_name}), but has status of '#{status}'. Will skip processing"
       Honeybadger.notify(msg) if defined? Honeybadger
       LyberCore::Log.warn msg
       false

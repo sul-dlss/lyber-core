@@ -17,11 +17,6 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = '>= 1.3.6'
 
-  # Runtime dependencies
-  s.add_dependency 'activesupport'
-  s.add_dependency 'dor-services', '>= 7.0.0', '< 9' # Used for building a dor-workflow-client connection
-  s.add_dependency 'dor-workflow-client', '~> 3.11'
-
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
   # It will not add these as dependencies if you require lyber-core for other projects
   s.add_development_dependency 'coveralls'
