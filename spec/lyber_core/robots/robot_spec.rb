@@ -20,9 +20,10 @@ RSpec.describe 'robot "bases"' do
       end
     end
 
-    let(:robot) { test_robot.new('testWF', 'test-step', workflow_service: workflow_client) } # default
+    let(:robot) { test_robot.new('testWF', 'test-step') }
     let(:logged) { capture_stdout { robot.work druid } } # Note that this is what invokes the robot
     before do
+      allow(robot).to receive(:workflow_service).and_return(workflow_client)
       allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('queued')
     end
 

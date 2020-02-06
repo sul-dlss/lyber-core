@@ -19,14 +19,17 @@ module LyberCore
     end
 
     attr_accessor :check_queued_status
-    attr_reader :workflow_service, :workflow_name, :process
+    attr_reader :workflow_name, :process
 
-    def initialize(workflow_name, process, workflow_service:, check_queued_status: true)
+    def initialize(workflow_name, process, check_queued_status: true)
       Signal.trap('QUIT') { puts "#{Process.pid} ignoring SIGQUIT" } # SIGQUIT ignored to let the robot finish
       @workflow_name = workflow_name
       @process = process
       @check_queued_status = check_queued_status
-      @workflow_service = workflow_service
+    end
+
+    def workflow_service
+      raise "The workflow_service method must be implemented on the class that includes LyberCore::Robot"
     end
 
     # Sets up logging, timing and error handling of the job
