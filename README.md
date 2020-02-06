@@ -53,13 +53,13 @@ module Robots
           obj = Dor::Item.find(druid)
           if some_logic_here_to_determine_if_shelving_occurs
             obj.shelve
-            return LyberCore::Robot::ReturnState.COMPLETED # set the final state to completed
-#           return LyberCore::Robot::ReturnState.new(state: 'completed', note: 'some custom note to pass back to workflow') # set the final state to completed with a custom note
+            return LyberCore::Robot::ReturnState.new(status: 'completed') # set the final state to completed
+#           return LyberCore::Robot::ReturnState.new(status: 'completed', note: 'some custom note to pass back to workflow') # set the final state to completed with a custom note
 
           else
             # just return skipped if we did nothing
-            return LyberCore::Robot::ReturnState.SKIPPED # set the final state to skipped
-#           return LyberCore::Robot::ReturnState.new(state: 'skipped', note: 'some custom note to pass back to workflow') # set the final state to skipped with a custom note
+            return LyberCore::Robot::ReturnState.new(status: 'skipped') # set the final state to skipped
+#           return LyberCore::Robot::ReturnState.new(status: 'skipped', note: 'some custom note to pass back to workflow') # set the final state to skipped with a custom note
           end
         end
 

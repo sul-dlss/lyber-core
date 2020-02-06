@@ -11,18 +11,6 @@ module LyberCore
       ALLOWED_RETURN_STATES = %w[completed skipped waiting].freeze
       DEFAULT_RETURN_STATE  = 'completed'
 
-      def self.SKIPPED
-        new(status: 'skipped')
-      end
-
-      def self.COMPLETED
-        new(status: 'completed')
-      end
-
-      def self.WAITING
-        new(status: 'waiting')
-      end
-
       def initialize(params = {})
         self.status = params[:status] || DEFAULT_RETURN_STATE
         self.note = params[:note] || ''
