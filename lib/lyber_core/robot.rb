@@ -29,14 +29,14 @@ module LyberCore
     end
 
     def workflow_service
-      raise "The workflow_service method must be implemented on the class that includes LyberCore::Robot"
+      raise 'The workflow_service method must be implemented on the class that includes LyberCore::Robot'
     end
 
     # Sets up logging, timing and error handling of the job
     # Calls the #perform method, then sets workflow to 'completed' or 'error' depending on success
     def work(druid)
       Honeybadger.context(druid: druid, process: process, workflow_name: workflow_name) if defined? Honeybadger
-
+      workflow = workflow(druid)
       LyberCore::Log.set_logfile($stdout) # let process manager(bluepill) handle logging
       LyberCore::Log.info "#{druid} processing"
       return if check_queued_status && !item_queued?(druid)
@@ -47,12 +47,7 @@ module LyberCore
       note = Socket.gethostname
 
       # update the workflow status to indicate that started
-      workflow_service.update_status(druid: druid,
-                                     workflow: workflow_name,
-                                     process: process,
-                                     status: 'started',
-                                     elapsed: 1.0,
-                                     note: note)
+      workflow.start(note)
 
       result = nil
       elapsed = Benchmark.realtime do
@@ -69,22 +64,14 @@ module LyberCore
         workflow_state = 'completed'
       end
       # update the workflow status from its current state to the state returned by perform (or 'completed' as the default)
-      workflow_service.update_status(druid: druid,
-                                     workflow: workflow_name,
-                                     process: process,
-                                     status: workflow_state,
-                                     elapsed: elapsed,
-                                     note: note)
+      workflow.complete(workflow_state, elapsed, note)
+
       LyberCore::Log.info "Finished #{druid} in #{sprintf('%0.4f', elapsed)}s"
     rescue StandardError => e
       Honeybadger.notify(e) if defined? Honeybadger
       begin
         LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
-        workflow_service.update_error_status(druid: druid,
-                                             workflow: workflow_name,
-                                             process: process,
-                                             error_msg: e.message,
-                                             error_text: Socket.gethostname)
+        workflow.error(e.message, Socket.gethostname)
       rescue StandardError => e
         LyberCore::Log.error "Cannot set #{druid} to status='error'\n#{e.message}\n#{e.backtrace.join("\n")}"
         raise e # send exception to Resque failed queue
@@ -93,11 +80,19 @@ module LyberCore
 
   private
 
+    def workflow(druid)
+      Workflow.new(workflow_service: workflow_service,
+                   druid: druid,
+                   workflow_name: workflow_name,
+                   process: process)
+    end
+
     def item_queued?(druid)
       status = workflow_service.workflow_status(druid: druid,
                                                 workflow: workflow_name,
                                                 process: process)
       return true if status =~ /queued/i
+
       msg = "Item #{druid} is not queued for #{process} (#{workflow_name}), but has status of '#{status}'. Will skip processing"
       Honeybadger.notify(msg) if defined? Honeybadger
       LyberCore::Log.warn msg
