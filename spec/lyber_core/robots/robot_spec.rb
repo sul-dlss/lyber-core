@@ -123,7 +123,7 @@ RSpec.describe 'robot "bases"' do
           include LyberCore::Robot
 
           def perform(_druid)
-            LyberCore::Log.info('work done!') && LyberCore::Robot::ReturnState.SKIPPED
+            LyberCore::Log.info('work done!') && LyberCore::Robot::ReturnState.new(status: 'skipped')
           end
         end
       end
