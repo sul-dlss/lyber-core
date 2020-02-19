@@ -34,11 +34,14 @@ module LyberCore
 
     # Sets up logging, timing and error handling of the job
     # Calls the #perform method, then sets workflow to 'completed' or 'error' depending on success
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     def work(druid)
       Honeybadger.context(druid: druid, process: process, workflow_name: workflow_name) if defined? Honeybadger
       workflow = workflow(druid)
       LyberCore::Log.set_logfile($stdout) # let process manager(bluepill) handle logging
-      LyberCore::Log.info "#{druid} processing"
+      LyberCore::Log.info "#{druid} processing #{process} (#workflow_name)"
       return if check_queued_status && !item_queued?(druid)
 
       # this is the default note to pass back to workflow service,
@@ -64,7 +67,8 @@ module LyberCore
         workflow_state = 'completed'
       end
       # update the workflow status from its current state to the state returned by perform (or 'completed' as the default)
-      workflow.complete(workflow_state, elapsed, note)
+      # noop allows a robot to not set a workflow as complete, e.g., if that is delegated to another service.
+      workflow.complete(workflow_state, elapsed, note) unless workflow_state == 'noop'
 
       LyberCore::Log.info "Finished #{druid} in #{sprintf('%0.4f', elapsed)}s"
     rescue StandardError => e
@@ -77,6 +81,9 @@ module LyberCore
         raise e # send exception to Resque failed queue
       end
     end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 
