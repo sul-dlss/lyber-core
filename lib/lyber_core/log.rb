@@ -92,14 +92,14 @@ module LyberCore
       @@log.add(Logger::DEBUG) { msg }
     end
 
-    def Log.exception(e)
-      msg = Log.exception_message(e)
+    def Log.exception(exc)
+      msg = Log.exception_message(exc)
       Log.error(msg)
     end
 
-    def Log.exception_message(e)
-      msg = e.inspect.split($/).join('; ') + "\n"
-      msg << e.backtrace.join("\n") if e.backtrace
+    def Log.exception_message(exc)
+      msg = exc.inspect.split($/).join('; ') + "\n"
+      msg << exc.backtrace.join("\n") if exc.backtrace
     end
   end
 end

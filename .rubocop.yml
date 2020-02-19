@@ -15,3 +15,7 @@ Layout/AccessModifierIndentation:
 # Configuration parameters: AllowURI, URISchemes.
 Layout/LineLength:
   Max: 177
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

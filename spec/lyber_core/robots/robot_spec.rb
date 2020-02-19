@@ -162,4 +162,19 @@ RSpec.describe 'robot "bases"' do
       expect(logged).to match /Item druid\:.* is not queued.*completed/m
     end
   end
+  context 'when ReturnState is noop' do
+    let(:test_robot) do
+      Class.new do
+        include LyberCore::Robot
+
+        def perform(_druid)
+          LyberCore::Log.info('work done!') && LyberCore::Robot::ReturnState.new(status: 'noop')
+        end
+      end
+    end
+
+    it 'does not update workflow' do
+      expect(workflow_client).not_to have_received(:update_status)
+    end
+  end
 end
