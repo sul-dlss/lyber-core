@@ -12,9 +12,9 @@ module LyberCore
     module ClassMethods
       # Called by job-manager on derived-class
       # Instantiate the Robot and call #work with the passed in druid
-      def perform(druid)
+      def perform(druid, *context)
         bot = new
-        bot.work druid
+        bot.work druid, context
       end
     end
 
@@ -37,7 +37,7 @@ module LyberCore
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/PerceivedComplexity
-    def work(druid)
+    def work(druid, context)
       Honeybadger.context(druid: druid, process: process, workflow_name: workflow_name) if defined? Honeybadger
       workflow = workflow(druid)
       LyberCore::Log.set_logfile($stdout) # let process manager(bluepill) handle logging
@@ -54,7 +54,11 @@ module LyberCore
 
       result = nil
       elapsed = Benchmark.realtime do
-        result = perform druid # implemented in the mixed-in robot class
+        result = if method(:perform).arity == 1
+          perform druid # implemented in the mixed-in robot class
+        else
+          perform druid, context
+        end
       end
 
       # the final workflow state is determined by the return value of the perform step, if it is a ReturnState object,

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'robot "bases"' do
   let(:druid) { 'druid:test1234' }
+  let(:context) { {} }
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
   let(:workflow_client) do
@@ -21,7 +22,7 @@ RSpec.describe 'robot "bases"' do
     end
 
     let(:robot) { test_robot.new('testWF', 'test-step') }
-    let(:logged) { capture_stdout { robot.work druid } } # Note that this is what invokes the robot
+    let(:logged) { capture_stdout { robot.work druid, context } } # Note that this is what invokes the robot
     before do
       allow(robot).to receive(:workflow_service).and_return(workflow_client)
       allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('queued')
