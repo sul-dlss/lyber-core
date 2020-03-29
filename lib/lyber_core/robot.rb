@@ -40,8 +40,8 @@ module LyberCore
     def work(druid, context)
       Honeybadger.context(druid: druid, process: process, workflow_name: workflow_name) if defined? Honeybadger
       workflow = workflow(druid)
-      LyberCore::Log.set_logfile($stdout) # let process manager(bluepill) handle logging
-      LyberCore::Log.info "#{druid} processing #{process} (#workflow_name)"
+      LyberCore::Log.set_logfile($stdout) # let process manager handle logging
+      LyberCore::Log.info "#{druid} processing #{process} (#{workflow_name})"
       return if check_queued_status && !item_queued?(druid)
 
       # this is the default note to pass back to workflow service,
