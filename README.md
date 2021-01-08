@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/sul-dlss/lyber-core.svg?branch=master)](https://travis-ci.com/sul-dlss/lyber-core)
-[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/lyber-core/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/lyber-core?branch=master)
+[![Build Status](https://travis-ci.com/sul-dlss/lyber-core.svg?branch=main)](https://travis-ci.com/sul-dlss/lyber-core)
+[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/lyber-core/badge.svg?branch=main)](https://coveralls.io/github/sul-dlss/lyber-core?branch=main)
 [![Gem Version](https://badge.fury.io/rb/lyber-core.svg)](https://badge.fury.io/rb/lyber-core)
 
 # lyber_core
@@ -73,7 +73,7 @@ end
 ## Robot Environment Setup
 
 * Create a `config/boot.rb` file to load the classpath, classes and configuration that your robot will need in order to run.
-See the [boot.rb file from the Common-Accessioning robot suite](https://github.com/sul-dlss/common-accessioning/blob/master/config/boot.rb) as an example
+See the [boot.rb file from the Common-Accessioning robot suite](https://github.com/sul-dlss/common-accessioning/blob/main/config/boot.rb) as an example
 
 * Add `require 'resque/tasks'` to your `Rakefile`
 
