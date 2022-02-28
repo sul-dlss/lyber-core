@@ -1,7 +1,0 @@
-language: ruby
-cache: bundler
-notifications:
-  email: false
-
-rvm:
-  - 2.5.3
