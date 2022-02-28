@@ -9,7 +9,7 @@ describe LyberCore::Log do
     valid_logfile = '/tmp/fakelog.log'
     invalid_logfile = '/zzxx/fakelog.log'
     with_warnings_suppressed do
-      ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + '/../fixtures')
+      ROBOT_ROOT = File.expand_path("#{File.dirname(__FILE__)}/../fixtures")
     end
 
     it 'has a default value for logfile' do

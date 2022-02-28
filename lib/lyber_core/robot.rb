@@ -55,16 +55,16 @@ module LyberCore
       result = nil
       elapsed = Benchmark.realtime do
         result = if method(:perform).arity == 1
-          perform druid # implemented in the mixed-in robot class
-        else
-          perform druid, context
-        end
+                   perform druid # implemented in the mixed-in robot class
+                 else
+                   perform druid, context
+                 end
       end
 
       # the final workflow state is determined by the return value of the perform step, if it is a ReturnState object,
       # we will use the defined status, otherwise default to completed
       # if a note is passed back, we will also use that instead of the default
-      if result.class == LyberCore::Robot::ReturnState
+      if result.instance_of?(LyberCore::Robot::ReturnState)
         workflow_state = result.status
         note = result.note unless result.note.blank?
       else
@@ -78,7 +78,7 @@ module LyberCore
     rescue StandardError => e
       Honeybadger.notify(e) if defined? Honeybadger
       begin
-        LyberCore::Log.error e.message + "\n" + e.backtrace.join("\n")
+        LyberCore::Log.error "#{e.message}\n#{e.backtrace.join("\n")}"
         workflow.error(e.message, Socket.gethostname)
       rescue StandardError => e
         LyberCore::Log.error "Cannot set #{druid} to status='error'\n#{e.message}\n#{e.backtrace.join("\n")}"
