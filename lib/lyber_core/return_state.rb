@@ -8,6 +8,7 @@ module LyberCore
     class ReturnState
       attr_reader :status
       attr_accessor :note
+
       ALLOWED_RETURN_STATES = %w[completed skipped waiting noop].freeze
       DEFAULT_RETURN_STATE  = 'completed'
 

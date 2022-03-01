@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.description = "Contains classes to make http connections with a client-cert, use Jhove, and call Suri\n" \
                     'Also contains core classes to build robots'
 
+  s.required_ruby_version = '>=3.0'
   s.required_rubygems_version = '>= 1.3.6'
 
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
