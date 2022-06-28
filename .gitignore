@@ -29,4 +29,3 @@ workflow_service.log*
 .ruby-version
 .ruby-gemset
 *.gem
-Gemfile.lock
