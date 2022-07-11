@@ -49,7 +49,7 @@ GEM
       rubocop-ast (>= 0.6.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (1.18.0)
+    rubocop-ast (1.19.1)
       parser (>= 3.1.1.0)
     rubocop-rspec (1.44.1)
       rubocop (~> 0.87)
@@ -86,4 +86,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   2.3.16
+   2.3.17
