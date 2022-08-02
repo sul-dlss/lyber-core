@@ -2,6 +2,8 @@
 
 require 'benchmark'
 require 'socket'
+require 'active_support'
+require 'active_support/core_ext/object/blank' # String#blank?
 
 module LyberCore
   module Robot
