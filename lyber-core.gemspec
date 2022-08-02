@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>=3.0'
   s.required_rubygems_version = '>= 1.3.6'
 
+  s.add_dependency 'activesupport'
+
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
   # It will not add these as dependencies if you require lyber-core for other projects
   s.add_development_dependency 'coveralls'
