@@ -22,12 +22,12 @@ Gem::Specification.new do |s|
 
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
   # It will not add these as dependencies if you require lyber-core for other projects
-  s.add_development_dependency 'coveralls'
   s.add_development_dependency 'rake', '>=0.8.7'
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'rubocop-rspec', '~> 1.24'
+  s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard'
 
   s.files        = Dir.glob('lib/**/*') + %w[LICENSE README.md]
