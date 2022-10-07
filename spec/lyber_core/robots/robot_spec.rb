@@ -8,7 +8,7 @@ RSpec.describe 'robot "bases"' do
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
   let(:workflow_client) do
-    double('Dor::Workflow::Client', update_status: true, update_error_status: true)
+    instance_double('Dor::Workflow::Client', update_status: true, update_error_status: true)
   end
 
   describe LyberCore::Robot do
@@ -23,6 +23,7 @@ RSpec.describe 'robot "bases"' do
 
     let(:robot) { test_robot.new('testWF', 'test-step') }
     let(:logged) { capture_stdout { robot.work druid, context } } # Note that this is what invokes the robot
+
     before do
       allow(robot).to receive(:workflow_service).and_return(workflow_client)
       allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('queued')
@@ -39,7 +40,7 @@ RSpec.describe 'robot "bases"' do
                                                                     note: Socket.gethostname)
     end
 
-    context 'correct state returned' do
+    context 'when correct state returned' do
       let(:test_robot) do
         Class.new do
           include LyberCore::Robot
@@ -118,7 +119,7 @@ RSpec.describe 'robot "bases"' do
       end
     end
 
-    context 'using a ReturnState constant' do
+    context 'when using a ReturnState constant' do
       let(:test_robot) do
         Class.new do
           include LyberCore::Robot
@@ -127,6 +128,15 @@ RSpec.describe 'robot "bases"' do
             LyberCore::Log.info('work done!') && LyberCore::Robot::ReturnState.new(status: 'skipped')
           end
         end
+      end
+
+      before do
+        allow(workflow_client).to receive(:update_status).with(druid: druid,
+                                                               workflow: wf_name,
+                                                               process: step_name,
+                                                               status: 'skipped',
+                                                               elapsed: Float,
+                                                               note: Socket.gethostname)
       end
 
       it "updates workflow to 'skipped'" do
@@ -142,13 +152,18 @@ RSpec.describe 'robot "bases"' do
     end
 
     it "updates workflow to 'error' if there was a problem with the work" do
-      expect(workflow_client).to receive(:update_error_status).with(druid: druid, workflow: wf_name, process: step_name, error_msg: /work error/, error_text: Socket.gethostname)
+      allow(workflow_client).to receive(:update_error_status).with(druid: druid, workflow: wf_name, process: step_name, error_msg: /work error/, error_text: Socket.gethostname)
       allow_any_instance_of(test_robot).to receive(:perform).and_raise('work error') # exception swallowed by Robot exception handler
-      expect(logged).to match /work error/
+      expect(logged).to match(/work error/)
+      expect(workflow_client).to have_received(:update_error_status).with(druid: druid,
+                                                                          workflow: wf_name,
+                                                                          process: step_name,
+                                                                          error_msg: /work error/,
+                                                                          error_text: Socket.gethostname)
     end
 
     it "processes jobs when workflow status is 'queued' for this object and step" do
-      expect(logged).to match /work done!/
+      expect(logged).to match(/work done!/)
 
       expect(workflow_client).to have_received(:update_status).with(druid: druid,
                                                                     workflow: wf_name,
@@ -159,10 +174,12 @@ RSpec.describe 'robot "bases"' do
     end
 
     it "skips jobs when workflow status is not 'queued' for this object and step" do
-      expect(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('completed')
-      expect(logged).to match /Item druid:.* is not queued.*completed/m
+      allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name).and_return('completed')
+      expect(logged).to match(/Item druid:.* is not queued.*completed/m)
+      expect(workflow_client).to have_received(:workflow_status).with(druid: druid, workflow: wf_name, process: step_name)
     end
   end
+
   context 'when ReturnState is noop' do
     let(:test_robot) do
       Class.new do
