@@ -37,10 +37,7 @@ module LyberCore
 
     # Sets up logging, timing and error handling of the job
     # Calls the #perform method, then sets workflow to 'completed' or 'error' depending on success
-    # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
-    def work(druid, context)
+    def work(druid, context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       Honeybadger.context(druid: druid, process: process, workflow_name: workflow_name) if defined? Honeybadger
       workflow = workflow(druid)
       LyberCore::Log.set_logfile($stdout) # let process manager handle logging
@@ -88,9 +85,6 @@ module LyberCore
         raise e # send exception to Resque failed queue
       end
     end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 
