@@ -10,7 +10,7 @@ module LyberCore
       @process = process
     end
 
-    def start(note)
+    def start!(note)
       workflow_service.update_status(druid: druid,
                                      workflow: workflow_name,
                                      process: process,
@@ -19,7 +19,7 @@ module LyberCore
                                      note: note)
     end
 
-    def complete(status, elapsed, note)
+    def complete!(status, elapsed, note)
       workflow_service.update_status(druid: druid,
                                      workflow: workflow_name,
                                      process: process,
@@ -28,7 +28,7 @@ module LyberCore
                                      note: note)
     end
 
-    def error(error_msg, error_text)
+    def error!(error_msg, error_text)
       workflow_service.update_error_status(druid: druid,
                                            workflow: workflow_name,
                                            process: process,
@@ -36,7 +36,17 @@ module LyberCore
                                            error_text: error_text)
     end
 
-  private
+    def status
+      @status ||= workflow_service.workflow_status(druid: druid,
+                                                   workflow: workflow_name,
+                                                   process: process)
+    end
+
+    def lane_id
+      @lane_id ||= workflow_service.process(pid: druid, workflow_name: workflow_name, process: process).lane_id
+    end
+
+    private
 
     attr_reader :workflow_service, :druid, :workflow_name, :process
   end
