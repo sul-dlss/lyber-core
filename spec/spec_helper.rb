@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'simplecov'
+SimpleCov.start do
+  add_filter 'spec/'
+  add_filter 'lib/lyber_core/boot.rb'
+end
 
-SimpleCov.start { add_filter 'spec/' }
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'bundler/setup'
 require 'rspec'
 require 'lyber_core'
+require 'byebug'
+require 'config'
 
-Rails = Object.new unless defined? Rails
-
-Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
+LyberCore::Boot.new(File.expand_path('config', __dir__)).boot_config

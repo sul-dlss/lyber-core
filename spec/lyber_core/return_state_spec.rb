@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe LyberCore::Robot::ReturnState do
+describe LyberCore::ReturnState do
   it 'sets the completed state by default' do
     return_state = described_class.new
     expect(return_state.status).to eq 'completed'
@@ -36,6 +36,6 @@ describe LyberCore::Robot::ReturnState do
   end
 
   it 'does not allow an invalid state to be set' do
-    expect{ described_class.new(status: 'bogus') }.to raise_error(RuntimeError, 'invalid return state')
+    expect { described_class.new(status: 'bogus') }.to raise_error(RuntimeError, 'invalid return state')
   end
 end
