@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'dor-workflow-client', '~> 5.0'
   s.add_dependency 'druid-tools'
   s.add_dependency 'honeybadger'
-  s.add_dependency 'sidekiq', '~> 6.2'
+  s.add_dependency 'sidekiq', '~> 7.0'
   s.add_dependency 'zeitwerk'
 
 
