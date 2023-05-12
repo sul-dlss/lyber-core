@@ -3,7 +3,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/472f67659e513e3d8ffa/maintainability)](https://codeclimate.com/github/sul-dlss/lyber-core/maintainability)
 [![Gem Version](https://badge.fury.io/rb/lyber-core.svg)](https://badge.fury.io/rb/lyber-core)
 
-# lyber_core
+# LyberCore
 
 ## Robot Creation
 
