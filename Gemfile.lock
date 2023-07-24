@@ -48,7 +48,7 @@ GEM
       activesupport
     diff-lcs (1.5.0)
     docile (1.4.0)
-    dor-services-client (12.14.0)
+    dor-services-client (12.15.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.90.0)
       deprecation
