@@ -19,13 +19,12 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activesupport'
   s.add_dependency 'config'
-  s.add_dependency 'dor-services-client', '~> 12.10'
+  s.add_dependency 'dor-services-client', '~> 13.0'
   s.add_dependency 'dor-workflow-client', '~> 5.0'
   s.add_dependency 'druid-tools'
   s.add_dependency 'honeybadger'
   s.add_dependency 'sidekiq', '~> 7.0'
   s.add_dependency 'zeitwerk'
-
 
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
   # It will not add these as dependencies if you require lyber-core for other projects
@@ -34,7 +33,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop', '~> 1.24'
   s.add_development_dependency 'rubocop-rspec'
   s.add_development_dependency 'simplecov'
-  
+
   s.files        = Dir.glob('lib/**/*') + %w[LICENSE README.md]
   s.bindir       = 'bin'
   s.require_path = 'lib'
