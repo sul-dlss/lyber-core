@@ -50,7 +50,7 @@ module LyberCore
     end
 
     def robot_log
-      Sidekiq::Logger.new(File.join(robot_root, "log/#{environment}.log")).tap do |log|
+      @robot_log ||= Sidekiq::Logger.new(File.join(robot_root, "log/#{environment}.log")).tap do |log|
         log.level = Logger::SEV_LABEL.index(ENV.fetch('ROBOT_LOG_LEVEL', nil)) || Logger::INFO
       end
     end
@@ -60,7 +60,7 @@ module LyberCore
 
       Dor::Services::Client.configure(url: Settings.dor_services.url,
                                       token: Settings.dor_services.token,
-                                      enable_get_retries: true)
+                                      logger: robot_log)
     end
 
     def boot_cocina_models

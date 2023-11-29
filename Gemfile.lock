@@ -4,7 +4,7 @@ PATH
     lyber-core (7.2.0)
       activesupport
       config
-      dor-services-client (~> 13.0)
+      dor-services-client (~> 13.4)
       dor-workflow-client (~> 5.0)
       druid-tools
       honeybadger
@@ -56,7 +56,7 @@ GEM
       activesupport
     diff-lcs (1.5.0)
     docile (1.4.0)
-    dor-services-client (13.3.0)
+    dor-services-client (13.4.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.93.0)
       deprecation
