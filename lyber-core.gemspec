@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activesupport'
   s.add_dependency 'config'
-  s.add_dependency 'dor-services-client', '~> 13.4'
+  s.add_dependency 'dor-services-client', '~> 14.0'
   s.add_dependency 'dor-workflow-client', '~> 5.0'
   s.add_dependency 'druid-tools'
   s.add_dependency 'honeybadger'
