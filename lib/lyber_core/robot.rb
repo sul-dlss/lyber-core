@@ -8,12 +8,14 @@ module LyberCore
     sidekiq_options retry: 0
 
     attr_reader :workflow_name, :process, :druid
+    attr_accessor :check_queued_status
 
     delegate :lane_id, to: :workflow
 
-    def initialize(workflow_name, process)
+    def initialize(workflow_name, process, check_queued_status: true)
       @workflow_name = workflow_name
       @process = process
+      @check_queued_status = check_queued_status
     end
 
     def workflow_service
@@ -108,6 +110,8 @@ module LyberCore
     end
 
     def check_item_queued?
+      return true unless check_queued_status
+
       return true if /queued/i.match?(workflow.status)
 
       msg = "Item #{druid} is not queued for #{process} (#{workflow_name}), " \

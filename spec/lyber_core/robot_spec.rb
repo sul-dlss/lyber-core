@@ -187,6 +187,27 @@ RSpec.describe LyberCore::Robot do
     end
   end
 
+  context 'when workflow status is not queued but we skip the check' do
+    before do
+      robot.check_queued_status = false
+    end
+
+    it 'runs the job' do
+      robot.perform(druid)
+      expect(logger).not_to have_received(:warn).with(/Item druid:.* is not queued.*completed/m)
+      expect(logger).to have_received(:info).with(/#{druid} processing/)
+      expect(logger).to have_received(:info).with('work done!')
+      expect(Dor::Services::Client).to have_received(:object).with(druid)
+
+      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+                                                                    workflow: wf_name,
+                                                                    process: step_name,
+                                                                    status: 'completed',
+                                                                    elapsed: Float,
+                                                                    note: Socket.gethostname)
+    end
+  end
+
   context 'when ReturnState is noop' do
     let(:test_robot) do
       Class.new(LyberCore::Robot) do
