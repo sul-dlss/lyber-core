@@ -19,7 +19,7 @@ module LyberCore
     end
 
     def workflow_service
-      @workflow_service ||= WorkflowClientFactory.build(logger: logger)
+      @workflow_service ||= WorkflowClientFactory.build(logger:)
     end
 
     def object_client
@@ -40,7 +40,7 @@ module LyberCore
     # rubocop:disable Metrics/MethodLength
     def perform(druid)
       @druid = druid
-      Honeybadger.context(druid: druid, process: process, workflow_name: workflow_name)
+      Honeybadger.context(druid:, process:, workflow_name:)
 
       logger.info "#{druid} processing #{process} (#{workflow_name})"
       return unless check_item_queued?
@@ -103,10 +103,10 @@ module LyberCore
     # rubocop:enable Metrics/AbcSize
 
     def workflow
-      @workflow ||= Workflow.new(workflow_service: workflow_service,
-                                 druid: druid,
-                                 workflow_name: workflow_name,
-                                 process: process)
+      @workflow ||= Workflow.new(workflow_service:,
+                                 druid:,
+                                 workflow_name:,
+                                 process:)
     end
 
     def check_item_queued?

@@ -35,7 +35,7 @@ RSpec.describe LyberCore::Robot do
 
   before do
     allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
-    allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name,
+    allow(workflow_client).to receive(:workflow_status).with(druid:, workflow: wf_name,
                                                              process: step_name).and_return('queued')
     allow(robot).to receive(:logger).and_return(logger)
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
@@ -65,7 +65,7 @@ RSpec.describe LyberCore::Robot do
       expect(Dor::Services::Client).to have_received(:object).with(druid)
       expect(DruidTools::Druid).to have_received(:new).with(druid, '/tmp')
 
-      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+      expect(workflow_client).to have_received(:update_status).with(druid:,
                                                                     workflow: wf_name,
                                                                     process: step_name,
                                                                     status: 'completed',
@@ -92,7 +92,7 @@ RSpec.describe LyberCore::Robot do
       expect(logger).to have_received(:info).with(/#{druid} processing/)
       expect(logger).to have_received(:info).with('work done!')
 
-      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+      expect(workflow_client).to have_received(:update_status).with(druid:,
                                                                     workflow: wf_name,
                                                                     process: step_name,
                                                                     status: 'skipped',
@@ -116,13 +116,13 @@ RSpec.describe LyberCore::Robot do
       expect(logger).to have_received(:info).with(/#{druid} processing/)
       expect(logger).to have_received(:info).with('work done!')
 
-      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+      expect(workflow_client).to have_received(:update_status).with(druid:,
                                                                     workflow: wf_name,
                                                                     process: step_name,
                                                                     status: 'started',
                                                                     elapsed: 1.0,
                                                                     note: Socket.gethostname)
-      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+      expect(workflow_client).to have_received(:update_status).with(druid:,
                                                                     workflow: wf_name,
                                                                     process: step_name,
                                                                     status: 'completed',
@@ -146,7 +146,7 @@ RSpec.describe LyberCore::Robot do
       expect(logger).to have_received(:info).with(/#{druid} processing/)
       expect(logger).to have_received(:info).with('work done!')
 
-      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+      expect(workflow_client).to have_received(:update_status).with(druid:,
                                                                     workflow: wf_name,
                                                                     process: step_name,
                                                                     status: 'skipped',
@@ -167,7 +167,7 @@ RSpec.describe LyberCore::Robot do
     it "updates workflow to 'error' if there was a problem with the work" do
       robot.perform(druid)
       expect(logger).to have_received(:error).with(/work error/)
-      expect(workflow_client).to have_received(:update_error_status).with(druid: druid,
+      expect(workflow_client).to have_received(:update_error_status).with(druid:,
                                                                           workflow: wf_name,
                                                                           process: step_name,
                                                                           error_msg: /work error/,
@@ -177,7 +177,7 @@ RSpec.describe LyberCore::Robot do
 
   context 'when workflow status is not queued' do
     before do
-      allow(workflow_client).to receive(:workflow_status).with(druid: druid, workflow: wf_name,
+      allow(workflow_client).to receive(:workflow_status).with(druid:, workflow: wf_name,
                                                                process: step_name).and_return('completed')
     end
 
@@ -199,7 +199,7 @@ RSpec.describe LyberCore::Robot do
       expect(logger).to have_received(:info).with('work done!')
       expect(Dor::Services::Client).to have_received(:object).with(druid)
 
-      expect(workflow_client).to have_received(:update_status).with(druid: druid,
+      expect(workflow_client).to have_received(:update_status).with(druid:,
                                                                     workflow: wf_name,
                                                                     process: step_name,
                                                                     status: 'completed',
