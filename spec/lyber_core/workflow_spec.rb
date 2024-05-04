@@ -6,7 +6,7 @@ describe LyberCore::Workflow do
                         process: 'process')
   end
   let(:workflow_client) { instance_double(Dor::Workflow::Client, process: workflow_process, workflow_status: status) }
-  let(:workflow_process) { instance_double(Dor::Workflow::Response::Process, lane_id: lane_id, context: context) }
+  let(:workflow_process) { instance_double(Dor::Workflow::Response::Process, lane_id:, context:) }
   let(:lane_id) { 'lane1' }
   let(:context) { { 'foo' => 'bar' } }
   let(:note) { 'note' }
@@ -22,7 +22,7 @@ describe LyberCore::Workflow do
       workflow.start!(note)
       expect(workflow_client).to have_received(:update_status).with(druid: 'druid:123', workflow: 'workflow',
                                                                     process: 'process', status: 'started',
-                                                                    elapsed: 1.0, note: note)
+                                                                    elapsed: 1.0, note:)
     end
   end
 
@@ -34,7 +34,7 @@ describe LyberCore::Workflow do
       workflow.complete!(complete_status, elapsed, note)
       expect(workflow_client).to have_received(:update_status).with(druid: 'druid:123', workflow: 'workflow',
                                                                     process: 'process', status: complete_status,
-                                                                    elapsed: 3.0, note: note)
+                                                                    elapsed: 3.0, note:)
     end
   end
 
@@ -45,8 +45,8 @@ describe LyberCore::Workflow do
     it 'updates the status to an error' do
       workflow.error!(error_msg, error_text)
       expect(workflow_client).to have_received(:update_error_status).with(druid: 'druid:123', workflow: 'workflow',
-                                                                          process: 'process', error_msg: error_msg,
-                                                                          error_text: error_text)
+                                                                          process: 'process', error_msg:,
+                                                                          error_text:)
     end
   end
 

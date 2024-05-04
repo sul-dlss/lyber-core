@@ -11,46 +11,46 @@ module LyberCore
     end
 
     def start!(note)
-      workflow_service.update_status(druid: druid,
+      workflow_service.update_status(druid:,
                                      workflow: workflow_name,
-                                     process: process,
+                                     process:,
                                      status: 'started',
                                      elapsed: 1.0,
-                                     note: note)
+                                     note:)
     end
 
     def complete!(status, elapsed, note)
-      workflow_service.update_status(druid: druid,
+      workflow_service.update_status(druid:,
                                      workflow: workflow_name,
-                                     process: process,
-                                     status: status,
-                                     elapsed: elapsed,
-                                     note: note)
+                                     process:,
+                                     status:,
+                                     elapsed:,
+                                     note:)
     end
 
     def error!(error_msg, error_text)
-      workflow_service.update_error_status(druid: druid,
+      workflow_service.update_error_status(druid:,
                                            workflow: workflow_name,
-                                           process: process,
-                                           error_msg: error_msg,
-                                           error_text: error_text)
+                                           process:,
+                                           error_msg:,
+                                           error_text:)
     end
 
     # @return [Hash] any workflow context associated with the workflow
     def context
       @context ||= workflow_service.process(pid: druid,
-                                            workflow_name: workflow_name,
-                                            process: process).context
+                                            workflow_name:,
+                                            process:).context
     end
 
     def status
-      @status ||= workflow_service.workflow_status(druid: druid,
+      @status ||= workflow_service.workflow_status(druid:,
                                                    workflow: workflow_name,
-                                                   process: process)
+                                                   process:)
     end
 
     def lane_id
-      @lane_id ||= workflow_service.process(pid: druid, workflow_name: workflow_name, process: process).lane_id
+      @lane_id ||= workflow_service.process(pid: druid, workflow_name:, process:).lane_id
     end
 
     private
