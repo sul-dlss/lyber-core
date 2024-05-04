@@ -13,7 +13,6 @@ describe LyberCore::Workflow do
   let(:status) { 'waiting' }
 
   before do
-    allow(workflow_client).to receive(:process).and_return(workflow_process)
     allow(workflow_client).to receive(:update_status)
     allow(workflow_client).to receive(:update_error_status)
   end
