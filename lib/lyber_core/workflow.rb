@@ -36,6 +36,13 @@ module LyberCore
                                            error_text: error_text)
     end
 
+    # @return [Hash] any workflow context associated with the workflow
+    def context
+      @context ||= workflow_service.process(pid: druid,
+                                            workflow_name: workflow_name,
+                                            process: process).context
+    end
+
     def status
       @status ||= workflow_service.workflow_status(druid: druid,
                                                    workflow: workflow_name,
