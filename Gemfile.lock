@@ -54,8 +54,8 @@ GEM
     deprecation (1.1.0)
       activesupport
     diff-lcs (1.5.1)
-    docile (1.4.0)
-    dor-services-client (14.16.0)
+    docile (1.4.1)
+    dor-services-client (14.17.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.98.0)
       deprecation
@@ -98,11 +98,11 @@ GEM
     faraday (2.10.0)
       faraday-net_http (>= 2.0, < 3.2)
       logger
-    faraday-net_http (3.1.0)
+    faraday-net_http (3.1.1)
       net-http
     faraday-retry (2.2.1)
       faraday (~> 2.0)
-    honeybadger (5.15.0)
+    honeybadger (5.15.3)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -116,9 +116,9 @@ GEM
     mutex_m (0.2.0)
     net-http (0.4.1)
       uri
-    nokogiri (1.16.6-x86_64-darwin)
+    nokogiri (1.16.7-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.6-x86_64-linux)
+    nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     openapi3_parser (0.10.0)
       commonmarker (>= 1.0)
