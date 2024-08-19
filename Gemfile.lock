@@ -103,7 +103,7 @@ GEM
       net-http
     faraday-retry (2.2.1)
       faraday (~> 2.0)
-    honeybadger (5.15.5)
+    honeybadger (5.15.6)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -112,7 +112,7 @@ GEM
       multi_json
     language_server-protocol (3.17.0.3)
     logger (1.6.0)
-    minitest (5.24.1)
+    minitest (5.25.1)
     multi_json (1.15.0)
     net-http (0.4.1)
       uri
@@ -124,7 +124,7 @@ GEM
       commonmarker (>= 1.0)
     openapi_parser (1.0.0)
     optimist (3.1.0)
-    parallel (1.26.2)
+    parallel (1.26.3)
     parser (3.3.4.2)
       ast (~> 2.4.1)
       racc
@@ -163,7 +163,7 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.32.0)
+    rubocop-ast (1.32.1)
       parser (>= 3.3.1.0)
     rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
@@ -176,7 +176,7 @@ GEM
       rubocop-rspec (~> 3, >= 3.0.1)
     ruby-progressbar (1.13.0)
     securerandom (0.3.1)
-    sidekiq (7.3.0)
+    sidekiq (7.3.1)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
       logger
