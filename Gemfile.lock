@@ -4,7 +4,7 @@ PATH
     lyber-core (7.5.0)
       activesupport
       config
-      dor-services-client (~> 14.0)
+      dor-services-client (~> 15.0)
       dor-workflow-client (>= 7.4)
       druid-tools
       honeybadger
@@ -45,6 +45,7 @@ GEM
       super_diff
       thor
       zeitwerk (~> 2.1)
+    commonmarker (1.1.5-arm64-darwin)
     commonmarker (1.1.5-x86_64-darwin)
     commonmarker (1.1.5-x86_64-linux)
     concurrent-ruby (1.3.4)
@@ -57,7 +58,7 @@ GEM
       activesupport
     diff-lcs (1.5.1)
     docile (1.4.1)
-    dor-services-client (14.21.0)
+    dor-services-client (15.0.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.99.0)
       deprecation
@@ -119,6 +120,8 @@ GEM
     multi_json (1.15.0)
     net-http (0.4.1)
       uri
+    nokogiri (1.16.7-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.16.7-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.7-x86_64-linux)
@@ -201,6 +204,7 @@ GEM
     zeitwerk (2.6.18)
 
 PLATFORMS
+  arm64-darwin-23
   x86_64-darwin-19
   x86_64-darwin-21
   x86_64-darwin-22
