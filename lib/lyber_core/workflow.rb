@@ -28,6 +28,15 @@ module LyberCore
                                      note:)
     end
 
+    def retrying!
+      workflow_service.update_status(druid:,
+                                     workflow: workflow_name,
+                                     process:,
+                                     status: 'retrying',
+                                     elapsed: 1.0,
+                                     note: nil)
+    end
+
     def error!(error_msg, error_text)
       workflow_service.update_error_status(druid:,
                                            workflow: workflow_name,

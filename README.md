@@ -26,9 +26,7 @@ module Robots
         def perform_work
           cocina_object.shelve
         end
-
       end
-
     end
   end
 end
@@ -59,9 +57,27 @@ module Robots
 #           return LyberCore::ReturnState.new(status: 'skipped', note: 'some custom note to pass back to workflow') # set the final state to skipped with a custom note
           end
         end
-
       end
+    end
+  end
+end
+```
 
+By default, a robot will not retry. To enable retries for specific errors:
+```ruby
+module Robots
+  module DorRepo
+    module Accession
+
+      class Shelve < LyberCore::Robot
+        def initialize
+          super('accessionWF', 'shelve', retriable_exceptions: [Dor::Services::Client::Error])
+        end
+
+        def perform_work
+          cocina_object.shelve
+        end
+      end
     end
   end
 end
