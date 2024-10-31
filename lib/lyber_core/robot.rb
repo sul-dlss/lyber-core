@@ -3,19 +3,32 @@
 module LyberCore
   # Base class for all robots.
   # Subclasses should implement the #perform_work method.
+  # To enable retries provide the retriable exceptions in the initializer.
   class Robot
     include Sidekiq::Job
-    sidekiq_options retry: 0
+    # Setting sidekiq_options here won't work.
+    # Instead pass options when enqueueing the job with Sidekiq::Client.push. (Currently in Workflow's QueueService.)
 
-    attr_reader :workflow_name, :process, :druid
+    sidekiq_retries_exhausted do |job, ex|
+      # When all the retries are exhausted, update the workflow to error.
+      robot = job['class'].constantize.new
+      workflow = Workflow.new(workflow_service: WorkflowClientFactory.build,
+                              druid: job['args'].first,
+                              workflow_name: robot.workflow_name,
+                              process: robot.process)
+      workflow.error!(ex.message, Socket.gethostname)
+    end
+
+    attr_reader :workflow_name, :process, :druid, :retriable_exceptions
     attr_accessor :check_queued_status
 
     delegate :lane_id, to: :workflow
 
-    def initialize(workflow_name, process, check_queued_status: true)
+    def initialize(workflow_name, process, check_queued_status: true, retriable_exceptions: [])
       @workflow_name = workflow_name
       @process = process
       @check_queued_status = check_queued_status
+      @retriable_exceptions = retriable_exceptions
     end
 
     def workflow_service
@@ -43,7 +56,7 @@ module LyberCore
       Honeybadger.context(druid:, process:, workflow_name:)
 
       logger.info "#{druid} processing #{process} (#{workflow_name})"
-      return unless check_item_queued?
+      return unless check_item_queued_or_retry?
 
       # this is the default note to pass back to workflow service,
       # but it can be overriden by a robot that uses the Robots::ReturnState
@@ -73,8 +86,13 @@ module LyberCore
       workflow.complete!(workflow_state, elapsed, note) unless workflow_state == 'noop'
 
       logger.info "Finished #{druid} in #{format('%0.4f', elapsed)}s"
+    rescue *retriable_exceptions => e
+      handle_error(e)
+      workflow.retrying!
+      raise
     rescue StandardError => e
       handle_error(e)
+      workflow.error!(e.message, Socket.gethostname)
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
@@ -91,16 +109,10 @@ module LyberCore
 
     private
 
-    # rubocop:disable Metrics/AbcSize
     def handle_error(error)
       Honeybadger.notify(error)
       logger.error "#{error.message}\n#{error.backtrace.join("\n")}"
-      workflow.error!(error.message, Socket.gethostname)
-    rescue StandardError => e
-      logger.error "Cannot set #{druid} to status='error'\n#{e.message}\n#{e.backtrace.join("\n")}"
-      raise e # send exception to Sidekiq failed queue
     end
-    # rubocop:enable Metrics/AbcSize
 
     def workflow
       @workflow ||= Workflow.new(workflow_service:,
@@ -109,10 +121,11 @@ module LyberCore
                                  process:)
     end
 
-    def check_item_queued?
+    def check_item_queued_or_retry?
       return true unless check_queued_status
 
       return true if /queued/i.match?(workflow.status)
+      return true if /retrying/i.match?(workflow.status)
 
       msg = "Item #{druid} is not queued for #{process} (#{workflow_name}), " \
             "but has status of '#{workflow.status}'. Will skip processing"

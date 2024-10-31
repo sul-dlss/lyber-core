@@ -5,21 +5,30 @@ require 'spec_helper'
 class Tester # rubocop:disable Lint/EmptyClass
 end
 
+class TestRobot < LyberCore::Robot
+  def initialize(return_state: nil, exception: nil)
+    super('testWF', 'test-step', retriable_exceptions: [NotImplementedError])
+    @return_state = return_state
+    @exception = exception
+  end
+
+  def perform_work
+    raise @exception if @exception
+
+    Tester.bare_druid(bare_druid)
+    Tester.workflow_service(workflow_service)
+    Tester.object_client(object_client)
+    Tester.cocina_object(cocina_object)
+    Tester.druid_object(druid_object)
+    Tester.lane_id(lane_id)
+    logger.info 'work done!'
+    @return_state
+  end
+end
+
 RSpec.describe LyberCore::Robot do
   let(:druid) { 'druid:test1234' }
-  let(:test_robot) do
-    Class.new(LyberCore::Robot) do
-      def perform_work
-        Tester.bare_druid(bare_druid)
-        Tester.workflow_service(workflow_service)
-        Tester.object_client(object_client)
-        Tester.cocina_object(cocina_object)
-        Tester.druid_object(druid_object)
-        Tester.lane_id(lane_id)
-        logger.info 'work done!'
-      end
-    end
-  end
+
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
   let(:workflow_client) do
@@ -27,7 +36,9 @@ RSpec.describe LyberCore::Robot do
   end
   let(:workflow_process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1') }
 
-  let(:robot) { test_robot.new('testWF', 'test-step') }
+  let(:robot) { TestRobot.new(return_state:, exception:) }
+  let(:return_state) { nil }
+  let(:exception) { nil }
   let(:logger) { instance_double(Logger, info: true, debug: true, warn: true, error: true) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_object) }
   let(:cocina_object) { instance_double(Cocina::Models::DRO) }
@@ -78,14 +89,7 @@ RSpec.describe LyberCore::Robot do
   end
 
   context 'when skipped ReturnState' do
-    let(:test_robot) do
-      Class.new(LyberCore::Robot) do
-        def perform_work
-          logger.info 'work done!'
-          LyberCore::ReturnState.new(status: 'skipped')
-        end
-      end
-    end
+    let(:return_state) { LyberCore::ReturnState.new(status: 'skipped') }
 
     it "updates workflow to 'skipped'" do
       robot.perform(druid)
@@ -102,14 +106,7 @@ RSpec.describe LyberCore::Robot do
   end
 
   context 'when completed ReturnState with a note' do
-    let(:test_robot) do
-      Class.new(LyberCore::Robot) do
-        def perform_work
-          logger.info 'work done!'
-          LyberCore::ReturnState.new(note: 'some note to pass back to workflow')
-        end
-      end
-    end
+    let(:return_state) { LyberCore::ReturnState.new(note: 'some note to pass back to workflow') }
 
     it "updates workflow to 'completed' and sets a custom note" do
       robot.perform(druid)
@@ -132,14 +129,7 @@ RSpec.describe LyberCore::Robot do
   end
 
   context 'when skipped ReturnState with a note' do
-    let(:test_robot) do
-      Class.new(LyberCore::Robot) do
-        def perform_work
-          logger.info 'work done!'
-          LyberCore::ReturnState.new(status: 'skipped', note: 'some note to pass back to workflow')
-        end
-      end
-    end
+    let(:return_state) { LyberCore::ReturnState.new(status: 'skipped', note: 'some note to pass back to workflow') }
 
     it "updates workflow to 'skipped' and sets a custom note" do
       robot.perform(druid)
@@ -156,15 +146,9 @@ RSpec.describe LyberCore::Robot do
   end
 
   context 'when there is a problem with the work' do
-    let(:test_robot) do
-      Class.new(LyberCore::Robot) do
-        def perform_work
-          raise 'work error'
-        end
-      end
-    end
+    let(:exception) { StandardError.new('work error') }
 
-    it "updates workflow to 'error' if there was a problem with the work" do
+    it "updates workflow to 'error'" do
       robot.perform(druid)
       expect(logger).to have_received(:error).with(/work error/)
       expect(workflow_client).to have_received(:update_error_status).with(druid:,
@@ -172,6 +156,21 @@ RSpec.describe LyberCore::Robot do
                                                                           process: step_name,
                                                                           error_msg: /work error/,
                                                                           error_text: Socket.gethostname)
+    end
+  end
+
+  context 'when there is a retriable problem with the work' do
+    let(:exception) { NotImplementedError.new('retriable work error') }
+
+    it "updates workflow to 'retrying'" do
+      expect { robot.perform(druid) }.to raise_error(NotImplementedError)
+      expect(logger).to have_received(:error).with(/retriable work error/)
+      expect(workflow_client).to have_received(:update_status).with(druid:,
+                                                                    workflow: wf_name,
+                                                                    process: step_name,
+                                                                    status: 'retrying',
+                                                                    elapsed: 1.0,
+                                                                    note: nil)
     end
   end
 
@@ -209,18 +208,33 @@ RSpec.describe LyberCore::Robot do
   end
 
   context 'when ReturnState is noop' do
-    let(:test_robot) do
-      Class.new(LyberCore::Robot) do
-        def perform_work
-          logger.info 'work done!'
-          LyberCore::ReturnState.new(status: 'noop')
-        end
-      end
-    end
+    let(:return_state) { LyberCore::ReturnState.new(status: 'noop') }
 
     it 'only updates workflow for start' do
       robot.perform(druid)
       expect(workflow_client).to have_received(:update_status).once
+    end
+  end
+
+  context 'when sidekiq retries is exhausted' do
+    let(:job) do
+      {
+        'queue' => 'default',
+        'class' => 'TestRobot',
+        'args' => [druid],
+        'error_message' => 'work error'
+      }
+    end
+
+    let(:exception) { StandardError.new('work error') }
+
+    it "updates workflow to 'error'" do
+      TestRobot.sidekiq_retries_exhausted_block.call(job, exception)
+      expect(workflow_client).to have_received(:update_error_status).with(druid:,
+                                                                          workflow: wf_name,
+                                                                          process: step_name,
+                                                                          error_msg: /work error/,
+                                                                          error_text: Socket.gethostname)
     end
   end
 end

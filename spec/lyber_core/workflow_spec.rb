@@ -38,6 +38,15 @@ describe LyberCore::Workflow do
     end
   end
 
+  describe '#retrying!' do
+    it 'updates the status to retrying' do
+      workflow.retrying!
+      expect(workflow_client).to have_received(:update_status).with(druid: 'druid:123', workflow: 'workflow',
+                                                                    process: 'process', status: 'retrying',
+                                                                    elapsed: 1.0, note: nil)
+    end
+  end
+
   describe '#error!' do
     let(:error_msg) { 'Doh' }
     let(:error_text) { 'Whelp, that was bad.' }
