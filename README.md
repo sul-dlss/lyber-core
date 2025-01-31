@@ -1,6 +1,5 @@
 [![CircleCI](https://circleci.com/gh/sul-dlss/lyber-core/tree/main.svg?style=svg)](https://circleci.com/gh/sul-dlss/lyber-core/tree/main)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/472f67659e513e3d8ffa/test_coverage)](https://codeclimate.com/github/sul-dlss/lyber-core/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/472f67659e513e3d8ffa/maintainability)](https://codeclimate.com/github/sul-dlss/lyber-core/maintainability)
+[![codecov](https://codecov.io/github/sul-dlss/lyber-core/graph/badge.svg?token=FxCjczsxpG)](https://codecov.io/github/sul-dlss/lyber-core)
 [![Gem Version](https://badge.fury.io/rb/lyber-core.svg)](https://badge.fury.io/rb/lyber-core)
 
 # lyber_core

@@ -4,6 +4,12 @@ require 'simplecov'
 SimpleCov.start do
   add_filter 'spec/'
   add_filter 'lib/lyber_core/boot.rb'
+
+  if ENV['CI']
+    require 'simplecov_json_formatter'
+
+    formatter SimpleCov::Formatter::JSONFormatter
+  end
 end
 
 lib = File.expand_path('lib', __dir__)
