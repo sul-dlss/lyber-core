@@ -33,7 +33,7 @@ GEM
     benchmark (0.4.0)
     bigdecimal (3.1.9)
     byebug (12.0.0)
-    cocina-models (0.103.1)
+    cocina-models (0.103.2)
       activesupport
       deprecation
       dry-struct (~> 1.0)
@@ -57,9 +57,9 @@ GEM
       activesupport
     diff-lcs (1.6.2)
     docile (1.4.1)
-    dor-services-client (15.7.2)
+    dor-services-client (15.7.3)
       activesupport (>= 7.0.0)
-      cocina-models (~> 0.103.1)
+      cocina-models (~> 0.103.2)
       deprecation
       faraday (~> 2.0)
       faraday-retry
@@ -113,10 +113,10 @@ GEM
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
-    json (2.11.3)
+    json (2.12.0)
     jsonpath (1.1.5)
       multi_json
-    language_server-protocol (3.17.0.4)
+    language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
     minitest (5.25.5)
@@ -140,7 +140,7 @@ GEM
       optimist (~> 3.0)
     prism (1.4.0)
     racc (1.8.1)
-    rack (3.1.14)
+    rack (3.1.15)
     rainbow (3.1.1)
     rake (13.2.1)
     redis-client (0.24.0)
@@ -159,7 +159,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.3)
-    rubocop (1.75.5)
+    rubocop (1.75.6)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -234,4 +234,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.6.8
+   2.6.9
