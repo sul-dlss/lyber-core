@@ -57,7 +57,7 @@ GEM
       activesupport
     diff-lcs (1.6.2)
     docile (1.4.1)
-    dor-services-client (15.15.0)
+    dor-services-client (15.15.1)
       activesupport (>= 7.0.0)
       cocina-models (~> 0.104.1)
       deprecation
@@ -100,7 +100,7 @@ GEM
       activesupport (>= 3.0, < 9.0)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
-    faraday (2.13.1)
+    faraday (2.13.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -108,7 +108,7 @@ GEM
       net-http (>= 0.5.0)
     faraday-retry (2.3.2)
       faraday (~> 2.0)
-    honeybadger (5.28.0)
+    honeybadger (5.29.1)
       logger
       ostruct
     i18n (1.14.7)
