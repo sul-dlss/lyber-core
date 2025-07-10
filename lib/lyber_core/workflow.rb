@@ -9,6 +9,10 @@ module LyberCore
       @process = process
     end
 
+    def object_workflow
+      object_client.workflow(workflow_name)
+    end
+
     def start!(note)
       workflow_process.update(status: 'started', elapsed: 1.0, note:)
     end
@@ -39,10 +43,6 @@ module LyberCore
     end
 
     private
-
-    def object_workflow
-      object_client.workflow(workflow_name)
-    end
 
     def workflow_process
       object_workflow.process(process)
