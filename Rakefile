@@ -17,9 +17,14 @@ Bundler::GemHelper.install_tasks
 desc 'Run specs'
 RSpec::Core::RakeTask.new(:spec)
 
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new
+
 task :clean do
   puts 'Cleaning old coverage.data'
   FileUtils.rm('coverage.data') if File.exist? 'coverage.data'
 end
 
-task default: [:spec]
+task(:default).clear
+
+task default: [:rubocop, :spec]
