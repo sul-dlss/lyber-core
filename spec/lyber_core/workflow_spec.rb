@@ -2,27 +2,22 @@
 
 describe LyberCore::Workflow do
   let(:workflow) do
-    described_class.new(workflow_service: workflow_client, druid: 'druid:123', workflow_name: 'workflow',
-                        process: 'process')
+    described_class.new(object_client:, workflow_name: 'workflow', process: 'process')
   end
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, process: workflow_process, workflow_status: status) }
-  let(:workflow_process) { instance_double(Dor::Workflow::Response::Process, lane_id:, context:) }
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id:, context:) }
+  let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
+  let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, workflow: object_workflow) }
+  let(:workflow_process) { instance_double(Dor::Services::Client::Process, status:, update: nil, update_error: nil) }
   let(:lane_id) { 'lane1' }
   let(:context) { { 'foo' => 'bar' } }
   let(:note) { 'note' }
   let(:status) { 'waiting' }
 
-  before do
-    allow(workflow_client).to receive(:update_status)
-    allow(workflow_client).to receive(:update_error_status)
-  end
-
   describe '#start!' do
     it 'updates the status to started' do
       workflow.start!(note)
-      expect(workflow_client).to have_received(:update_status).with(druid: 'druid:123', workflow: 'workflow',
-                                                                    process: 'process', status: 'started',
-                                                                    elapsed: 1.0, note:)
+      expect(workflow_process).to have_received(:update).with(status: 'started', elapsed: 1.0, note:)
     end
   end
 
@@ -32,18 +27,14 @@ describe LyberCore::Workflow do
 
     it 'updates the status to provided status' do
       workflow.complete!(complete_status, elapsed, note)
-      expect(workflow_client).to have_received(:update_status).with(druid: 'druid:123', workflow: 'workflow',
-                                                                    process: 'process', status: complete_status,
-                                                                    elapsed: 3.0, note:)
+      expect(workflow_process).to have_received(:update).with(status: complete_status, elapsed: 3.0, note:)
     end
   end
 
   describe '#retrying!' do
     it 'updates the status to retrying' do
       workflow.retrying!
-      expect(workflow_client).to have_received(:update_status).with(druid: 'druid:123', workflow: 'workflow',
-                                                                    process: 'process', status: 'retrying',
-                                                                    elapsed: 1.0, note: nil)
+      expect(workflow_process).to have_received(:update).with(status: 'retrying', elapsed: 1.0, note: nil)
     end
   end
 
@@ -53,9 +44,7 @@ describe LyberCore::Workflow do
 
     it 'updates the status to an error' do
       workflow.error!(error_msg, error_text)
-      expect(workflow_client).to have_received(:update_error_status).with(druid: 'druid:123', workflow: 'workflow',
-                                                                          process: 'process', error_msg:,
-                                                                          error_text:)
+      expect(workflow_process).to have_received(:update_error).with(error_msg:, error_text:)
     end
   end
 
