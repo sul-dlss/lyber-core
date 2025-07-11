@@ -13,6 +13,18 @@ module LyberCore
       object_client.workflow(workflow_name)
     end
 
+    def workflow_process
+      object_workflow.process(process)
+    end
+
+    def workflow_response
+      object_workflow.find
+    end
+
+    def process_response
+      workflow_response.process_for_recent_version(name: process)
+    end
+
     def start!(note)
       workflow_process.update(status: 'started', elapsed: 1.0, note:)
     end
@@ -40,20 +52,6 @@ module LyberCore
 
     def lane_id
       @lane_id ||= process_response.lane_id
-    end
-
-    private
-
-    def workflow_process
-      object_workflow.process(process)
-    end
-
-    def workflow_response
-      object_workflow.find
-    end
-
-    def process_response
-      workflow_response.process_for_recent_version(name: process)
     end
 
     attr_reader :object_client, :workflow_name, :process

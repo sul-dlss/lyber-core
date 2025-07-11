@@ -22,7 +22,7 @@ module LyberCore
     attr_reader :workflow_name, :process, :druid, :retriable_exceptions
     attr_accessor :check_queued_status
 
-    delegate :lane_id, :object_workflow, to: :workflow
+    delegate :lane_id, :object_workflow, :workflow_process, :workflow_response, :process_response, to: :workflow
 
     def initialize(workflow_name, process, check_queued_status: true, retriable_exceptions: [])
       @workflow_name = workflow_name
