@@ -12,8 +12,8 @@ module LyberCore
     sidekiq_retries_exhausted do |job, ex|
       # When all the retries are exhausted, update the workflow to error.
       robot = job['class'].constantize.new
-      workflow = Workflow.new(workflow_service: WorkflowClientFactory.build,
-                              druid: job['args'].first,
+      druid = job['args'].first
+      workflow = Workflow.new(object_client: Dor::Services::Client.object(druid),
                               workflow_name: robot.workflow_name,
                               process: robot.process)
       workflow.error!(ex.message, Socket.gethostname)
@@ -22,17 +22,13 @@ module LyberCore
     attr_reader :workflow_name, :process, :druid, :retriable_exceptions
     attr_accessor :check_queued_status
 
-    delegate :lane_id, to: :workflow
+    delegate :lane_id, :object_workflow, :workflow_process, :workflow_response, :process_response, to: :workflow
 
     def initialize(workflow_name, process, check_queued_status: true, retriable_exceptions: [])
       @workflow_name = workflow_name
       @process = process
       @check_queued_status = check_queued_status
       @retriable_exceptions = retriable_exceptions
-    end
-
-    def workflow_service
-      @workflow_service ||= WorkflowClientFactory.build(logger:)
     end
 
     def object_client
@@ -115,10 +111,7 @@ module LyberCore
     end
 
     def workflow
-      @workflow ||= Workflow.new(workflow_service:,
-                                 druid:,
-                                 workflow_name:,
-                                 process:)
+      @workflow ||= Workflow.new(object_client:, workflow_name:, process:)
     end
 
     def check_item_queued_or_retry?

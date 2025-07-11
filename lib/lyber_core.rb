@@ -7,7 +7,6 @@ require 'active_support/core_ext/object/blank' # String#blank?
 require 'active_support/core_ext/module/delegation'
 require 'sidekiq'
 require 'honeybadger'
-require 'dor/workflow/client'
 require 'dor/services/client'
 require 'druid-tools'
 require 'zeitwerk'
