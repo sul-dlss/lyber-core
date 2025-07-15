@@ -3,14 +3,17 @@
 module LyberCore
   # This encapsulates the workflow operations that lyber-core does
   class Workflow
-    def initialize(object_client:, workflow_name:, process:)
+    def initialize(object_client:, workflow_name:, process:, logger: Sidekiq.logger)
       @object_client = object_client
       @workflow_name = workflow_name
       @process = process
+      @logger = logger
     end
 
     def object_workflow
-      object_client.workflow(workflow_name)
+      object_client.workflow(workflow_name).tap do |ocw|
+        logger.debug("#{__method__} called from #{caller.first}: object_workflow: #{ocw}")
+      end
     end
 
     def workflow_process
@@ -54,6 +57,6 @@ module LyberCore
       @lane_id ||= process_response.lane_id
     end
 
-    attr_reader :object_client, :workflow_name, :process
+    attr_reader :object_client, :workflow_name, :process, :logger
   end
 end
