@@ -9,13 +9,16 @@ module LyberCore
     # Setting sidekiq_options here won't work.
     # Instead pass options when enqueueing the job with Sidekiq::Client.push. (Currently in Workflow's QueueService.)
 
+    sidekiq_options log_level: :debug
+
     sidekiq_retries_exhausted do |job, ex|
       # When all the retries are exhausted, update the workflow to error.
       robot = job['class'].constantize.new
       druid = job['args'].first
       workflow = Workflow.new(object_client: Dor::Services::Client.object(druid),
                               workflow_name: robot.workflow_name,
-                              process: robot.process)
+                              process: robot.process,
+                              logger: Sidekiq.logger)
       workflow.error!(ex.message, Socket.gethostname)
     end
 
@@ -36,7 +39,10 @@ module LyberCore
     end
 
     def object_client
-      @object_client ||= Dor::Services::Client.object(druid)
+      logger.debug("#{__method__} called from #{caller.first}: @object_client: #{@object_client} ")
+      @object_client ||= Dor::Services::Client.object(druid).tap do |dsco|
+        logger.debug("#{__method__} called from #{caller.first}: @object_client set to: #{dsco}")
+      end
     end
 
     def cocina_object
@@ -115,7 +121,7 @@ module LyberCore
     end
 
     def workflow
-      @workflow ||= Workflow.new(object_client:, workflow_name:, process:)
+      @workflow ||= Workflow.new(object_client:, workflow_name:, process:, logger:)
     end
 
     def check_item_queued_or_retry?
