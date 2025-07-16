@@ -9,18 +9,22 @@ module LyberCore
       @process = process
     end
 
+    # @return [Dor::Services::Client::ObjectWorkflow] for druid/workflow/step on which this instance was initialized
     def object_workflow
       object_client.workflow(workflow_name)
     end
 
+    # @return [Dor::Services::Client::Process] for druid/workflow/step on which this instance was initialized
     def workflow_process
       object_workflow.process(process)
     end
 
+    # @return [Dor::Services::Response::Workflow] for druid/workflow/step on which this instance was initialized
     def workflow_response
       object_workflow.find
     end
 
+    # @return [Dor::Services::Response::Process] for druid/workflow/step on which this instance was initialized
     def process_response
       workflow_response.process_for_recent_version(name: process)
     end
@@ -50,6 +54,7 @@ module LyberCore
       @status ||= workflow_process.status
     end
 
+    # @return [String,nil]
     def lane_id
       @lane_id ||= process_response.lane_id
     end
