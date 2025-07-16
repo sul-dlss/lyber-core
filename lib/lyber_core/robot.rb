@@ -117,7 +117,7 @@ module LyberCore
     end
 
     def workflow
-      @workflow ||= Workflow.new(object_client:, workflow_name:, process:, logger:)
+      Workflow.new(object_client:, workflow_name:, process:, logger:)
     end
 
     def check_item_queued_or_retry?
