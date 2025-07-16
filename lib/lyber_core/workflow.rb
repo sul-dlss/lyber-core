@@ -50,16 +50,16 @@ module LyberCore
 
     # @return [Hash] any workflow context associated with the workflow
     def context
-      @context ||= process_response.context
+      process_response.context
     end
 
     def status
-      @status ||= workflow_process.status
+      workflow_process.status
     end
 
     # @return [String,nil]
     def lane_id
-      @lane_id ||= process_response.lane_id
+      process_response.lane_id
     end
 
     attr_reader :object_client, :workflow_name, :process, :logger
