@@ -22,6 +22,10 @@ module LyberCore
     attr_reader :workflow_name, :process, :druid, :retriable_exceptions
     attr_accessor :check_queued_status
 
+    # These methods are delegated to the workflow ivar as a convenient way for child classes to interact
+    # with the workflow service (to e.g. to create workflows, update status, set error status, etc). See
+    # dor-services-client readme and code (or robot subclass implementations) for suggestions on specific
+    # usages.
     delegate :lane_id, :object_workflow, :workflow_process, :workflow_response, :process_response, to: :workflow
 
     def initialize(workflow_name, process, check_queued_status: true, retriable_exceptions: [])
