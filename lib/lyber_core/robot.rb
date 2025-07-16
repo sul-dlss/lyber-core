@@ -39,9 +39,9 @@ module LyberCore
     end
 
     def object_client
-      logger.debug("#{__method__} called from #{caller.first}: @object_client: #{@object_client} ")
+      logger.info("JM_LOG: #{__method__} called from #{caller.first}: @object_client: #{@object_client} ")
       @object_client ||= Dor::Services::Client.object(druid).tap do |dsco|
-        logger.debug("#{__method__} called from #{caller.first}: @object_client set to: #{dsco}")
+        logger.info("JM_LOG: #{__method__} called from #{caller.first}: @object_client set to: #{dsco}")
       end
     end
 
