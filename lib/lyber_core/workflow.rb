@@ -12,7 +12,8 @@ module LyberCore
 
     def object_workflow
       object_client.workflow(workflow_name).tap do |ocw|
-        logger.info("JM_LOG #{__method__} called from #{caller.first}: object_workflow: #{ocw}")
+        # caller.second, because caller.first is the enclosing .tap
+        logger.info("JM_LOG: #{__method__} called from #{caller.second}: object_workflow: #{ocw}")
       end
     end
 
