@@ -51,7 +51,7 @@ module LyberCore
     end
 
     def status
-      process_response.status
+      process_response.status.presence || workflow_process.status
     end
 
     # @return [String,nil]
