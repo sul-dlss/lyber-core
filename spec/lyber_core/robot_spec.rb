@@ -30,12 +30,12 @@ RSpec.describe LyberCore::Robot do
 
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
-  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'lane1', context: {}) }
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'lane1', context: {}, status: 'queued') }
   let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
   let(:object_workflow) do
     instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response)
   end
-  let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true, status: 'queued') }
+  let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true) }
 
   let(:robot) { TestRobot.new(return_state:, exception:) }
   let(:return_state) { nil }
@@ -77,7 +77,7 @@ RSpec.describe LyberCore::Robot do
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
                                                               note: Socket.gethostname)
-      expect(object_workflow).to have_received(:process).with(step_name).thrice
+      expect(object_workflow).to have_received(:process).with(step_name).twice
     end
   end
 
@@ -151,7 +151,7 @@ RSpec.describe LyberCore::Robot do
 
   context 'when workflow status is not queued' do
     before do
-      allow(workflow_process).to receive(:status).and_return('completed')
+      allow(process_response).to receive(:status).and_return('completed')
     end
 
     it 'skips the job' do
