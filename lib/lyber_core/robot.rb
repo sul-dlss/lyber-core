@@ -40,7 +40,7 @@ module LyberCore
     end
 
     def cocina_object
-      @cocina_object ||= object_client.find
+      object_client.find
     end
 
     def druid_object
