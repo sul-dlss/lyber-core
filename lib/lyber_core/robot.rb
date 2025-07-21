@@ -118,7 +118,7 @@ module LyberCore
       @workflow ||= Workflow.new(object_client:, workflow_name:, process:)
     end
 
-    def check_item_queued_or_retry?
+    def check_item_queued_or_retry? # rubocop:disable Metrics/AbcSize
       return true unless check_queued_status
 
       return true if /queued/i.match?(workflow.status)
@@ -126,7 +126,7 @@ module LyberCore
 
       msg = "Item #{druid} is not queued for #{process} (#{workflow_name}), " \
             "but has status of '#{workflow.status}'. Will skip processing"
-      Honeybadger.notify(msg)
+      Honeybadger.notify(msg, context: { workflow: workflow.workflow_response.xml })
       logger.warn(msg)
       false
     end
