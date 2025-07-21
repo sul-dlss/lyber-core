@@ -4,11 +4,11 @@ describe LyberCore::Workflow do
   let(:workflow) do
     described_class.new(object_client:, workflow_name: 'workflow', process: 'process')
   end
-  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id:, context:) }
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id:, context:, status:) }
   let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
   let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, workflow: object_workflow) }
-  let(:workflow_process) { instance_double(Dor::Services::Client::Process, status:, update: nil, update_error: nil) }
+  let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: nil, update_error: nil) }
   let(:lane_id) { 'lane1' }
   let(:context) { { 'foo' => 'bar' } }
   let(:note) { 'note' }
