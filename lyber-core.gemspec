@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'dor-services-client'
   s.add_dependency 'druid-tools'
   s.add_dependency 'honeybadger'
-  s.add_dependency 'sidekiq', '~> 7.0'
+  s.add_dependency 'sidekiq'
   s.add_dependency 'zeitwerk'
 
   # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
