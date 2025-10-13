@@ -30,9 +30,9 @@ GEM
     attr_extras (7.1.0)
     base64 (0.3.0)
     benchmark (0.4.1)
-    bigdecimal (3.2.3)
+    bigdecimal (3.3.1)
     byebug (12.0.0)
-    cocina-models (0.106.0)
+    cocina-models (0.107.0)
       activesupport
       deprecation
       dry-struct (~> 1.0)
@@ -56,9 +56,9 @@ GEM
       activesupport
     diff-lcs (1.6.2)
     docile (1.4.1)
-    dor-services-client (15.22.0)
+    dor-services-client (15.23.0)
       activesupport (>= 7.0.0)
-      cocina-models (~> 0.106.0)
+      cocina-models (~> 0.107.0)
       deprecation
       faraday (~> 2.0)
       faraday-retry
@@ -100,19 +100,19 @@ GEM
       net-http (>= 0.5.0)
     faraday-retry (2.3.2)
       faraday (~> 2.0)
-    honeybadger (6.1.0)
+    honeybadger (6.1.1)
       logger
       ostruct
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
-    json (2.15.0)
+    json (2.15.1)
     jsonpath (1.1.5)
       multi_json
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
-    minitest (5.25.5)
+    minitest (5.26.0)
     multi_json (1.17.0)
     net-http (0.6.0)
       uri
@@ -131,9 +131,9 @@ GEM
       racc
     patience_diff (1.2.0)
       optimist (~> 3.0)
-    prism (1.5.1)
+    prism (1.5.2)
     racc (1.8.1)
-    rack (3.2.1)
+    rack (3.2.3)
     rainbow (3.1.1)
     rake (13.3.0)
     redis-client (0.26.1)
@@ -181,7 +181,7 @@ GEM
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
-    sidekiq (8.0.7)
+    sidekiq (8.0.8)
       connection_pool (>= 2.5.0)
       json (>= 2.9.0)
       logger (>= 1.6.2)
@@ -203,7 +203,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uri (1.0.3)
+    uri (1.0.4)
     zeitwerk (2.7.3)
 
 PLATFORMS
