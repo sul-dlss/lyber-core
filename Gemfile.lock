@@ -102,7 +102,7 @@ GEM
     honeybadger (6.2.0)
       logger
       ostruct
-    i18n (1.14.7)
+    i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     json (2.18.0)
@@ -111,9 +111,10 @@ GEM
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
-    minitest (5.27.0)
+    minitest (6.0.0)
+      prism (~> 1.5)
     multi_json (1.18.0)
-    net-http (0.8.0)
+    net-http (0.9.1)
       uri (>= 0.11.1)
     nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
@@ -130,7 +131,7 @@ GEM
       racc
     patience_diff (1.2.0)
       optimist (~> 3.0)
-    prism (1.6.0)
+    prism (1.7.0)
     racc (1.8.1)
     rack (3.2.4)
     rainbow (3.1.1)
@@ -151,7 +152,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.6)
-    rubocop (1.81.7)
+    rubocop (1.82.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -159,7 +160,7 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.47.1, < 2.0)
+      rubocop-ast (>= 1.48.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.48.0)
@@ -201,9 +202,9 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
-    unicode-emoji (4.1.0)
+    unicode-emoji (4.2.0)
     uri (1.1.1)
-    zeitwerk (2.7.3)
+    zeitwerk (2.7.4)
 
 PLATFORMS
   arm64-darwin-23
@@ -226,4 +227,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-  4.0.1
+  4.0.2
