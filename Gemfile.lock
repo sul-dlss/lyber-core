@@ -32,7 +32,7 @@ GEM
     bigdecimal (4.1.2)
     byebug (13.0.0)
       reline (>= 0.6.0)
-    cocina-models (0.118.1)
+    cocina-models (0.119.0)
       activesupport
       deprecation
       dry-struct (~> 1.0)
@@ -56,9 +56,9 @@ GEM
       activesupport
     diff-lcs (1.6.2)
     docile (1.4.1)
-    dor-services-client (15.43.0)
+    dor-services-client (15.44.0)
       activesupport (>= 7.0.0)
-      cocina-models (~> 0.118.0)
+      cocina-models (~> 0.119.0)
       deprecation
       faraday (~> 2.0)
       faraday-retry
@@ -97,21 +97,21 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.3)
+    faraday-net_http (3.4.4)
       net-http (~> 0.5)
     faraday-retry (2.4.0)
       faraday (~> 2.0)
     hana (1.3.7)
     hashie (5.1.0)
       logger
-    honeybadger (6.6.2)
+    honeybadger (6.7.0)
       logger
       ostruct
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     io-console (0.8.2)
-    json (2.19.7)
+    json (2.19.8)
     json_schemer (2.5.0)
       bigdecimal
       hana (~> 1.3)
@@ -185,9 +185,10 @@ GEM
     rubocop-factory_bot (2.28.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
-    rubocop-rspec (3.9.0)
+    rubocop-rspec (3.10.2)
       lint_roller (~> 1.1)
-      rubocop (~> 1.81)
+      regexp_parser (>= 2.0)
+      rubocop (~> 1.86, >= 1.86.2)
     rubocop-rspec_rails (2.32.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
@@ -241,4 +242,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-  4.0.12
+  4.0.13
