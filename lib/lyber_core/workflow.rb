@@ -3,7 +3,7 @@
 module LyberCore
   # This encapsulates the workflow operations that lyber-core does
   class Workflow
-    def initialize(object_client:, workflow_name:, process:, version: nil)
+    def initialize(object_client:, workflow_name:, process:, version:)
       @object_client = object_client
       @workflow_name = workflow_name
       @process = process
