@@ -63,7 +63,7 @@ RSpec.describe LyberCore::Robot do
 
   context 'when work processes without error and no ReturnState' do
     it "updates workflow to 'completed'" do # rubocop:disable RSpec/MultipleExpectations
-      robot.perform(druid)
+      robot.perform(druid, 2)
       expect(logger).to have_received(:info).with(/#{druid} processing/)
       expect(logger).to have_received(:info).with('work done!')
       expect(Tester).to have_received(:bare_druid).with('test1234')
@@ -77,7 +77,7 @@ RSpec.describe LyberCore::Robot do
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
                                                               note: Socket.gethostname,
-                                                              version: nil)
+                                                              version: 2)
       expect(object_workflow).to have_received(:process).with(step_name).once
     end
   end
