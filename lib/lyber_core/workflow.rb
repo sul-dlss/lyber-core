@@ -3,10 +3,11 @@
 module LyberCore
   # This encapsulates the workflow operations that lyber-core does
   class Workflow
-    def initialize(object_client:, workflow_name:, process:)
+    def initialize(object_client:, workflow_name:, process:, version: nil)
       @object_client = object_client
       @workflow_name = workflow_name
       @process = process
+      @version = version
     end
 
     # @return [Dor::Services::Client::ObjectWorkflow] for druid/workflow/step on which this instance was initialized
@@ -30,23 +31,23 @@ module LyberCore
     end
 
     def start!(note)
-      workflow_process.update(status: 'started', elapsed: 1.0, note:)
+      workflow_process.update(status: 'started', elapsed: 1.0, note:, version:)
     end
 
     def complete!(status, elapsed, note)
-      workflow_process.update(status:, elapsed:, note:)
+      workflow_process.update(status:, elapsed:, note:, version:)
     end
 
     def retrying!
-      workflow_process.update(status: 'retrying', elapsed: 1.0, note: nil)
+      workflow_process.update(status: 'retrying', elapsed: 1.0, note: nil, version:)
     end
 
     def error!(error_msg, error_text)
-      workflow_process.update_error(error_msg:, error_text:)
+      workflow_process.update_error(error_msg:, error_text:, version:)
     end
 
     delegate :context, :status, :lane_id, to: :process_response
 
-    attr_reader :object_client, :workflow_name, :process
+    attr_reader :object_client, :workflow_name, :process, :version
   end
 end

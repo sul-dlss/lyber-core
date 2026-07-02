@@ -76,7 +76,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: nil)
       expect(object_workflow).to have_received(:process).with(step_name).once
     end
   end
@@ -91,7 +92,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'skipped',
                                                               elapsed: Float,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: nil)
     end
   end
 
@@ -105,10 +107,12 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'started',
                                                               elapsed: 1.0,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: nil)
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
-                                                              note: 'some note to pass back to workflow')
+                                                              note: 'some note to pass back to workflow',
+                                                              version: nil)
     end
   end
 
@@ -122,7 +126,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'skipped',
                                                               elapsed: Float,
-                                                              note: 'some note to pass back to workflow')
+                                                              note: 'some note to pass back to workflow',
+                                                              version: nil)
     end
   end
 
@@ -133,7 +138,8 @@ RSpec.describe LyberCore::Robot do
       robot.perform(druid)
       expect(logger).to have_received(:error).with(/work error/)
       expect(workflow_process).to have_received(:update_error).with(error_msg: /work error/,
-                                                                    error_text: Socket.gethostname)
+                                                                    error_text: Socket.gethostname,
+                                                                    version: nil)
     end
   end
 
@@ -145,7 +151,8 @@ RSpec.describe LyberCore::Robot do
       expect(logger).to have_received(:error).with(/retriable work error/)
       expect(workflow_process).to have_received(:update).with(status: 'retrying',
                                                               elapsed: 1.0,
-                                                              note: nil)
+                                                              note: nil,
+                                                              version: nil)
     end
   end
 
@@ -174,7 +181,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: nil)
     end
   end
 
@@ -192,7 +200,7 @@ RSpec.describe LyberCore::Robot do
       {
         'queue' => 'default',
         'class' => 'TestRobot',
-        'args' => [druid],
+        'args' => [druid, 2],
         'error_message' => 'work error'
       }
     end
@@ -202,7 +210,18 @@ RSpec.describe LyberCore::Robot do
     it "updates workflow to 'error'" do
       TestRobot.sidekiq_retries_exhausted_block.call(job, exception)
       expect(workflow_process).to have_received(:update_error).with(error_msg: /work error/,
-                                                                    error_text: Socket.gethostname)
+                                                                    error_text: Socket.gethostname,
+                                                                    version: 2)
+    end
+  end
+
+  context 'when a version is provided' do
+    it 'updates workflow with the given version' do
+      robot.perform(druid, 3)
+      expect(workflow_process).to have_received(:update).with(status: 'completed',
+                                                              elapsed: Float,
+                                                              note: Socket.gethostname,
+                                                              version: 3)
     end
   end
 end
