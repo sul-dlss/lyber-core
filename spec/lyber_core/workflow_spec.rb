@@ -49,6 +49,13 @@ describe LyberCore::Workflow do
     end
   end
 
+  describe '#skip!' do
+    it 'updates the status to skipped' do
+      workflow.skip!(note)
+      expect(workflow_process).to have_received(:update).with(status: 'skipped', elapsed: 0, note:, version:)
+    end
+  end
+
   describe '#context' do
     it 'returns the context hash' do
       expect(workflow.context).to eq(context)

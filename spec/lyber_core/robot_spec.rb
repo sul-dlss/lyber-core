@@ -42,7 +42,8 @@ RSpec.describe LyberCore::Robot do
   let(:exception) { nil }
   let(:logger) { instance_double(Logger, info: true, debug: true, warn: true, error: true) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_object) }
-  let(:cocina_object) { instance_double(Cocina::Models::DRO) }
+  let(:cocina_object) { instance_double(Cocina::Models::DRO, version: cocina_version) }
+  let(:cocina_version) { 2 }
   let(:druid_object) { instance_double(DruidTools::Druid) }
 
   before do
@@ -216,12 +217,30 @@ RSpec.describe LyberCore::Robot do
   end
 
   context 'when a version is provided' do
+    let(:cocina_version) { 3 }
+
     it 'updates workflow with the given version' do
       robot.perform(druid, 3)
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
                                                               note: Socket.gethostname,
                                                               version: 3)
+    end
+  end
+
+  context 'when the provided version has been superseded by a newer version' do
+    let(:cocina_version) { 3 }
+    let(:note) { /queued for version 2 but the current object version is 3/ }
+
+    it 'skips the job without performing the work' do
+      robot.perform(druid, 2)
+      expect(logger).to have_received(:warn).with(note)
+      expect(Tester).not_to have_received(:bare_druid)
+      expect(workflow_process).to have_received(:update).with(status: 'skipped',
+                                                              elapsed: 0,
+                                                              note:,
+                                                              version: 2)
+      expect(workflow_process).not_to have_received(:update).with(hash_including(status: 'started'))
     end
   end
 end
