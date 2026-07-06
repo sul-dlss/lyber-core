@@ -2,8 +2,9 @@
 
 describe LyberCore::Workflow do
   let(:workflow) do
-    described_class.new(object_client:, workflow_name: 'workflow', process: 'process')
+    described_class.new(object_client:, workflow_name: 'workflow', process: 'process', version:)
   end
+  let(:version) { 2 }
   let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id:, context:, status:) }
   let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
   let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response) }
@@ -17,7 +18,7 @@ describe LyberCore::Workflow do
   describe '#start!' do
     it 'updates the status to started' do
       workflow.start!(note)
-      expect(workflow_process).to have_received(:update).with(status: 'started', elapsed: 1.0, note:)
+      expect(workflow_process).to have_received(:update).with(status: 'started', elapsed: 1.0, note:, version:)
     end
   end
 
@@ -27,14 +28,14 @@ describe LyberCore::Workflow do
 
     it 'updates the status to provided status' do
       workflow.complete!(complete_status, elapsed, note)
-      expect(workflow_process).to have_received(:update).with(status: complete_status, elapsed: 3.0, note:)
+      expect(workflow_process).to have_received(:update).with(status: complete_status, elapsed: 3.0, note:, version:)
     end
   end
 
   describe '#retrying!' do
     it 'updates the status to retrying' do
       workflow.retrying!
-      expect(workflow_process).to have_received(:update).with(status: 'retrying', elapsed: 1.0, note: nil)
+      expect(workflow_process).to have_received(:update).with(status: 'retrying', elapsed: 1.0, note: nil, version:)
     end
   end
 
@@ -44,7 +45,14 @@ describe LyberCore::Workflow do
 
     it 'updates the status to an error' do
       workflow.error!(error_msg, error_text)
-      expect(workflow_process).to have_received(:update_error).with(error_msg:, error_text:)
+      expect(workflow_process).to have_received(:update_error).with(error_msg:, error_text:, version:)
+    end
+  end
+
+  describe '#skip!' do
+    it 'updates the status to skipped' do
+      workflow.skip!(note)
+      expect(workflow_process).to have_received(:update).with(status: 'skipped', elapsed: 0, note:, version:)
     end
   end
 
@@ -63,6 +71,12 @@ describe LyberCore::Workflow do
   describe '#status' do
     it 'returns the status' do
       expect(workflow.status).to eq(status)
+    end
+  end
+
+  describe '#version' do
+    it 'returns the version' do
+      expect(workflow.version).to eq(version)
     end
   end
 end

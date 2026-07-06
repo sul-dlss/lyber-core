@@ -12,14 +12,15 @@ module LyberCore
     sidekiq_retries_exhausted do |job, ex|
       # When all the retries are exhausted, update the workflow to error.
       robot = job['class'].constantize.new
-      druid = job['args'].first
+      druid, version = job['args']
       workflow = Workflow.new(object_client: Dor::Services::Client.object(druid),
                               workflow_name: robot.workflow_name,
-                              process: robot.process)
+                              process: robot.process,
+                              version:)
       workflow.error!(ex.message, Socket.gethostname)
     end
 
-    attr_reader :workflow_name, :process, :druid, :retriable_exceptions
+    attr_reader :workflow_name, :process, :druid, :version, :retriable_exceptions
     attr_accessor :check_queued_status
 
     # These methods are delegated to the workflow ivar as a convenient way for child classes to interact
@@ -51,11 +52,13 @@ module LyberCore
     # Calls the #perform_work method, then sets workflow to 'completed' or 'error' depending on success
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
-    def perform(druid)
+    def perform(druid, version = nil)
       @druid = druid
+      @version = version
       Honeybadger.context(druid:, process:, workflow_name:)
 
       logger.info "#{druid} processing #{process} (#{workflow_name})"
+      return skip_for_superseded_version! if superseded_version?
       return unless check_item_queued_or_retry?
 
       # this is the default note to pass back to workflow service,
@@ -115,7 +118,22 @@ module LyberCore
     end
 
     def workflow
-      @workflow ||= Workflow.new(object_client:, workflow_name:, process:)
+      @workflow ||= Workflow.new(object_client:, workflow_name:, process:, version:)
+    end
+
+    # @return [Boolean] true if a version was provided and it no longer matches the object's current version,
+    #   meaning a newer version has superseded the one this job was queued for
+    def superseded_version?
+      return false if version.nil?
+
+      cocina_object.version.to_i != version.to_i
+    end
+
+    def skip_for_superseded_version!
+      msg = "Item #{druid} is queued for version #{version} but the current object version is " \
+            "#{cocina_object.version}. Skipping #{process} (#{workflow_name})."
+      logger.warn(msg)
+      workflow.skip!(msg)
     end
 
     def check_item_queued_or_retry? # rubocop:disable Metrics/AbcSize

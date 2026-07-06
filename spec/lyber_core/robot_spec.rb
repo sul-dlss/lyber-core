@@ -42,7 +42,8 @@ RSpec.describe LyberCore::Robot do
   let(:exception) { nil }
   let(:logger) { instance_double(Logger, info: true, debug: true, warn: true, error: true) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_object) }
-  let(:cocina_object) { instance_double(Cocina::Models::DRO) }
+  let(:cocina_object) { instance_double(Cocina::Models::DRO, version: cocina_version) }
+  let(:cocina_version) { 2 }
   let(:druid_object) { instance_double(DruidTools::Druid) }
 
   before do
@@ -63,7 +64,7 @@ RSpec.describe LyberCore::Robot do
 
   context 'when work processes without error and no ReturnState' do
     it "updates workflow to 'completed'" do # rubocop:disable RSpec/MultipleExpectations
-      robot.perform(druid)
+      robot.perform(druid, 2)
       expect(logger).to have_received(:info).with(/#{druid} processing/)
       expect(logger).to have_received(:info).with('work done!')
       expect(Tester).to have_received(:bare_druid).with('test1234')
@@ -76,7 +77,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: 2)
       expect(object_workflow).to have_received(:process).with(step_name).once
     end
   end
@@ -91,7 +93,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'skipped',
                                                               elapsed: Float,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: nil)
     end
   end
 
@@ -105,10 +108,12 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'started',
                                                               elapsed: 1.0,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: nil)
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
-                                                              note: 'some note to pass back to workflow')
+                                                              note: 'some note to pass back to workflow',
+                                                              version: nil)
     end
   end
 
@@ -122,7 +127,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'skipped',
                                                               elapsed: Float,
-                                                              note: 'some note to pass back to workflow')
+                                                              note: 'some note to pass back to workflow',
+                                                              version: nil)
     end
   end
 
@@ -133,7 +139,8 @@ RSpec.describe LyberCore::Robot do
       robot.perform(druid)
       expect(logger).to have_received(:error).with(/work error/)
       expect(workflow_process).to have_received(:update_error).with(error_msg: /work error/,
-                                                                    error_text: Socket.gethostname)
+                                                                    error_text: Socket.gethostname,
+                                                                    version: nil)
     end
   end
 
@@ -145,7 +152,8 @@ RSpec.describe LyberCore::Robot do
       expect(logger).to have_received(:error).with(/retriable work error/)
       expect(workflow_process).to have_received(:update).with(status: 'retrying',
                                                               elapsed: 1.0,
-                                                              note: nil)
+                                                              note: nil,
+                                                              version: nil)
     end
   end
 
@@ -174,7 +182,8 @@ RSpec.describe LyberCore::Robot do
 
       expect(workflow_process).to have_received(:update).with(status: 'completed',
                                                               elapsed: Float,
-                                                              note: Socket.gethostname)
+                                                              note: Socket.gethostname,
+                                                              version: nil)
     end
   end
 
@@ -192,7 +201,7 @@ RSpec.describe LyberCore::Robot do
       {
         'queue' => 'default',
         'class' => 'TestRobot',
-        'args' => [druid],
+        'args' => [druid, 2],
         'error_message' => 'work error'
       }
     end
@@ -202,7 +211,36 @@ RSpec.describe LyberCore::Robot do
     it "updates workflow to 'error'" do
       TestRobot.sidekiq_retries_exhausted_block.call(job, exception)
       expect(workflow_process).to have_received(:update_error).with(error_msg: /work error/,
-                                                                    error_text: Socket.gethostname)
+                                                                    error_text: Socket.gethostname,
+                                                                    version: 2)
+    end
+  end
+
+  context 'when a version is provided' do
+    let(:cocina_version) { 3 }
+
+    it 'updates workflow with the given version' do
+      robot.perform(druid, 3)
+      expect(workflow_process).to have_received(:update).with(status: 'completed',
+                                                              elapsed: Float,
+                                                              note: Socket.gethostname,
+                                                              version: 3)
+    end
+  end
+
+  context 'when the provided version has been superseded by a newer version' do
+    let(:cocina_version) { 3 }
+    let(:note) { /queued for version 2 but the current object version is 3/ }
+
+    it 'skips the job without performing the work' do
+      robot.perform(druid, 2)
+      expect(logger).to have_received(:warn).with(note)
+      expect(Tester).not_to have_received(:bare_druid)
+      expect(workflow_process).to have_received(:update).with(status: 'skipped',
+                                                              elapsed: 0,
+                                                              note:,
+                                                              version: 2)
+      expect(workflow_process).not_to have_received(:update).with(hash_including(status: 'started'))
     end
   end
 end
