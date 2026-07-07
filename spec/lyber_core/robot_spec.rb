@@ -243,4 +243,21 @@ RSpec.describe LyberCore::Robot do
       expect(workflow_process).not_to have_received(:update).with(hash_including(status: 'started'))
     end
   end
+
+  context 'when the provided version is above the current version (happens with OCR and speech to text workflows)' do
+    let(:cocina_version) { 1 }
+
+    it 'performs normally' do
+      robot.perform(druid, 2)
+      expect(Tester).to have_received(:bare_druid)
+      expect(logger).to have_received(:info).with(/#{druid} processing/)
+      expect(logger).to have_received(:info).with('work done!')
+      expect(Dor::Services::Client).to have_received(:object).with(druid)
+
+      expect(workflow_process).to have_received(:update).with(status: 'completed',
+                                                              elapsed: Float,
+                                                              note: Socket.gethostname,
+                                                              version: 2)
+    end
+  end
 end

@@ -121,12 +121,12 @@ module LyberCore
       @workflow ||= Workflow.new(object_client:, workflow_name:, process:, version:)
     end
 
-    # @return [Boolean] true if a version was provided and it no longer matches the object's current version,
+    # @return [Boolean] true if a version was provided and it is lower than the object's current version,
     #   meaning a newer version has superseded the one this job was queued for
     def superseded_version?
       return false if version.nil?
 
-      cocina_object.version.to_i != version.to_i
+      version.to_i < cocina_object.version.to_i
     end
 
     def skip_for_superseded_version!
