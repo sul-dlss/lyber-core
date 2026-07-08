@@ -52,13 +52,13 @@ module LyberCore
     # Calls the #perform_work method, then sets workflow to 'completed' or 'error' depending on success
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
-    def perform(druid, version = nil)
+    def perform(druid, version)
       @druid = druid
       @version = version
-      Honeybadger.context(druid:, process:, workflow_name:)
+      Honeybadger.context(druid:, process:, workflow_name:, version:)
 
       logger.info "#{druid} processing #{process} (#{workflow_name})"
-      return skip_for_superseded_version! if superseded_version?
+      return if skip_for_inactive_version?
       return unless check_item_queued_or_retry?
 
       # this is the default note to pass back to workflow service,
@@ -121,19 +121,15 @@ module LyberCore
       @workflow ||= Workflow.new(object_client:, workflow_name:, process:, version:)
     end
 
-    # @return [Boolean] true if a version was provided and it no longer matches the object's current version,
-    #   meaning a newer version has superseded the one this job was queued for
-    def superseded_version?
-      return false if version.nil?
+    def skip_for_inactive_version?
+      return false if workflow.active_version?
 
-      cocina_object.version.to_i != version.to_i
-    end
-
-    def skip_for_superseded_version!
-      msg = "Item #{druid} is queued for version #{version} but the current object version is " \
-            "#{cocina_object.version}. Skipping #{process} (#{workflow_name})."
+      msg = "Item #{druid} is queued for version #{version} of #{process} (#{workflow_name}), " \
+            'but that is not the active version. Skipping.'
       logger.warn(msg)
       workflow.skip!(msg)
+
+      true
     end
 
     def check_item_queued_or_retry? # rubocop:disable Metrics/AbcSize

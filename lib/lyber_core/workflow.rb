@@ -30,6 +30,11 @@ module LyberCore
       @process_response ||= workflow_response.process_for_recent_version(name: process)
     end
 
+    # @return [Boolean] true if this workflow step is for the active version of the workflow
+    def active_version?
+      workflow_response.process_for(name: process, version:).active_version?
+    end
+
     def start!(note)
       workflow_process.update(status: 'started', elapsed: 1.0, note:, version:)
     end
