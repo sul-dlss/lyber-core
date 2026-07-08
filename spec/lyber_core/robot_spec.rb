@@ -31,7 +31,12 @@ RSpec.describe LyberCore::Robot do
   let(:wf_name) { 'testWF' }
   let(:step_name) { 'test-step' }
   let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'lane1', context: {}, status: 'queued') }
-  let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response, xml: '') }
+  let(:queued_process_response) { instance_double(Dor::Services::Response::Process, active_version?: active_version) }
+  let(:active_version) { true }
+  let(:workflow_response) do
+    instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response,
+                                                       process_for: queued_process_response, xml: '')
+  end
   let(:object_workflow) do
     instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response)
   end
@@ -228,9 +233,9 @@ RSpec.describe LyberCore::Robot do
     end
   end
 
-  context 'when the provided version has been superseded by a newer version' do
-    let(:cocina_version) { 3 }
-    let(:note) { /queued for version 2 but the current object version is 3/ }
+  context 'when the provided version is not the active version (not normal)' do
+    let(:active_version) { false }
+    let(:note) { /queued for version 2 of test-step \(testWF\), but that is not the active version/ }
 
     it 'skips the job without performing the work' do
       robot.perform(druid, 2)
@@ -241,11 +246,12 @@ RSpec.describe LyberCore::Robot do
                                                               note:,
                                                               version: 2)
       expect(workflow_process).not_to have_received(:update).with(hash_including(status: 'started'))
+      expect(workflow_response).to have_received(:process_for).with(name: step_name, version: 2)
     end
   end
 
-  context 'when the provided version is above the current version (happens with OCR and speech to text workflows)' do
-    let(:cocina_version) { 1 }
+  context 'when the provided version is the active version (happy path)' do
+    let(:active_version) { true }
 
     it 'performs normally' do
       robot.perform(druid, 2)

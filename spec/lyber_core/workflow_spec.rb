@@ -5,8 +5,12 @@ describe LyberCore::Workflow do
     described_class.new(object_client:, workflow_name: 'workflow', process: 'process', version:)
   end
   let(:version) { 2 }
-  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id:, context:, status:) }
-  let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id:, context:, status:, active_version?: active_version) }
+  let(:workflow_response) do
+    instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response,
+                                                       process_for: process_response)
+  end
+  let(:active_version) { true }
   let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, workflow: object_workflow) }
   let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: nil, update_error: nil) }
@@ -77,6 +81,21 @@ describe LyberCore::Workflow do
   describe '#version' do
     it 'returns the version' do
       expect(workflow.version).to eq(version)
+    end
+  end
+
+  describe '#active_version?' do
+    it 'delegates to the process for the given version' do
+      expect(workflow.active_version?).to be true
+      expect(workflow_response).to have_received(:process_for).with(name: 'process', version:)
+    end
+
+    context 'when the process is not for the active version' do
+      let(:active_version) { false }
+
+      it 'returns false' do
+        expect(workflow.active_version?).to be false
+      end
     end
   end
 end
