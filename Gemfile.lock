@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lyber-core (8.2.0)
+    lyber-core (9.0.0)
       activesupport
       config
       dor-services-client
