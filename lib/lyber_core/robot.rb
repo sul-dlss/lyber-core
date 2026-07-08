@@ -128,6 +128,8 @@ module LyberCore
             'but that is not the active version. Skipping.'
       logger.warn(msg)
       workflow.skip!(msg)
+
+      true
     end
 
     def check_item_queued_or_retry? # rubocop:disable Metrics/AbcSize
