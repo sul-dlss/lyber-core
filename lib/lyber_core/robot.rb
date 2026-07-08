@@ -52,10 +52,10 @@ module LyberCore
     # Calls the #perform_work method, then sets workflow to 'completed' or 'error' depending on success
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
-    def perform(druid, version = nil)
+    def perform(druid, version)
       @druid = druid
       @version = version
-      Honeybadger.context(druid:, process:, workflow_name:)
+      Honeybadger.context(druid:, process:, workflow_name:, version:)
 
       logger.info "#{druid} processing #{process} (#{workflow_name})"
       return if skip_for_inactive_version?
@@ -122,7 +122,7 @@ module LyberCore
     end
 
     def skip_for_inactive_version?
-      return false if version.nil? || workflow.active_version?
+      return false if workflow.active_version?
 
       msg = "Item #{druid} is queued for version #{version} of #{process} (#{workflow_name}), " \
             'but that is not the active version. Skipping.'
