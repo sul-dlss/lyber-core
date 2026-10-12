@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
 
   s.add_dependency 'activesupport'
+  s.add_dependency 'benchmark'
   s.add_dependency 'config'
   s.add_dependency 'dor-services-client'
   s.add_dependency 'druid-tools'
