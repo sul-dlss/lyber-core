@@ -126,6 +126,9 @@ The following environment variables can optionally be set:
 * ROBOT_LOG_LEVEL
 
 ## Robot Testing
+
+Use Ruby 4.0.7 for development and testing.
+
 Include the following in `rspec/spec_helper.rb`:
 ```
 ENV['ROBOT_ENVIRONMENT'] = 'test'
