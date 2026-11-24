@@ -25,6 +25,17 @@ class TestRobot < LyberCore::Robot
   end
 end
 
+class CloseVersionRobot < LyberCore::Robot
+  def initialize(**close_params)
+    super('testWF', 'test-step')
+    @close_params = close_params
+  end
+
+  def perform_work
+    close_version(**@close_params)
+  end
+end
+
 RSpec.describe LyberCore::Robot do
   let(:druid) { 'druid:test1234' }
 
@@ -263,6 +274,45 @@ RSpec.describe LyberCore::Robot do
                                                               elapsed: Float,
                                                               note: Socket.gethostname,
                                                               version: 2)
+    end
+  end
+
+  describe '#close_version' do
+    let(:robot) { CloseVersionRobot.new(**close_params) }
+    let(:close_params) { {} }
+    let(:object_version) { instance_double(Dor::Services::Client::ObjectVersion, close: true) }
+    let(:process_response) do
+      instance_double(Dor::Services::Response::Process, lane_id: 'low', context:, status: 'queued')
+    end
+    let(:context) { {} }
+
+    before { allow(object_client).to receive(:version).and_return(object_version) }
+
+    context 'when the workflow context has no user version mode' do
+      it 'closes the version in the workflow lane without a user version mode' do
+        robot.perform(druid, version)
+        expect(object_version).to have_received(:close).with(lane_id: 'low', user_versions: nil)
+      end
+    end
+
+    context 'when the workflow context has a user version mode' do
+      let(:context) { { 'userVersions' => 'new', 'runOCR' => true } }
+
+      it 'closes the version with the user version mode' do
+        robot.perform(druid, version)
+        expect(object_version).to have_received(:close).with(lane_id: 'low', user_versions: 'new')
+      end
+    end
+
+    context 'when params are provided' do
+      let(:context) { { 'userVersions' => 'new' } }
+      let(:close_params) { { lane_id: 'high', user_versions: 'none', description: 'Remediated' } }
+
+      it 'closes the version with the provided params' do
+        robot.perform(druid, version)
+        expect(object_version).to have_received(:close)
+          .with(lane_id: 'high', user_versions: 'none', description: 'Remediated')
+      end
     end
   end
 end
