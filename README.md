@@ -82,6 +82,8 @@ module Robots
 end
 ```
 
+A robot that closes the object's version (e.g., the last step of an assembly workflow) should call `close_version` rather than `object_client.version.close`. It passes the workflow's lane and the user version mode from the workflow context (`userVersions`, e.g., set by Argo), so accessioning keeps the deposit's lane and the user's choice of user version. Params passed to `close_version` override these.
+
 ## Robot Environment Setup
 
 Create a `config/boot.rb` containing:

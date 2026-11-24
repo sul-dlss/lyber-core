@@ -48,6 +48,18 @@ module LyberCore
       @druid_object ||= DruidTools::Druid.new(druid, Settings.stacks.local_workspace_root)
     end
 
+    # The workflow context key that holds the user version mode (none, new, update, or update_if_existing) for
+    # closing the version, e.g., set by Argo when starting the assembly workflow.
+    USER_VERSIONS_CONTEXT_KEY = 'userVersions'
+
+    # Closes the object's version, which by default starts accessionWF.
+    # Accessioning uses this workflow's lane, and closing uses the user version mode from the workflow context, if
+    # any; otherwise DSA's defaults apply.
+    # @param params [Hash] other params for closing, which override these (see Dor::Services::Client::ObjectVersion#close)
+    def close_version(**params)
+      object_client.version.close(lane_id:, user_versions: workflow.context[USER_VERSIONS_CONTEXT_KEY], **params)
+    end
+
     # Sets up logging, timing and error handling of the job
     # Calls the #perform_work method, then sets workflow to 'completed' or 'error' depending on success
     # rubocop:disable Metrics/AbcSize
